@@ -164,6 +164,14 @@ ENV/
 env.bak/
 venv.bak/
 
+# Raw forensic artifacts and large datasets
+*.evtx
+*.pcap
+*.pcapng
+*.log
+datasets/*
+!datasets/.gitkeep
+
 # Spyder project settings
 .spyderproject
 .spyproject
