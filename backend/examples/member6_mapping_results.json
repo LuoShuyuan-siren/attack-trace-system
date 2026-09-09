@@ -1,0 +1,657 @@
+{
+  "mappings": [
+    {
+      "detection_id": "det-001",
+      "timestamp": "2026-09-08T10:00:00+00:00",
+      "analyzer": "exploit_analyzer",
+      "technique_id": "T1190",
+      "technique_name": "Exploit Public-Facing Application",
+      "tactics": [
+        {
+          "tactic_id": "TA0001",
+          "tactic_name": "Initial Access",
+          "stage": "initial_access"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "exploit-public-app"
+      ],
+      "ttp_tags": [
+        "initial_access",
+        "exploitation"
+      ],
+      "confidence": 0.94,
+      "related_entity_ids": [
+        "host:WEB01",
+        "ip:10.0.1.10"
+      ],
+      "evidence": {
+        "signature": "ET WEB_SERVER webshell upload"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-002",
+      "timestamp": "2026-09-08T10:02:00+00:00",
+      "analyzer": "process_analyzer",
+      "technique_id": "T1059.001",
+      "technique_name": "PowerShell",
+      "tactics": [
+        {
+          "tactic_id": "TA0002",
+          "tactic_name": "Execution",
+          "stage": "execution"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "powershell"
+      ],
+      "ttp_tags": [
+        "scripting",
+        "powershell",
+        "execution"
+      ],
+      "confidence": 0.91,
+      "related_entity_ids": [
+        "host:WEB01",
+        "process:WEB01:4123",
+        "user:WEB01:www-data"
+      ],
+      "evidence": {
+        "command_line": "powershell.exe -enc SQBFAFgA..."
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-003",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "analyzer": "host_behavior_analyzer",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "tactics": [
+        {
+          "tactic_id": "TA0003",
+          "tactic_name": "Persistence",
+          "stage": "persistence"
+        },
+        {
+          "tactic_id": "TA0004",
+          "tactic_name": "Privilege Escalation",
+          "stage": "privilege_escalation"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "persistence"
+      ],
+      "ttp_tags": [
+        "persistence",
+        "privilege_escalation"
+      ],
+      "confidence": 0.88,
+      "related_entity_ids": [
+        "host:WEB01",
+        "registry:WEB01:HKLM-Run"
+      ],
+      "evidence": {
+        "key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-004",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "analyzer": "process_injection_analyzer",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "tactics": [
+        {
+          "tactic_id": "TA0004",
+          "tactic_name": "Privilege Escalation",
+          "stage": "privilege_escalation"
+        },
+        {
+          "tactic_id": "TA0005",
+          "tactic_name": "Defense Evasion",
+          "stage": "defense_evasion"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "process-injection",
+        "text-process-injection",
+        "text-credential-dumping"
+      ],
+      "ttp_tags": [
+        "process_injection",
+        "defense_evasion",
+        "privilege_escalation"
+      ],
+      "confidence": 0.93,
+      "related_entity_ids": [
+        "host:PC01",
+        "process:PC01:3301",
+        "process:PC01:3302"
+      ],
+      "evidence": {
+        "technique": "reflective_loader"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-005",
+      "timestamp": "2026-09-08T10:16:00+00:00",
+      "analyzer": "log_analyzer",
+      "technique_id": "T1070",
+      "technique_name": "Indicator Removal",
+      "tactics": [
+        {
+          "tactic_id": "TA0005",
+          "tactic_name": "Defense Evasion",
+          "stage": "defense_evasion"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "indicator-removal"
+      ],
+      "ttp_tags": [
+        "defense_evasion",
+        "log_cleanup"
+      ],
+      "confidence": 0.9,
+      "related_entity_ids": [
+        "host:PC01"
+      ],
+      "evidence": {
+        "event_id": 1102
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-006",
+      "timestamp": "2026-09-08T10:20:00+00:00",
+      "analyzer": "credential_access_analyzer",
+      "technique_id": "T1003",
+      "technique_name": "OS Credential Dumping",
+      "tactics": [
+        {
+          "tactic_id": "TA0006",
+          "tactic_name": "Credential Access",
+          "stage": "credential_access"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "credential-dumping",
+        "text-credential-dumping"
+      ],
+      "ttp_tags": [
+        "credential_access",
+        "credential_dumping"
+      ],
+      "confidence": 0.95,
+      "related_entity_ids": [
+        "host:PC01",
+        "file:PC01:C:\\Windows\\System32\\config\\SAM"
+      ],
+      "evidence": {
+        "accessed_file": "C:\\Windows\\System32\\config\\SAM"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-007",
+      "timestamp": "2026-09-08T10:25:00+00:00",
+      "analyzer": "scan_analyzer",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "tactics": [
+        {
+          "tactic_id": "TA0007",
+          "tactic_name": "Discovery",
+          "stage": "discovery"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "network-discovery"
+      ],
+      "ttp_tags": [
+        "discovery",
+        "scanning"
+      ],
+      "confidence": 0.86,
+      "related_entity_ids": [
+        "host:PC01",
+        "ip:10.0.1.30"
+      ],
+      "evidence": {
+        "ports": [
+          22,
+          445,
+          3389
+        ]
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-008",
+      "timestamp": "2026-09-08T10:30:00+00:00",
+      "analyzer": "lateral_movement_analyzer",
+      "technique_id": "T1021",
+      "technique_name": "Remote Services",
+      "tactics": [
+        {
+          "tactic_id": "TA0008",
+          "tactic_name": "Lateral Movement",
+          "stage": "lateral_movement"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "lateral-movement",
+        "text-lateral-movement"
+      ],
+      "ttp_tags": [
+        "lateral_movement"
+      ],
+      "confidence": 0.92,
+      "related_entity_ids": [
+        "host:PC01",
+        "host:DB01",
+        "ip:10.0.1.40"
+      ],
+      "evidence": {
+        "protocol": "smb",
+        "user": "dbadmin"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-009",
+      "timestamp": "2026-09-08T10:35:00+00:00",
+      "analyzer": "file_monitor_analyzer",
+      "technique_id": "T1005",
+      "technique_name": "Data from Local System",
+      "tactics": [
+        {
+          "tactic_id": "TA0009",
+          "tactic_name": "Collection",
+          "stage": "collection"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "collection"
+      ],
+      "ttp_tags": [
+        "collection"
+      ],
+      "confidence": 0.84,
+      "related_entity_ids": [
+        "host:DB01",
+        "file:DB01:/var/lib/mysql/customer.ibd"
+      ],
+      "evidence": {
+        "path": "/var/lib/mysql/customer.ibd"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-010",
+      "timestamp": "2026-09-08T10:42:00+00:00",
+      "analyzer": "dns_tunnel_analyzer",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "explicit-dns-c2",
+        "tag-dns-tunnel",
+        "protocol-tunneling"
+      ],
+      "ttp_tags": [
+        "dns_tunnel",
+        "c2_communication",
+        "command_and_control"
+      ],
+      "confidence": 0.91,
+      "related_entity_ids": [
+        "host:PC01",
+        "domain:evil.example.com",
+        "ip:8.8.8.8"
+      ],
+      "evidence": {
+        "query_count": 328,
+        "avg_domain_length": 57.2
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-011",
+      "timestamp": "2026-09-08T10:50:00+00:00",
+      "analyzer": "exfil_analyzer",
+      "technique_id": "T1041",
+      "technique_name": "Exfiltration Over C2 Channel",
+      "tactics": [
+        {
+          "tactic_id": "TA0010",
+          "tactic_name": "Exfiltration",
+          "stage": "exfiltration"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "exfiltration-c2"
+      ],
+      "ttp_tags": [
+        "exfiltration"
+      ],
+      "confidence": 0.9,
+      "related_entity_ids": [
+        "host:DB01",
+        "ip:198.51.100.20"
+      ],
+      "evidence": {
+        "bytes": 18743296
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-012",
+      "timestamp": "2026-09-08T11:00:00+00:00",
+      "analyzer": "ransomware_analyzer",
+      "technique_id": "T1486",
+      "technique_name": "Data Encrypted for Impact",
+      "tactics": [
+        {
+          "tactic_id": "TA0040",
+          "tactic_name": "Impact",
+          "stage": "impact"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "impact-ransomware"
+      ],
+      "ttp_tags": [
+        "impact",
+        "ransomware"
+      ],
+      "confidence": 0.97,
+      "related_entity_ids": [
+        "host:FS01",
+        "file:FS01:E:\\Shares\\customer.docx"
+      ],
+      "evidence": {
+        "encrypted_files": 1200
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-013",
+      "timestamp": "2026-09-08T10:03:00+00:00",
+      "analyzer": "process_analyzer",
+      "technique_id": "unknown",
+      "technique_name": "Unknown",
+      "tactics": [],
+      "mapping_source": "none",
+      "matched_rule_ids": [],
+      "ttp_tags": [],
+      "confidence": 0.7,
+      "related_entity_ids": [
+        "host:WIN10",
+        "process:WIN10:1800"
+      ],
+      "evidence": {
+        "parent_process": "services.exe"
+      },
+      "notes": [
+        "no_matching_rule"
+      ]
+    },
+    {
+      "detection_id": "det-014",
+      "timestamp": "2026-09-08T10:07:00+00:00",
+      "analyzer": "dns_analyzer",
+      "technique_id": "unknown",
+      "technique_name": "Unknown",
+      "tactics": [],
+      "mapping_source": "none",
+      "matched_rule_ids": [],
+      "ttp_tags": [],
+      "confidence": 0.6,
+      "related_entity_ids": [
+        "host:WIN10",
+        "ip:10.0.1.50"
+      ],
+      "evidence": {
+        "query": "update.internal"
+      },
+      "notes": [
+        "no_matching_rule"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "stage": "initial_access",
+      "tactic_id": "TA0001",
+      "tactic_name": "Initial Access",
+      "detection_id": "det-001",
+      "technique_id": "T1190",
+      "technique_name": "Exploit Public-Facing Application",
+      "timestamp": "2026-09-08T10:00:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.94
+    },
+    {
+      "stage": "execution",
+      "tactic_id": "TA0002",
+      "tactic_name": "Execution",
+      "detection_id": "det-002",
+      "technique_id": "T1059.001",
+      "technique_name": "PowerShell",
+      "timestamp": "2026-09-08T10:02:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.91
+    },
+    {
+      "stage": "persistence",
+      "tactic_id": "TA0003",
+      "tactic_name": "Persistence",
+      "detection_id": "det-003",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.88
+    },
+    {
+      "stage": "privilege_escalation",
+      "tactic_id": "TA0004",
+      "tactic_name": "Privilege Escalation",
+      "detection_id": "det-003",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.88
+    },
+    {
+      "stage": "privilege_escalation",
+      "tactic_id": "TA0004",
+      "tactic_name": "Privilege Escalation",
+      "detection_id": "det-004",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "host": "PC01",
+      "confidence": 0.93
+    },
+    {
+      "stage": "defense_evasion",
+      "tactic_id": "TA0005",
+      "tactic_name": "Defense Evasion",
+      "detection_id": "det-004",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "host": "PC01",
+      "confidence": 0.93
+    },
+    {
+      "stage": "defense_evasion",
+      "tactic_id": "TA0005",
+      "tactic_name": "Defense Evasion",
+      "detection_id": "det-005",
+      "technique_id": "T1070",
+      "technique_name": "Indicator Removal",
+      "timestamp": "2026-09-08T10:16:00+00:00",
+      "host": "PC01",
+      "confidence": 0.9
+    },
+    {
+      "stage": "credential_access",
+      "tactic_id": "TA0006",
+      "tactic_name": "Credential Access",
+      "detection_id": "det-006",
+      "technique_id": "T1003",
+      "technique_name": "OS Credential Dumping",
+      "timestamp": "2026-09-08T10:20:00+00:00",
+      "host": "PC01",
+      "confidence": 0.95
+    },
+    {
+      "stage": "discovery",
+      "tactic_id": "TA0007",
+      "tactic_name": "Discovery",
+      "detection_id": "det-007",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "timestamp": "2026-09-08T10:25:00+00:00",
+      "host": "PC01",
+      "confidence": 0.86
+    },
+    {
+      "stage": "lateral_movement",
+      "tactic_id": "TA0008",
+      "tactic_name": "Lateral Movement",
+      "detection_id": "det-008",
+      "technique_id": "T1021",
+      "technique_name": "Remote Services",
+      "timestamp": "2026-09-08T10:30:00+00:00",
+      "host": "PC01",
+      "confidence": 0.92
+    },
+    {
+      "stage": "collection",
+      "tactic_id": "TA0009",
+      "tactic_name": "Collection",
+      "detection_id": "det-009",
+      "technique_id": "T1005",
+      "technique_name": "Data from Local System",
+      "timestamp": "2026-09-08T10:35:00+00:00",
+      "host": "DB01",
+      "confidence": 0.84
+    },
+    {
+      "stage": "command_and_control",
+      "tactic_id": "TA0011",
+      "tactic_name": "Command and Control",
+      "detection_id": "det-010",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "timestamp": "2026-09-08T10:42:00+00:00",
+      "host": "PC01",
+      "confidence": 0.91
+    },
+    {
+      "stage": "exfiltration",
+      "tactic_id": "TA0010",
+      "tactic_name": "Exfiltration",
+      "detection_id": "det-011",
+      "technique_id": "T1041",
+      "technique_name": "Exfiltration Over C2 Channel",
+      "timestamp": "2026-09-08T10:50:00+00:00",
+      "host": "DB01",
+      "confidence": 0.9
+    },
+    {
+      "stage": "impact",
+      "tactic_id": "TA0040",
+      "tactic_name": "Impact",
+      "detection_id": "det-012",
+      "technique_id": "T1486",
+      "technique_name": "Data Encrypted for Impact",
+      "timestamp": "2026-09-08T11:00:00+00:00",
+      "host": "FS01",
+      "confidence": 0.97
+    }
+  ],
+  "ttp_profile": {
+    "technique_ids": [
+      "T1190",
+      "T1059.001",
+      "T1547",
+      "T1055",
+      "T1070",
+      "T1003",
+      "T1046",
+      "T1021",
+      "T1005",
+      "T1071.004",
+      "T1041",
+      "T1486"
+    ],
+    "tactic_ids": [
+      "TA0001",
+      "TA0002",
+      "TA0003",
+      "TA0004",
+      "TA0005",
+      "TA0006",
+      "TA0007",
+      "TA0008",
+      "TA0009",
+      "TA0010",
+      "TA0011",
+      "TA0040"
+    ],
+    "tags": [
+      "privilege_escalation",
+      "defense_evasion",
+      "initial_access",
+      "exploitation",
+      "scripting",
+      "powershell",
+      "execution",
+      "persistence",
+      "process_injection",
+      "log_cleanup",
+      "credential_access",
+      "credential_dumping",
+      "discovery",
+      "scanning",
+      "lateral_movement",
+      "collection",
+      "dns_tunnel",
+      "c2_communication",
+      "command_and_control",
+      "exfiltration",
+      "impact",
+      "ransomware"
+    ],
+    "confidence": 0.8721,
+    "stage_count": 12
+  }
+}
