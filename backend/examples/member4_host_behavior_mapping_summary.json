@@ -1,0 +1,186 @@
+{
+  "det-df432e26-660a-52ce-850d-2a356d90cdc1": {
+    "rule_id": "HB-PROC-001",
+    "title": "Document application spawned a command interpreter",
+    "technique_id": "T1059.001",
+    "technique_name": "PowerShell",
+    "tactics": [
+      {
+        "tactic_id": "TA0002",
+        "tactic_name": "Execution",
+        "stage": "execution"
+      }
+    ]
+  },
+  "det-8c1cf625-d031-557b-aa2d-2356103a2593": {
+    "rule_id": "HB-PROC-003",
+    "title": "Suspicious process command line",
+    "technique_id": "T1059.001",
+    "technique_name": "PowerShell",
+    "tactics": [
+      {
+        "tactic_id": "TA0002",
+        "tactic_name": "Execution",
+        "stage": "execution"
+      }
+    ]
+  },
+  "det-11943852-c424-5bbd-b12b-b4983361f189": {
+    "rule_id": "HB-PROC-002",
+    "title": "Web service spawned a command interpreter",
+    "technique_id": "T1190",
+    "technique_name": "Exploit Public-Facing Application",
+    "tactics": [
+      {
+        "tactic_id": "TA0001",
+        "tactic_name": "Initial Access",
+        "stage": "initial_access"
+      }
+    ]
+  },
+  "det-7e8b1313-df36-5691-91d1-5bbf5dc3a815": {
+    "rule_id": "HB-PROC-003",
+    "title": "Suspicious process command line",
+    "technique_id": "T1059.001",
+    "technique_name": "PowerShell",
+    "tactics": [
+      {
+        "tactic_id": "TA0002",
+        "tactic_name": "Execution",
+        "stage": "execution"
+      }
+    ]
+  },
+  "det-b6bc33fc-4d7a-584c-92ce-a66803ff6306": {
+    "rule_id": "HB-PROC-004",
+    "title": "Executable launched from a temporary directory",
+    "technique_id": "T1059.004",
+    "technique_name": "Unix Shell",
+    "tactics": [
+      {
+        "tactic_id": "TA0002",
+        "tactic_name": "Execution",
+        "stage": "execution"
+      }
+    ]
+  },
+  "det-a86dde0c-640d-545d-a45e-011aa937aa1d": {
+    "rule_id": "HB-FILE-001",
+    "title": "Sensitive file read",
+    "technique_id": "T1003",
+    "technique_name": "OS Credential Dumping",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-17e2a03b-cb9a-5c9b-9ded-9b558707cc1b": {
+    "rule_id": "HB-FILE-002",
+    "title": "Persistence-related file modification",
+    "technique_id": "T1547",
+    "technique_name": "Boot or Logon Autostart Execution",
+    "tactics": [
+      {
+        "tactic_id": "TA0003",
+        "tactic_name": "Persistence",
+        "stage": "persistence"
+      }
+    ]
+  },
+  "det-eb213394-1e77-55c7-bcbc-197f69a0c391": {
+    "rule_id": "HB-FILE-003",
+    "title": "Security log file deleted",
+    "technique_id": "T1070",
+    "technique_name": "Indicator Removal",
+    "tactics": [
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-deac1185-9320-5ea5-bb15-b8758488d3d4": {
+    "rule_id": "HB-FILE-004",
+    "title": "Executable written to a temporary directory",
+    "technique_id": "T1105",
+    "technique_name": "Ingress Tool Transfer",
+    "tactics": [
+      {
+        "tactic_id": "TA0011",
+        "tactic_name": "Command and Control",
+        "stage": "command_and_control"
+      }
+    ]
+  },
+  "det-909379a4-8137-5aeb-94e9-38f342d01f80": {
+    "rule_id": "HB-SYSCALL-001",
+    "title": "Process tracing or memory access",
+    "technique_id": "T1055",
+    "technique_name": "Process Injection",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      },
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-4f0096d2-a139-53ed-ac03-59165b663887": {
+    "rule_id": "HB-SYSCALL-002",
+    "title": "Anonymous in-memory file executed",
+    "technique_id": "T1620",
+    "technique_name": "Reflective Code Loading",
+    "tactics": [
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-65dcf4ab-65da-5407-9171-6d084e8cb363": {
+    "rule_id": "HB-MEM-001",
+    "title": "Explicit cross-process memory behavior",
+    "technique_id": "T1055",
+    "technique_name": "Process Injection",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      },
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-b7bafa75-fab2-5bfa-a2bc-05c8b17eea08": {
+    "rule_id": "HB-SYSCALL-001",
+    "title": "Cross-process memory write",
+    "technique_id": "T1055",
+    "technique_name": "Process Injection",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      },
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  }
+}

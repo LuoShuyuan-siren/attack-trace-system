@@ -1,0 +1,1501 @@
+{
+  "normalized_events": [
+    {
+      "event_id": "evt-001",
+      "timestamp": "2026-09-08T10:00:00Z",
+      "source_type": "network_traffic",
+      "source": "suricata",
+      "host": {
+        "hostname": "WEB01",
+        "ip": "10.0.1.10",
+        "os": null
+      },
+      "event_type": "network_connection",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "203.0.113.10",
+        "src_port": null,
+        "dst_ip": "10.0.1.10",
+        "dst_port": 443,
+        "protocol": null
+      },
+      "action": "exploit",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "critical",
+      "attack": null,
+      "tags": [
+        "exploit",
+        "web_shell",
+        "rce"
+      ]
+    },
+    {
+      "event_id": "evt-002",
+      "timestamp": "2026-09-08T10:02:00Z",
+      "source_type": "host_behavior",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "WEB01",
+        "ip": "10.0.1.10",
+        "os": "windows"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "powershell.exe",
+        "pid": 4123,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "high",
+      "attack": null,
+      "tags": [
+        "powershell",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-003",
+      "timestamp": "2026-09-08T10:08:00Z",
+      "source_type": "host_behavior",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "WEB01",
+        "ip": "10.0.1.10",
+        "os": "windows"
+      },
+      "event_type": "registry_modify",
+      "subject": null,
+      "object": {
+        "type": "registry",
+        "name": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+        "path": null,
+        "pid": null
+      },
+      "network": null,
+      "action": "modify_registry",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "high",
+      "attack": null,
+      "tags": [
+        "persistence",
+        "registry"
+      ]
+    },
+    {
+      "event_id": "evt-004",
+      "timestamp": "2026-09-08T10:12:00Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": "windows"
+      },
+      "event_type": "process_inject",
+      "subject": {
+        "type": "process",
+        "name": "malware.exe",
+        "pid": 3301,
+        "user": null
+      },
+      "object": {
+        "type": "process",
+        "name": "lsass.exe",
+        "path": null,
+        "pid": 3302
+      },
+      "network": null,
+      "action": "inject_code",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "critical",
+      "attack": null,
+      "tags": [
+        "process_injection",
+        "lsass"
+      ]
+    },
+    {
+      "event_id": "evt-005",
+      "timestamp": "2026-09-08T10:16:00Z",
+      "source_type": "host_log",
+      "source": "windows_security",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": "windows"
+      },
+      "event_type": "log_clear",
+      "subject": null,
+      "object": null,
+      "network": null,
+      "action": "clear_log",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "high",
+      "attack": null,
+      "tags": [
+        "indicator_removal",
+        "log_cleanup"
+      ]
+    },
+    {
+      "event_id": "evt-006",
+      "timestamp": "2026-09-08T10:20:00Z",
+      "source_type": "host_behavior",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": "windows"
+      },
+      "event_type": "file_read",
+      "subject": {
+        "type": "process",
+        "name": "mimikatz.exe",
+        "pid": 3410,
+        "user": null
+      },
+      "object": {
+        "type": "file",
+        "name": "C:\\Windows\\System32\\config\\SAM",
+        "path": null,
+        "pid": null
+      },
+      "network": null,
+      "action": "read_file",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "critical",
+      "attack": null,
+      "tags": [
+        "credential_access",
+        "mimikatz"
+      ]
+    },
+    {
+      "event_id": "evt-007",
+      "timestamp": "2026-09-08T10:25:00Z",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": null
+      },
+      "event_type": "network_scan",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "10.0.1.30",
+        "src_port": null,
+        "dst_ip": "10.0.1.0/24",
+        "dst_port": 445,
+        "protocol": null
+      },
+      "action": "scan",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "medium",
+      "attack": null,
+      "tags": [
+        "scan",
+        "discovery"
+      ]
+    },
+    {
+      "event_id": "evt-008",
+      "timestamp": "2026-09-08T10:30:00Z",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": null
+      },
+      "event_type": "network_connection",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "10.0.1.30",
+        "src_port": null,
+        "dst_ip": "10.0.1.40",
+        "dst_port": 445,
+        "protocol": null
+      },
+      "action": "authenticate",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "high",
+      "attack": null,
+      "tags": [
+        "lateral_movement",
+        "smb"
+      ]
+    },
+    {
+      "event_id": "evt-009",
+      "timestamp": "2026-09-08T10:35:00Z",
+      "source_type": "host_behavior",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "DB01",
+        "ip": "10.0.1.40",
+        "os": "linux"
+      },
+      "event_type": "file_read",
+      "subject": {
+        "type": "process",
+        "name": "mysql",
+        "pid": 778,
+        "user": null
+      },
+      "object": {
+        "type": "file",
+        "name": "/var/lib/mysql/customer.ibd",
+        "path": null,
+        "pid": null
+      },
+      "network": null,
+      "action": "read_file",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "medium",
+      "attack": null,
+      "tags": [
+        "collection",
+        "sensitive_file"
+      ]
+    },
+    {
+      "event_id": "evt-010",
+      "timestamp": "2026-09-08T10:42:00Z",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "host": {
+        "hostname": "PC01",
+        "ip": "10.0.1.30",
+        "os": null
+      },
+      "event_type": "dns_query",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "10.0.1.30",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "dns"
+      },
+      "action": "resolve",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "high",
+      "attack": null,
+      "tags": [
+        "dns",
+        "tunnel"
+      ]
+    },
+    {
+      "event_id": "evt-011",
+      "timestamp": "2026-09-08T10:50:00Z",
+      "source_type": "network_traffic",
+      "source": "suricata",
+      "host": {
+        "hostname": "DB01",
+        "ip": "10.0.1.40",
+        "os": null
+      },
+      "event_type": "data_upload",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "10.0.1.40",
+        "src_port": null,
+        "dst_ip": "198.51.100.20",
+        "dst_port": null,
+        "protocol": "https"
+      },
+      "action": "upload",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "critical",
+      "attack": null,
+      "tags": [
+        "exfiltration",
+        "data_upload"
+      ]
+    },
+    {
+      "event_id": "evt-012",
+      "timestamp": "2026-09-08T11:00:00Z",
+      "source_type": "host_behavior",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "FS01",
+        "ip": "10.0.1.60",
+        "os": "windows"
+      },
+      "event_type": "file_modify",
+      "subject": {
+        "type": "process",
+        "name": "ransom.exe",
+        "pid": 5120,
+        "user": null
+      },
+      "object": {
+        "type": "file",
+        "name": "E:\\Shares\\customer.docx",
+        "path": null,
+        "pid": null
+      },
+      "network": null,
+      "action": "encrypt_file",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "critical",
+      "attack": null,
+      "tags": [
+        "ransomware",
+        "impact",
+        "encrypt"
+      ]
+    },
+    {
+      "event_id": "evt-013",
+      "timestamp": "2026-09-08T10:03:00Z",
+      "source_type": "host_behavior",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "WIN10",
+        "ip": "10.0.1.50",
+        "os": "windows"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "svchost.exe",
+        "pid": 1800,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal"
+      ]
+    },
+    {
+      "event_id": "evt-014",
+      "timestamp": "2026-09-08T10:07:00Z",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "host": {
+        "hostname": "WIN10",
+        "ip": "10.0.1.50",
+        "os": null
+      },
+      "event_type": "dns_query",
+      "subject": null,
+      "object": null,
+      "network": {
+        "src_ip": "10.0.1.50",
+        "src_port": null,
+        "dst_ip": "10.0.1.2",
+        "dst_port": null,
+        "protocol": "dns"
+      },
+      "action": "resolve",
+      "raw_data": {
+        "sample": true
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal"
+      ]
+    }
+  ],
+  "detection_results": [
+    {
+      "detection_id": "det-001",
+      "timestamp": "2026-09-08T10:00:00Z",
+      "analyzer": "exploit_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Web shell upload to public web application",
+      "description": "SQL injection followed by webshell upload",
+      "severity": "critical",
+      "confidence": 0.94,
+      "related_event_ids": [
+        "evt-001"
+      ],
+      "related_entity_ids": [
+        "host:WEB01",
+        "ip:10.0.1.10"
+      ],
+      "evidence": {
+        "signature": "ET WEB_SERVER webshell upload"
+      },
+      "attack_technique_id": "T1190",
+      "tags": [
+        "exploit",
+        "web_shell",
+        "rce",
+        "attack_technique:T1190",
+        "attack_tactic:TA0001",
+        "attack_stage:initial_access"
+      ]
+    },
+    {
+      "detection_id": "det-002",
+      "timestamp": "2026-09-08T10:02:00Z",
+      "analyzer": "process_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "PowerShell encoded command execution",
+      "description": "powershell.exe -enc SQBFAFgA...",
+      "severity": "high",
+      "confidence": 0.91,
+      "related_event_ids": [
+        "evt-002"
+      ],
+      "related_entity_ids": [
+        "host:WEB01",
+        "process:WEB01:4123",
+        "user:WEB01:www-data"
+      ],
+      "evidence": {
+        "command_line": "powershell.exe -enc SQBFAFgA..."
+      },
+      "attack_technique_id": "T1059.001",
+      "tags": [
+        "powershell",
+        "process",
+        "attack_technique:T1059.001",
+        "attack_tactic:TA0002",
+        "attack_stage:execution"
+      ]
+    },
+    {
+      "detection_id": "det-003",
+      "timestamp": "2026-09-08T10:08:00Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Registry Run key persistence",
+      "description": "Malicious executable added to HKLM Run key",
+      "severity": "high",
+      "confidence": 0.88,
+      "related_event_ids": [
+        "evt-003"
+      ],
+      "related_entity_ids": [
+        "host:WEB01",
+        "registry:WEB01:HKLM-Run"
+      ],
+      "evidence": {
+        "key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+      },
+      "attack_technique_id": "T1547",
+      "tags": [
+        "persistence",
+        "registry",
+        "attack_technique:T1547",
+        "attack_tactic:TA0003",
+        "attack_stage:persistence",
+        "attack_tactic:TA0004",
+        "attack_stage:privilege_escalation"
+      ]
+    },
+    {
+      "detection_id": "det-004",
+      "timestamp": "2026-09-08T10:12:00Z",
+      "analyzer": "process_injection_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Suspicious process injection into lsass.exe",
+      "description": "Reflective DLL injection into LSASS process",
+      "severity": "critical",
+      "confidence": 0.93,
+      "related_event_ids": [
+        "evt-004"
+      ],
+      "related_entity_ids": [
+        "host:PC01",
+        "process:PC01:3301",
+        "process:PC01:3302"
+      ],
+      "evidence": {
+        "technique": "reflective_loader"
+      },
+      "attack_technique_id": "T1055",
+      "tags": [
+        "process_injection",
+        "lsass",
+        "attack_technique:T1055",
+        "attack_tactic:TA0004",
+        "attack_stage:privilege_escalation",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-005",
+      "timestamp": "2026-09-08T10:16:00Z",
+      "analyzer": "log_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Windows event log cleared",
+      "description": "Security event log was cleared by an attacker",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-005"
+      ],
+      "related_entity_ids": [
+        "host:PC01"
+      ],
+      "evidence": {
+        "event_id": 1102
+      },
+      "attack_technique_id": "T1070",
+      "tags": [
+        "indicator_removal",
+        "log_cleanup",
+        "attack_technique:T1070",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-006",
+      "timestamp": "2026-09-08T10:20:00Z",
+      "analyzer": "credential_access_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Mimikatz credential dump activity",
+      "description": "Access to SAM database and LSASS memory",
+      "severity": "critical",
+      "confidence": 0.95,
+      "related_event_ids": [
+        "evt-006"
+      ],
+      "related_entity_ids": [
+        "host:PC01",
+        "file:PC01:C:\\Windows\\System32\\config\\SAM"
+      ],
+      "evidence": {
+        "accessed_file": "C:\\Windows\\System32\\config\\SAM"
+      },
+      "attack_technique_id": "T1003",
+      "tags": [
+        "credential_access",
+        "mimikatz",
+        "attack_technique:T1003",
+        "attack_tactic:TA0006",
+        "attack_stage:credential_access"
+      ]
+    },
+    {
+      "detection_id": "det-007",
+      "timestamp": "2026-09-08T10:25:00Z",
+      "analyzer": "scan_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Internal port scan",
+      "description": "Horizontal port scan across internal subnet",
+      "severity": "medium",
+      "confidence": 0.86,
+      "related_event_ids": [
+        "evt-007"
+      ],
+      "related_entity_ids": [
+        "host:PC01",
+        "ip:10.0.1.30"
+      ],
+      "evidence": {
+        "ports": [
+          22,
+          445,
+          3389
+        ]
+      },
+      "attack_technique_id": "T1046",
+      "tags": [
+        "scan",
+        "discovery",
+        "attack_technique:T1046",
+        "attack_tactic:TA0007",
+        "attack_stage:discovery"
+      ]
+    },
+    {
+      "detection_id": "det-008",
+      "timestamp": "2026-09-08T10:30:00Z",
+      "analyzer": "lateral_movement_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "SMB lateral movement to database server",
+      "description": "Remote service access using stolen credentials",
+      "severity": "high",
+      "confidence": 0.92,
+      "related_event_ids": [
+        "evt-008"
+      ],
+      "related_entity_ids": [
+        "host:PC01",
+        "host:DB01",
+        "ip:10.0.1.40"
+      ],
+      "evidence": {
+        "protocol": "smb",
+        "user": "dbadmin"
+      },
+      "attack_technique_id": "T1021",
+      "tags": [
+        "lateral_movement",
+        "smb",
+        "attack_technique:T1021",
+        "attack_tactic:TA0008",
+        "attack_stage:lateral_movement"
+      ]
+    },
+    {
+      "detection_id": "det-009",
+      "timestamp": "2026-09-08T10:35:00Z",
+      "analyzer": "file_monitor_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Sensitive database file read",
+      "description": "Unexpected read of customer database files",
+      "severity": "medium",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-009"
+      ],
+      "related_entity_ids": [
+        "host:DB01",
+        "file:DB01:/var/lib/mysql/customer.ibd"
+      ],
+      "evidence": {
+        "path": "/var/lib/mysql/customer.ibd"
+      },
+      "attack_technique_id": "T1005",
+      "tags": [
+        "collection",
+        "sensitive_file",
+        "attack_technique:T1005",
+        "attack_tactic:TA0009",
+        "attack_stage:collection"
+      ]
+    },
+    {
+      "detection_id": "det-010",
+      "timestamp": "2026-09-08T10:42:00Z",
+      "analyzer": "dns_tunnel_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Potential DNS tunnel",
+      "description": "High entropy DNS labels to unusual domain",
+      "severity": "high",
+      "confidence": 0.91,
+      "related_event_ids": [
+        "evt-010"
+      ],
+      "related_entity_ids": [
+        "host:PC01",
+        "domain:evil.example.com",
+        "ip:8.8.8.8"
+      ],
+      "evidence": {
+        "query_count": 328,
+        "avg_domain_length": 57.2
+      },
+      "attack_technique_id": "T1071.004",
+      "tags": [
+        "dns",
+        "tunnel",
+        "attack_technique:T1071.004",
+        "attack_tactic:TA0011",
+        "attack_stage:command_and_control"
+      ]
+    },
+    {
+      "detection_id": "det-011",
+      "timestamp": "2026-09-08T10:50:00Z",
+      "analyzer": "exfil_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Data exfiltration over C2",
+      "description": "Large outbound transfer to known C2",
+      "severity": "critical",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-011"
+      ],
+      "related_entity_ids": [
+        "host:DB01",
+        "ip:198.51.100.20"
+      ],
+      "evidence": {
+        "bytes": 18743296
+      },
+      "attack_technique_id": "T1041",
+      "tags": [
+        "exfiltration",
+        "data_upload",
+        "attack_technique:T1041",
+        "attack_tactic:TA0010",
+        "attack_stage:exfiltration"
+      ]
+    },
+    {
+      "detection_id": "det-012",
+      "timestamp": "2026-09-08T11:00:00Z",
+      "analyzer": "ransomware_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Ransomware encryption activity",
+      "description": "Mass file encryption and ransom note",
+      "severity": "critical",
+      "confidence": 0.97,
+      "related_event_ids": [
+        "evt-012"
+      ],
+      "related_entity_ids": [
+        "host:FS01",
+        "file:FS01:E:\\Shares\\customer.docx"
+      ],
+      "evidence": {
+        "encrypted_files": 1200
+      },
+      "attack_technique_id": "T1486",
+      "tags": [
+        "ransomware",
+        "impact",
+        "encrypt",
+        "attack_technique:T1486",
+        "attack_tactic:TA0040",
+        "attack_stage:impact"
+      ]
+    },
+    {
+      "detection_id": "det-013",
+      "timestamp": "2026-09-08T10:03:00Z",
+      "analyzer": "process_analyzer",
+      "detection_type": "anomaly",
+      "title": "Routine svchost process creation",
+      "description": "Normal service host process started",
+      "severity": "info",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-013"
+      ],
+      "related_entity_ids": [
+        "host:WIN10",
+        "process:WIN10:1800"
+      ],
+      "evidence": {
+        "parent_process": "services.exe"
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "normal"
+      ]
+    },
+    {
+      "detection_id": "det-014",
+      "timestamp": "2026-09-08T10:07:00Z",
+      "analyzer": "dns_analyzer",
+      "detection_type": "anomaly",
+      "title": "Normal DNS resolution",
+      "description": "Routine DNS lookup for update server",
+      "severity": "info",
+      "confidence": 0.6,
+      "related_event_ids": [
+        "evt-014"
+      ],
+      "related_entity_ids": [
+        "host:WIN10",
+        "ip:10.0.1.50"
+      ],
+      "evidence": {
+        "query": "update.internal"
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "normal"
+      ]
+    }
+  ],
+  "mapping_results": [
+    {
+      "detection_id": "det-001",
+      "timestamp": "2026-09-08T10:00:00+00:00",
+      "analyzer": "exploit_analyzer",
+      "technique_id": "T1190",
+      "technique_name": "Exploit Public-Facing Application",
+      "tactics": [
+        {
+          "tactic_id": "TA0001",
+          "tactic_name": "Initial Access",
+          "stage": "initial_access"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "exploit-public-app"
+      ],
+      "ttp_tags": [
+        "initial_access",
+        "exploitation"
+      ],
+      "confidence": 0.94,
+      "related_entity_ids": [
+        "host:WEB01",
+        "ip:10.0.1.10"
+      ],
+      "evidence": {
+        "signature": "ET WEB_SERVER webshell upload"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-002",
+      "timestamp": "2026-09-08T10:02:00+00:00",
+      "analyzer": "process_analyzer",
+      "technique_id": "T1059.001",
+      "technique_name": "PowerShell",
+      "tactics": [
+        {
+          "tactic_id": "TA0002",
+          "tactic_name": "Execution",
+          "stage": "execution"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "powershell"
+      ],
+      "ttp_tags": [
+        "scripting",
+        "powershell",
+        "execution"
+      ],
+      "confidence": 0.91,
+      "related_entity_ids": [
+        "host:WEB01",
+        "process:WEB01:4123",
+        "user:WEB01:www-data"
+      ],
+      "evidence": {
+        "command_line": "powershell.exe -enc SQBFAFgA..."
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-003",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "analyzer": "host_behavior_analyzer",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "tactics": [
+        {
+          "tactic_id": "TA0003",
+          "tactic_name": "Persistence",
+          "stage": "persistence"
+        },
+        {
+          "tactic_id": "TA0004",
+          "tactic_name": "Privilege Escalation",
+          "stage": "privilege_escalation"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "persistence"
+      ],
+      "ttp_tags": [
+        "persistence",
+        "privilege_escalation"
+      ],
+      "confidence": 0.88,
+      "related_entity_ids": [
+        "host:WEB01",
+        "registry:WEB01:HKLM-Run"
+      ],
+      "evidence": {
+        "key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-004",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "analyzer": "process_injection_analyzer",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "tactics": [
+        {
+          "tactic_id": "TA0004",
+          "tactic_name": "Privilege Escalation",
+          "stage": "privilege_escalation"
+        },
+        {
+          "tactic_id": "TA0005",
+          "tactic_name": "Defense Evasion",
+          "stage": "defense_evasion"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "process-injection",
+        "text-process-injection",
+        "text-credential-dumping"
+      ],
+      "ttp_tags": [
+        "process_injection",
+        "defense_evasion",
+        "privilege_escalation"
+      ],
+      "confidence": 0.93,
+      "related_entity_ids": [
+        "host:PC01",
+        "process:PC01:3301",
+        "process:PC01:3302"
+      ],
+      "evidence": {
+        "technique": "reflective_loader"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-005",
+      "timestamp": "2026-09-08T10:16:00+00:00",
+      "analyzer": "log_analyzer",
+      "technique_id": "T1070",
+      "technique_name": "Indicator Removal",
+      "tactics": [
+        {
+          "tactic_id": "TA0005",
+          "tactic_name": "Defense Evasion",
+          "stage": "defense_evasion"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "indicator-removal"
+      ],
+      "ttp_tags": [
+        "defense_evasion",
+        "log_cleanup"
+      ],
+      "confidence": 0.9,
+      "related_entity_ids": [
+        "host:PC01"
+      ],
+      "evidence": {
+        "event_id": 1102
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-006",
+      "timestamp": "2026-09-08T10:20:00+00:00",
+      "analyzer": "credential_access_analyzer",
+      "technique_id": "T1003",
+      "technique_name": "OS Credential Dumping",
+      "tactics": [
+        {
+          "tactic_id": "TA0006",
+          "tactic_name": "Credential Access",
+          "stage": "credential_access"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "credential-dumping",
+        "text-credential-dumping"
+      ],
+      "ttp_tags": [
+        "credential_access",
+        "credential_dumping"
+      ],
+      "confidence": 0.95,
+      "related_entity_ids": [
+        "host:PC01",
+        "file:PC01:C:\\Windows\\System32\\config\\SAM"
+      ],
+      "evidence": {
+        "accessed_file": "C:\\Windows\\System32\\config\\SAM"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-007",
+      "timestamp": "2026-09-08T10:25:00+00:00",
+      "analyzer": "scan_analyzer",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "tactics": [
+        {
+          "tactic_id": "TA0007",
+          "tactic_name": "Discovery",
+          "stage": "discovery"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "network-discovery"
+      ],
+      "ttp_tags": [
+        "discovery",
+        "scanning"
+      ],
+      "confidence": 0.86,
+      "related_entity_ids": [
+        "host:PC01",
+        "ip:10.0.1.30"
+      ],
+      "evidence": {
+        "ports": [
+          22,
+          445,
+          3389
+        ]
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-008",
+      "timestamp": "2026-09-08T10:30:00+00:00",
+      "analyzer": "lateral_movement_analyzer",
+      "technique_id": "T1021",
+      "technique_name": "Remote Services",
+      "tactics": [
+        {
+          "tactic_id": "TA0008",
+          "tactic_name": "Lateral Movement",
+          "stage": "lateral_movement"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "lateral-movement",
+        "text-lateral-movement"
+      ],
+      "ttp_tags": [
+        "lateral_movement"
+      ],
+      "confidence": 0.92,
+      "related_entity_ids": [
+        "host:PC01",
+        "host:DB01",
+        "ip:10.0.1.40"
+      ],
+      "evidence": {
+        "protocol": "smb",
+        "user": "dbadmin"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-009",
+      "timestamp": "2026-09-08T10:35:00+00:00",
+      "analyzer": "file_monitor_analyzer",
+      "technique_id": "T1005",
+      "technique_name": "Data from Local System",
+      "tactics": [
+        {
+          "tactic_id": "TA0009",
+          "tactic_name": "Collection",
+          "stage": "collection"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "collection"
+      ],
+      "ttp_tags": [
+        "collection"
+      ],
+      "confidence": 0.84,
+      "related_entity_ids": [
+        "host:DB01",
+        "file:DB01:/var/lib/mysql/customer.ibd"
+      ],
+      "evidence": {
+        "path": "/var/lib/mysql/customer.ibd"
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-010",
+      "timestamp": "2026-09-08T10:42:00+00:00",
+      "analyzer": "dns_tunnel_analyzer",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "explicit-dns-c2",
+        "tag-dns-tunnel",
+        "protocol-tunneling"
+      ],
+      "ttp_tags": [
+        "dns_tunnel",
+        "c2_communication",
+        "command_and_control"
+      ],
+      "confidence": 0.91,
+      "related_entity_ids": [
+        "host:PC01",
+        "domain:evil.example.com",
+        "ip:8.8.8.8"
+      ],
+      "evidence": {
+        "query_count": 328,
+        "avg_domain_length": 57.2
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-011",
+      "timestamp": "2026-09-08T10:50:00+00:00",
+      "analyzer": "exfil_analyzer",
+      "technique_id": "T1041",
+      "technique_name": "Exfiltration Over C2 Channel",
+      "tactics": [
+        {
+          "tactic_id": "TA0010",
+          "tactic_name": "Exfiltration",
+          "stage": "exfiltration"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "exfiltration-c2"
+      ],
+      "ttp_tags": [
+        "exfiltration"
+      ],
+      "confidence": 0.9,
+      "related_entity_ids": [
+        "host:DB01",
+        "ip:198.51.100.20"
+      ],
+      "evidence": {
+        "bytes": 18743296
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-012",
+      "timestamp": "2026-09-08T11:00:00+00:00",
+      "analyzer": "ransomware_analyzer",
+      "technique_id": "T1486",
+      "technique_name": "Data Encrypted for Impact",
+      "tactics": [
+        {
+          "tactic_id": "TA0040",
+          "tactic_name": "Impact",
+          "stage": "impact"
+        }
+      ],
+      "mapping_source": "rule",
+      "matched_rule_ids": [
+        "impact-ransomware"
+      ],
+      "ttp_tags": [
+        "impact",
+        "ransomware"
+      ],
+      "confidence": 0.97,
+      "related_entity_ids": [
+        "host:FS01",
+        "file:FS01:E:\\Shares\\customer.docx"
+      ],
+      "evidence": {
+        "encrypted_files": 1200
+      },
+      "notes": []
+    },
+    {
+      "detection_id": "det-013",
+      "timestamp": "2026-09-08T10:03:00+00:00",
+      "analyzer": "process_analyzer",
+      "technique_id": "unknown",
+      "technique_name": "Unknown",
+      "tactics": [],
+      "mapping_source": "none",
+      "matched_rule_ids": [],
+      "ttp_tags": [],
+      "confidence": 0.7,
+      "related_entity_ids": [
+        "host:WIN10",
+        "process:WIN10:1800"
+      ],
+      "evidence": {
+        "parent_process": "services.exe"
+      },
+      "notes": [
+        "no_matching_rule"
+      ]
+    },
+    {
+      "detection_id": "det-014",
+      "timestamp": "2026-09-08T10:07:00+00:00",
+      "analyzer": "dns_analyzer",
+      "technique_id": "unknown",
+      "technique_name": "Unknown",
+      "tactics": [],
+      "mapping_source": "none",
+      "matched_rule_ids": [],
+      "ttp_tags": [],
+      "confidence": 0.6,
+      "related_entity_ids": [
+        "host:WIN10",
+        "ip:10.0.1.50"
+      ],
+      "evidence": {
+        "query": "update.internal"
+      },
+      "notes": [
+        "no_matching_rule"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "stage": "initial_access",
+      "tactic_id": "TA0001",
+      "tactic_name": "Initial Access",
+      "detection_id": "det-001",
+      "technique_id": "T1190",
+      "technique_name": "Exploit Public-Facing Application",
+      "timestamp": "2026-09-08T10:00:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.94
+    },
+    {
+      "stage": "execution",
+      "tactic_id": "TA0002",
+      "tactic_name": "Execution",
+      "detection_id": "det-002",
+      "technique_id": "T1059.001",
+      "technique_name": "PowerShell",
+      "timestamp": "2026-09-08T10:02:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.91
+    },
+    {
+      "stage": "persistence",
+      "tactic_id": "TA0003",
+      "tactic_name": "Persistence",
+      "detection_id": "det-003",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.88
+    },
+    {
+      "stage": "privilege_escalation",
+      "tactic_id": "TA0004",
+      "tactic_name": "Privilege Escalation",
+      "detection_id": "det-003",
+      "technique_id": "T1547",
+      "technique_name": "Boot or Logon Autostart Execution",
+      "timestamp": "2026-09-08T10:08:00+00:00",
+      "host": "WEB01",
+      "confidence": 0.88
+    },
+    {
+      "stage": "privilege_escalation",
+      "tactic_id": "TA0004",
+      "tactic_name": "Privilege Escalation",
+      "detection_id": "det-004",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "host": "PC01",
+      "confidence": 0.93
+    },
+    {
+      "stage": "defense_evasion",
+      "tactic_id": "TA0005",
+      "tactic_name": "Defense Evasion",
+      "detection_id": "det-004",
+      "technique_id": "T1055",
+      "technique_name": "Process Injection",
+      "timestamp": "2026-09-08T10:12:00+00:00",
+      "host": "PC01",
+      "confidence": 0.93
+    },
+    {
+      "stage": "defense_evasion",
+      "tactic_id": "TA0005",
+      "tactic_name": "Defense Evasion",
+      "detection_id": "det-005",
+      "technique_id": "T1070",
+      "technique_name": "Indicator Removal",
+      "timestamp": "2026-09-08T10:16:00+00:00",
+      "host": "PC01",
+      "confidence": 0.9
+    },
+    {
+      "stage": "credential_access",
+      "tactic_id": "TA0006",
+      "tactic_name": "Credential Access",
+      "detection_id": "det-006",
+      "technique_id": "T1003",
+      "technique_name": "OS Credential Dumping",
+      "timestamp": "2026-09-08T10:20:00+00:00",
+      "host": "PC01",
+      "confidence": 0.95
+    },
+    {
+      "stage": "discovery",
+      "tactic_id": "TA0007",
+      "tactic_name": "Discovery",
+      "detection_id": "det-007",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "timestamp": "2026-09-08T10:25:00+00:00",
+      "host": "PC01",
+      "confidence": 0.86
+    },
+    {
+      "stage": "lateral_movement",
+      "tactic_id": "TA0008",
+      "tactic_name": "Lateral Movement",
+      "detection_id": "det-008",
+      "technique_id": "T1021",
+      "technique_name": "Remote Services",
+      "timestamp": "2026-09-08T10:30:00+00:00",
+      "host": "PC01",
+      "confidence": 0.92
+    },
+    {
+      "stage": "collection",
+      "tactic_id": "TA0009",
+      "tactic_name": "Collection",
+      "detection_id": "det-009",
+      "technique_id": "T1005",
+      "technique_name": "Data from Local System",
+      "timestamp": "2026-09-08T10:35:00+00:00",
+      "host": "DB01",
+      "confidence": 0.84
+    },
+    {
+      "stage": "command_and_control",
+      "tactic_id": "TA0011",
+      "tactic_name": "Command and Control",
+      "detection_id": "det-010",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "timestamp": "2026-09-08T10:42:00+00:00",
+      "host": "PC01",
+      "confidence": 0.91
+    },
+    {
+      "stage": "exfiltration",
+      "tactic_id": "TA0010",
+      "tactic_name": "Exfiltration",
+      "detection_id": "det-011",
+      "technique_id": "T1041",
+      "technique_name": "Exfiltration Over C2 Channel",
+      "timestamp": "2026-09-08T10:50:00+00:00",
+      "host": "DB01",
+      "confidence": 0.9
+    },
+    {
+      "stage": "impact",
+      "tactic_id": "TA0040",
+      "tactic_name": "Impact",
+      "detection_id": "det-012",
+      "technique_id": "T1486",
+      "technique_name": "Data Encrypted for Impact",
+      "timestamp": "2026-09-08T11:00:00+00:00",
+      "host": "FS01",
+      "confidence": 0.97
+    }
+  ],
+  "ttp_profile": {
+    "technique_ids": [
+      "T1190",
+      "T1059.001",
+      "T1547",
+      "T1055",
+      "T1070",
+      "T1003",
+      "T1046",
+      "T1021",
+      "T1005",
+      "T1071.004",
+      "T1041",
+      "T1486"
+    ],
+    "tactic_ids": [
+      "TA0001",
+      "TA0002",
+      "TA0003",
+      "TA0004",
+      "TA0005",
+      "TA0006",
+      "TA0007",
+      "TA0008",
+      "TA0009",
+      "TA0010",
+      "TA0011",
+      "TA0040"
+    ],
+    "tags": [
+      "privilege_escalation",
+      "defense_evasion",
+      "initial_access",
+      "exploitation",
+      "scripting",
+      "powershell",
+      "execution",
+      "persistence",
+      "process_injection",
+      "log_cleanup",
+      "credential_access",
+      "credential_dumping",
+      "discovery",
+      "scanning",
+      "lateral_movement",
+      "collection",
+      "dns_tunnel",
+      "c2_communication",
+      "command_and_control",
+      "exfiltration",
+      "impact",
+      "ransomware"
+    ],
+    "confidence": 0.8721,
+    "stage_count": 12
+  }
+}
