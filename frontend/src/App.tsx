@@ -300,6 +300,27 @@ function App() {
     });
   };
 
+  const exportReport = () => {
+    const report = {
+      report_title: '攻击溯源分析报告',
+      generated_at: new Date().toISOString(),
+      data_mode: dataMode === 'live' ? '接口数据' : '演示数据',
+      events,
+      attack_graph: attackGraph,
+      attack_chain: attackChain,
+      tasks,
+    };
+    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+    link.href = url;
+    link.download = `attack-trace-report-${timestamp}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   const stats = useMemo(
     () => [
       { label: '事件总量', value: '3,284', detail: '较昨日 +12.4%' },
@@ -467,7 +488,7 @@ function App() {
               <span className="chip active">威胁狩猎</span>
               <span className="chip">安全分析员</span>
             </div>
-            <button className="primary-btn">导出报告</button>
+            <button type="button" className="primary-btn" onClick={exportReport}>导出报告</button>
           </div>
         </header>
 
