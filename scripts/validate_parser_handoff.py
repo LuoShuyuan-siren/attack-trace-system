@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -20,8 +21,10 @@ from app.analyzers.host_behavior import HostBehaviorAnalyzer  # noqa: E402
 from app.analyzers.host_behavior.adapters import (  # noqa: E402
     command_line,
     object_path,
+    host_name,
     parent_pid,
     parent_process_name,
+    process_name,
     process_pid,
     raw_value,
 )
@@ -41,6 +44,13 @@ HOST_BEHAVIOR_EVENT_TYPES = {
     "syscall",
     "system_call",
 }
+EVENT_ID_PATTERN = re.compile(
+    r"^evt-[0-9a-fA-F]{8}-"
+    r"[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{4}-"
+    r"[0-9a-fA-F]{12}$"
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,13 +58,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("inputs", nargs="+", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--detections-output", type=Path)
+    parser.add_argument(
+        "--simulated-input",
+        action="append",
+        default=[],
+        type=Path,
+    )
     return parser.parse_args()
 
 
 def inspect_events(events: list[NormalizedEvent]) -> list[dict]:
     issues: dict[str, list[str]] = defaultdict(list)
+    known_processes: dict[tuple[str, int], str] = {}
 
-    for item in events:
+    for item in sorted(events, key=lambda value: value.timestamp):
+        if not EVENT_ID_PATTERN.fullmatch(item.event_id):
+            issues["event_id_not_evt_uuid"].append(item.event_id)
+
         if item.host.os is None:
             issues["host_os_missing"].append(item.event_id)
 
@@ -66,7 +86,14 @@ def inspect_events(events: list[NormalizedEvent]) -> list[dict]:
                 issues["process_pid_missing"].append(item.event_id)
             if parent_pid(item) is None:
                 issues["parent_pid_missing"].append(item.event_id)
-            if parent_process_name(item) is None:
+            item_host = host_name(item)
+            item_parent_pid = parent_pid(item)
+            parent_known = bool(
+                item_host
+                and item_parent_pid is not None
+                and (item_host, item_parent_pid) in known_processes
+            )
+            if parent_process_name(item) is None and not parent_known:
                 issues["parent_process_name_missing"].append(item.event_id)
             if not command_line(item):
                 issues["command_line_missing"].append(item.event_id)
@@ -86,16 +113,20 @@ def inspect_events(events: list[NormalizedEvent]) -> list[dict]:
             syscall = raw_value(item, "syscall_name", "syscall", "Syscall")
             if syscall is None:
                 issues["syscall_name_missing"].append(item.event_id)
-            elif str(syscall).strip().isdigit() and raw_value(
-                item, "arch", "architecture"
-            ) is None:
-                issues[
-                    "numeric_syscall_without_symbolic_name_or_arch"
-                ].append(item.event_id)
+            elif str(syscall).strip().isdigit():
+                issues["numeric_syscall_without_symbolic_name"].append(
+                    item.event_id
+                )
             if raw_value(item, "arguments", "args") is None:
                 issues["syscall_arguments_missing"].append(item.event_id)
             if raw_value(item, "result", "return_value", "exit") is None:
                 issues["syscall_result_missing"].append(item.event_id)
+
+        item_host = host_name(item)
+        item_pid = process_pid(item)
+        item_process_name = process_name(item)
+        if item_host and item_pid is not None and item_process_name:
+            known_processes[(item_host, item_pid)] = item_process_name
 
     return [
         {
@@ -118,7 +149,7 @@ def stable_detection_ids(results) -> None:
         result.detection_id = f"det-{uuid5(NAMESPACE_URL, seed)}"
 
 
-def inspect_file(path: Path) -> dict:
+def inspect_file(path: Path, simulated_paths: set[Path]) -> dict:
     try:
         events = TypeAdapter(list[NormalizedEvent]).validate_json(
             path.read_text(encoding="utf-8-sig")
@@ -130,6 +161,11 @@ def inspect_file(path: Path) -> dict:
             "error": str(exc),
         }
 
+    data_origin = (
+        "simulated"
+        if path.resolve() in simulated_paths
+        else "parser_output"
+    )
     results = HostBehaviorAnalyzer().analyze(events)
     stable_detection_ids(results)
     event_types = Counter(item.event_type for item in events)
@@ -163,9 +199,22 @@ def inspect_file(path: Path) -> dict:
                 "sample_event_ids": [],
             }
         )
+    if not results:
+        file_issues.append(
+            {
+                "code": (
+                    "simulated_sample_has_no_detectable_attack_behavior"
+                    if data_origin == "simulated"
+                    else "no_detection_triggered"
+                ),
+                "count": 1,
+                "sample_event_ids": [],
+            }
+        )
 
     return {
         "file_name": path.name,
+        "data_origin": data_origin,
         "schema_valid": True,
         "event_count": len(events),
         "expected_event_count_range": expected_range,
@@ -184,7 +233,12 @@ def inspect_file(path: Path) -> dict:
 
 def main() -> None:
     args = parse_args()
-    inputs = [inspect_file(path) for path in args.inputs]
+    simulated_paths = {
+        path.resolve() for path in args.simulated_input
+    }
+    inputs = [
+        inspect_file(path, simulated_paths) for path in args.inputs
+    ]
     report = {
         "schema_version": 1,
         "inputs": inputs,
@@ -208,6 +262,14 @@ def main() -> None:
             (
                 "Windows parser: include Sysmon-style process_create, file "
                 "and memory-behavior events for host behavior integration."
+            ),
+            (
+                "Verify that a simulated handoff file actually contains the "
+                "claimed attack cases before treating it as test coverage."
+            ),
+            (
+                "All event IDs should follow evt-UUID so event references "
+                "remain stable across analyzers and attack tracing."
             ),
             (
                 "Linux parser: attach pid/process subject context to every "

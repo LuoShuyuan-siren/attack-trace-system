@@ -88,6 +88,61 @@ class HostBehaviorAnalyzerTests(unittest.TestCase):
         self.assertEqual(parent_child.evidence["pid"], 3152)
         self.assertEqual(parent_child.evidence["ppid"], 2200)
 
+    def test_process_create_supports_parent_subject_child_object_shape(self) -> None:
+        event = NormalizedEvent(
+            event_id="evt-object-child",
+            timestamp=BASE_TIME,
+            source_type="host_log",
+            source="windows_security",
+            host=HostInfo(hostname="OFFICE01", os="windows"),
+            event_type="process_create",
+            subject=SubjectInfo(
+                type="process",
+                name="WINWORD.EXE",
+                pid=2200,
+                user="-",
+            ),
+            object=ObjectInfo(
+                type="process",
+                name="powershell.exe",
+                path=(
+                    r"C:\Windows\System32\WindowsPowerShell\v1.0"
+                    r"\powershell.exe"
+                ),
+                pid=3152,
+            ),
+            action="create_process",
+            raw_data={
+                "command_line": "powershell.exe -EncodedCommand SQBFAFgA",
+            },
+        )
+
+        results = HostBehaviorAnalyzer().analyze([event])
+        parent_child = next(
+            result
+            for result in results
+            if result.evidence["rule_id"] == "HB-PROC-001"
+        )
+
+        self.assertEqual(
+            parent_child.related_entity_ids,
+            [
+                "process:OFFICE01:2200",
+                "process:OFFICE01:3152",
+            ],
+        )
+        self.assertEqual(parent_child.evidence["process_name"], "powershell.exe")
+        self.assertEqual(parent_child.evidence["parent_process"], "winword.exe")
+        command_line_match = next(
+            result
+            for result in results
+            if result.evidence["rule_id"] == "HB-PROC-003"
+        )
+        self.assertEqual(
+            command_line_match.related_entity_ids,
+            ["host:OFFICE01", "process:OFFICE01:3152"],
+        )
+
     def test_common_parent_child_process_is_not_flagged(self) -> None:
         event = make_event(
             event_id="evt-process-safe",

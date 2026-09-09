@@ -64,12 +64,21 @@ def host_name(event: NormalizedEvent) -> str | None:
 
 def user_name(event: NormalizedEvent) -> str | None:
     if event.subject and event.subject.user:
-        return event.subject.user
+        value = event.subject.user.strip()
+        if value.casefold() not in {"-", "n/a", "none", "unknown"}:
+            return value
     value = raw_value(event, "username", "user", "User")
-    return str(value) if value is not None else None
+    if value is None:
+        return None
+    normalized = str(value).strip()
+    if normalized.casefold() in {"-", "n/a", "none", "unknown"}:
+        return None
+    return normalized
 
 
 def process_name(event: NormalizedEvent) -> str | None:
+    if _object_is_created_process(event):
+        return event.object.name or event.object.path
     if event.subject and event.subject.name:
         return event.subject.name
     value = raw_value(event, "process_name", "image", "Image", "exe")
@@ -79,6 +88,8 @@ def process_name(event: NormalizedEvent) -> str | None:
 def process_image(event: NormalizedEvent) -> str | None:
     """Return the most specific executable path available for the process."""
 
+    if _object_is_created_process(event):
+        return event.object.path or event.object.name
     value = raw_value(event, "image", "Image", "process_path", "exe")
     if value is not None:
         return str(value)
@@ -86,12 +97,17 @@ def process_image(event: NormalizedEvent) -> str | None:
 
 
 def process_pid(event: NormalizedEvent) -> int | None:
+    if _object_is_created_process(event):
+        return event.object.pid
     if event.subject and event.subject.pid is not None:
         return event.subject.pid
     return coerce_int(raw_value(event, "process_id", "ProcessId", "pid"))
 
 
 def parent_process_name(event: NormalizedEvent) -> str | None:
+    if _object_is_created_process(event) and event.subject:
+        if event.subject.name:
+            return event.subject.name
     value = raw_value(
         event,
         "parent_process_name",
@@ -103,6 +119,9 @@ def parent_process_name(event: NormalizedEvent) -> str | None:
 
 
 def parent_pid(event: NormalizedEvent) -> int | None:
+    if _object_is_created_process(event) and event.subject:
+        if event.subject.pid is not None:
+            return event.subject.pid
     return coerce_int(
         raw_value(
             event,
@@ -192,6 +211,17 @@ def compact_entities(values: Iterable[str | None]) -> list[str]:
     """Remove empty and duplicate entity IDs while preserving order."""
 
     return list(dict.fromkeys(value for value in values if value))
+
+
+def _object_is_created_process(event: NormalizedEvent) -> bool:
+    """Whether process_create models parent as subject and child as object."""
+
+    return bool(
+        event.event_type in {"process_create", "process_exec"}
+        and event.object
+        and event.object.type == "process"
+        and event.object.pid is not None
+    )
 
 
 def process_execution_entities(

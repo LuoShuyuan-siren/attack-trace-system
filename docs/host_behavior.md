@@ -14,9 +14,10 @@ raw_data through a compatibility adapter.
 Process creation events should provide:
 
 - event_type: process_create
-- subject.name and subject.pid: the newly created process
-- raw_data.parent_pid
-- raw_data.parent_process_name
+- Either subject as the new process with parent details in raw_data
+- Or subject as the parent process and object as the new process
+- The new process name and PID
+- The parent process name and PID when available
 - raw_data.command_line
 
 File events should use file_create, file_modify, file_delete or file_read and
@@ -90,6 +91,11 @@ and reports missing process, file or syscall context without parsing original
 EVTX, XML or audit logs inside the Analyzer.
 
     python scripts/validate_parser_handoff.py --output examples/parser_handoff_report.json parser-output-1.json parser-output-2.json
+
+When an input is known to be simulated, add simulated-input so the generated
+report preserves provenance and does not present it as real testbed evidence:
+
+    python scripts/validate_parser_handoff.py --simulated-input simulated.json --output examples/parser_handoff_report.json simulated.json
 
 ## Run tests
 
