@@ -216,3 +216,33 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+
+# 9号成员原始测试证据不直接提交到 Git。
+# 说明、测试总结和数据清单位于 docs/testbed/。
+
+# 网络抓包原始文件
+**/*.pcap
+**/*.pcapng
+
+# Windows 原始事件日志和防火墙日志
+**/*.evtx
+**/pfirewall.log
+
+# Kali 原始扫描输出
+**/nmap-result.txt
+
+# 原始证据压缩包
+**/TC002-port-scan.zip
+**/*-raw.zip
+
+# 本地虚拟机和环境文件
+**/*.vmem
+**/*.vmsn
+**/*.nvram
+**/*.vmdk
+.venv/
+venv/
+node_modules/
+.env
