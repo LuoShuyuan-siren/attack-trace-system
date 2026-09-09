@@ -152,6 +152,22 @@ class AttackGraphBuilder:
                 relation=self._event_relation(event),
                 event=event,
             )
+        elif subject_id and host_node_id:
+            # Some normalized host sources describe the created/executed process
+            # as the subject and preserve its parent only in raw_data.  Keep that
+            # valid public-Schema representation connected to the host graph.
+            relation = self._event_relation(event)
+            if event.subject and event.subject.type == "process" and relation in {
+                "spawn",
+                "execute",
+            }:
+                self._add_edge(
+                    edges,
+                    source=host_node_id,
+                    target=subject_id,
+                    relation=relation,
+                    event=event,
+                )
 
         if event.network and event.network.dst_ip:
             source = self._network_source(event, nodes, host_node_id)
@@ -298,7 +314,9 @@ class AttackGraphBuilder:
         aliases = {
             "create_process": "spawn",
             "execute_process": "execute",
+            "execve": "execute",
             "create_file": "write",
+            "write_file": "write",
             "modify_file": "modify",
             "delete_file": "modify",
             "read_file": "read",

@@ -79,3 +79,60 @@ def test_invalid_entity_ids_do_not_create_dangling_edges() -> None:
 
     assert [node.node_id for node in graph.nodes] == ["host:WEB01"]
     assert graph.edges == []
+
+
+def test_subject_only_process_actions_are_connected_to_host() -> None:
+    events = [
+        NormalizedEvent(
+            event_id="evt-spawn",
+            timestamp="2026-09-08T10:20:00Z",
+            source_type="host_behavior",
+            source="windows_sysmon",
+            host=HostInfo(hostname="OFFICE01", os="windows"),
+            event_type="process_create",
+            subject=SubjectInfo(
+                type="process", name="powershell.exe", pid=3152, user="alice"
+            ),
+            action="create_process",
+        ),
+        NormalizedEvent(
+            event_id="evt-execve",
+            timestamp="2026-09-08T10:20:01Z",
+            source_type="host_behavior",
+            source="linux_auditd",
+            host=HostInfo(hostname="TEST-LINUX", os="linux"),
+            event_type="system_call",
+            subject=SubjectInfo(
+                type="process", name="/tmp/loader", pid=1750, user="www-data"
+            ),
+            action="execve",
+        ),
+    ]
+
+    graph = AttackGraphBuilder().build(events)
+
+    assert {
+        (edge.source, edge.target, edge.relation) for edge in graph.edges
+    } == {
+        ("host:OFFICE01", "process:OFFICE01:3152", "spawn"),
+        ("host:TEST-LINUX", "process:TEST-LINUX:1750", "execute"),
+    }
+
+
+def test_write_file_action_is_normalized_to_write_relation() -> None:
+    event = NormalizedEvent(
+        event_id="evt-write",
+        timestamp="2026-09-08T10:20:00Z",
+        source_type="host_behavior",
+        source="file_monitor",
+        host=HostInfo(hostname="OFFICE01", os="windows"),
+        event_type="file_modify",
+        subject=SubjectInfo(type="process", name="powershell.exe", pid=3180),
+        object=ObjectInfo(type="file", path="C:\\Temp\\payload.exe"),
+        action="write_file",
+    )
+
+    graph = AttackGraphBuilder().build([event])
+
+    assert len(graph.edges) == 1
+    assert graph.edges[0].relation == "write"

@@ -1,5 +1,48 @@
 # Attack tracing
 
+## Final integration status (2026-09-09)
+
+The stable service entry point remains:
+
+```python
+from app.analyzers.tracing import AttackTraceService
+
+service = AttackTraceService()
+result = service.analyze(
+    events=normalized_events,
+    detections=detection_results,
+    graph_id=graph_id,
+)
+graph = result["graph"]
+stages = result["stages"]
+paths = result["paths"]
+```
+
+`TraceAgentOrchestrator` remains the optional agent entry point. The integration
+checker does not enable agents unless `--agents` is supplied, and a real LLM is
+used only when its environment configuration is explicitly enabled. API keys
+are never stored in this repository.
+
+The final integration run using the updated member-5 network fixture produced
+133 events, 52 detections, 121 nodes, 128 edges, 13 stages, and one candidate
+path with score 0.9108. Correlation readiness is medium. Detailed provenance,
+reference-integrity counts, historical fixture comparisons, and test results
+are recorded in `backend/tests/fixtures/real_integration/INTEGRATION_STATUS.md`.
+
+Important data limitations:
+
+- Updated network detections use `process:<hostname>:<processname>`, while the
+  shared entity convention requires `process:<hostname>:<numeric-pid>`.
+- Member-6 `related_event_ids` do not match the current member-2 through
+  member-5 event fixtures.
+- The sole path (`host:PC01 -> host:DB01 -> ip:198.51.100.20`) is formed mainly
+  by the internal entity chain in member-6 detections. It is not fully
+  corroborated by member-2 through member-5 source events.
+
+The public API layer is unchanged. A system integrator can map
+`result["graph"]` to `GET /api/v1/attack/graph` and `result["stages"]` to
+`GET /api/v1/attack/chain`; candidate paths remain an internal tracing result.
+
 成员 7 的攻击关联模块，严格消费公共数据模型，不解析原始日志或流量。
 
 ## 使用方式

@@ -98,6 +98,22 @@ def test_attribution_without_actor_knowledge_stays_ttp_only():
     assert attribution["confidence"] <= 0.6
 
 
+def test_agents_do_not_cite_detection_event_ids_missing_from_input():
+    result = TraceAgentOrchestrator().analyze([], chain())
+    analysis = result["agent_analysis"]
+
+    assert analysis["evidence"]["stages"][0]["event_ids"] == []
+    assert not any(
+        item.startswith("evt-")
+        for item in analysis["chain_review"]["evidence_ids"]
+    )
+    assert not any(
+        item.startswith("evt-")
+        for item in analysis["report"]["key_evidence_ids"]
+    )
+    assert result["trace"]["graph"].edges[0].related_event_ids == ["evt-initial"]
+
+
 def test_hallucinated_report_ip_and_technique_are_rejected():
     evidence, chain_review, attribution = valid_agent_responses()
     bad_report = TraceReport(
