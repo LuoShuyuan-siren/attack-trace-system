@@ -176,3 +176,60 @@ cd D:/attack-trace-system
 ```
 
 输出会写到 `docs/sample_data.json`。脚本无外部依赖（仅依赖后端代码本身 + pydantic）。
+
+---
+
+## 派生文件（顶层数组版，2026-09-09 增补）
+
+为方便 fixture loader 顶层直接吃数组，生成器会**同步**输出两份独立数组文件，
+以及一个 sidecar meta 文件：
+
+| 文件 | 顶层结构 | 用途 |
+|------|----------|------|
+| `docs/sample_data_array.normalized_events.json` | `Array<NormalizedEvent>` | fixture loader 直接解析为事件流 |
+| `docs/sample_data_array.detection_results.json` | `Array<DetectionResult>` | 同上，独立文件避免类型歧义 |
+| `docs/sample_data_array.meta.json` | `Object{summary, ...}` | summary 移到这里，summary 信息不丢 |
+
+- 数量与 `docs/sample_data.json` 的 `summary.total_events` / `summary.total_detections` 一致
+- `detection.related_event_ids` 全部能在 `normalized_events` 中解析
+- 关键告警（DNS 隧道 / HTTP Beacon / HTTP 隐蔽信道 / ICMP 隧道 / 端口扫描）已带 `related_entity_ids`
+- 校验脚本：`scripts/validate_sample_data.py`（可单独跑，集成 schema + 引用闭合 + 关键告警 entity + summary 一致性四项检查）
+
+## 字段增补说明（2026-09-09）
+
+针对 fixture 联调反馈的 5 点做了如下修复（不影响原有数据格式）：
+
+| # | 联调反馈 | 处理 |
+|---|----------|------|
+| 1 | 顶层包装对象，fixture loader 要数组 | 新增 `sample_data_array.*.json`（顶层数组），原 `sample_data.json` 保留 |
+| 2 | `summary.total_events=248` 与 `normalized_events` 28 不对齐 | 改为 `summary.total_events_input=248`（构造全量） + `summary.total_events=73`（实际输出） |
+| 3 | 部分 `related_event_ids` 解析不到 | 改为"按检测器引用闭包采样"——所有被引用的 event 必出，且引用裁到前 5 条代表样本 |
+| 4 | `related_entity_ids` 几乎全空 | 修复 `detection_to_dict` 序列化（之前根本没写这个字段），并按 host/process 命名规则自动注入 |
+| 5 | Network event 多数无 hostname/process | C2/外传/扫描关键场景显式补齐 host/subject；其他 src_ip 走兜底映射（仅关键 IP） |
+
+**新增的 hostname/process 命名示例**（跨源关联可用）：
+
+| 场景 | hostname | process |
+|------|----------|---------|
+| 正常基线 | workstation-01 | chrome.exe / ping.exe / svchost.exe |
+| DNS 隧道 / HTTP Beacon / ICMP 隧道出站 | workstation-42 | powershell.exe / rundll32.exe / svchost.exe |
+| HTTP 外传（curl 大文件 + sqlmap） | workstation-07 | curl.exe |
+| 端口扫描 | workstation-15 | nmap.exe |
+| NXDOMAIN 风暴 | workstation-22 | cmd.exe |
+| 高频 HTTP | workstation-30 | python.exe |
+| 高频 ICMP | workstation-40 | ping.exe |
+| 非常用端口 | workstation-77 | powershell.exe |
+| Zeek/PCAP/Suricata 真实解析 | workstation-99 | zeek |
+| Zeek 真实解析（长连接，192.168.1.2） | workstation-02 | （无） |
+| ICMP 隧道入站（C2 端） | c2-server | icmp_listener |
+
+`related_entity_ids` 命名规则：`host:<hostname>` 与 `process:<hostname>:<processname>`。
+
+**关于 192.168.1.2 / workstation-02**：
+192.168.1.2 仅出现在 Zeek `conn.log` / `ssl.log` 与 Suricata `eve.json` 的 `tls` 事件中，
+发起 1 小时 SSL 长连接到 10.0.0.2:443。Zeek/Suricata 的网络遥测**天然不含 process/user 字段**，
+因此本样例 `subject` 留空——严格遵循"缺失 process context 比伪造 process context 更可接受"原则。
+`hostname='workstation-02'` 基于现有 `workstation-NN` 命名规则（与 workstation-99 = 192.168.1.1 对偶）
+推出，是 fixture 语义推断而非凭空猜。Detection 端 `related_entity_ids` 至少有 `host:workstation-02`，
+保证 Detection → Event → Host Entity 闭环。
+
