@@ -1,0 +1,145 @@
+[
+  {
+    "event_id": "evt-4688-3122287",
+    "timestamp": "2026-09-06 23:37:26.354504+00:00",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "pulin",
+      "ip": null,
+      "os": null
+    },
+    "event_type": "process_create",
+    "subject": {
+      "type": "process",
+      "name": "unknown",
+      "pid": 4,
+      "user": "-"
+    },
+    "object": {
+      "type": "process",
+      "name": "unknown",
+      "path": "",
+      "command_line": ""
+    },
+    "network": null,
+    "action": "create_process",
+    "raw_data": {
+      "xml_snippet": "{'@xmlns': 'http://schemas.microsoft.com/win/2004/08/events/event', 'System': {'Provider': {'@Name': 'Microsoft-Windows-Security-Auditing', '@Guid': '{54849625-5478-4994-a5ba-3e3b0328c30d}'}, 'EventID': {'@Qualifiers': '', '#text': '4688'}, 'Version': '2', 'Level': '0', 'Task': '13312', 'Opcode': '0', 'Keywords': '0x8020000000000000', 'TimeCreated': {'@SystemTime': '2026-09-06 23:37:26.354504+00:00'}, 'EventRecordID': '3122287', 'Correlation': {'@ActivityID': '', '@RelatedActivityID': ''}, 'Execution': {'@ProcessID': '4', '@ThreadID': '264'}, 'Channel': 'Security', 'Computer': 'pulin', 'Security': {'@UserID': ''}}, 'EventData': {'Data': [{'@Name': 'SubjectUserSid', '#text': 'S-1-5-18'}, {'@Name': 'SubjectUserName', '#text': '-'}, {'@Name': 'SubjectDomainName', '#text': '-'}, {'@Name': 'SubjectLogonId', '#text': '0x00000000000003e7'}, {'@Name': 'NewProcessId', '#text': '0x0000000000000104'}, {'@Name': 'NewProcessName'}, {'@Name': 'TokenElevationType', '#text': '%%1936'}, {'@Name': 'ProcessId', '#text': '0x0000000000000004'}, {'@Name': 'CommandLine'}, {'@Name': 'TargetUserSid', '#text': 'S-1-0-0'}, {'@Name': 'TargetUserName', '#text': '-'}, {'@Name': 'TargetDomainName', '#text': '-'}, {'@Name': 'TargetLogonId', '#text': '0x0000000000000000'}, {'@Name': 'ParentProcessName'}, {'@Name': 'MandatoryLabel', '#text': 'S-1-16-16384'}]}}"
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": []
+  },
+  {
+    "event_id": "evt-5379-3101098",
+    "timestamp": "2026-08-23 15:08:00.340145+00:00",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "pulin",
+      "ip": null,
+      "os": null
+    },
+    "event_type": "credential_read",
+    "subject": {
+      "type": "user",
+      "name": "林雨泓",
+      "pid": null,
+      "user": "林雨泓"
+    },
+    "object": {
+      "type": "credential",
+      "name": "MicrosoftAccount:user=2602805087@qq.com"
+    },
+    "network": null,
+    "action": "read_credential",
+    "raw_data": {
+      "xml_snippet": "{'@xmlns': 'http://schemas.microsoft.com/win/2004/08/events/event', 'System': {'Provider': {'@Name': 'Microsoft-Windows-Security-Auditing', '@Guid': '{54849625-5478-4994-a5ba-3e3b0328c30d}'}, 'EventID': {'@Qualifiers': '', '#text': '5379'}, 'Version': '0', 'Level': '0', 'Task': '13824', 'Opcode': '0', 'Keywords': '0x8020000000000000', 'TimeCreated': {'@SystemTime': '2026-08-23 15:08:00.340145+00:00'}, 'EventRecordID': '3101098', 'Correlation': {'@ActivityID': '{7a27ff99-323e-0000-0512-287a3e32dd01}', '@RelatedActivityID': ''}, 'Execution': {'@ProcessID': '1676', '@ThreadID': '25328'}, 'Channel': 'Security', 'Computer': 'pulin', 'Security': {'@UserID': ''}}, 'EventData': {'Data': [{'@Name': 'SubjectUserSid', '#text': 'S-1-5-21-2222422504-699399365-637677962-1001'}, {'@Name': 'SubjectUserName', '#text': '林雨泓'}, {'@Name': 'SubjectDomainName', '#text': 'pulin'}, {'@Name': 'SubjectLogonId', '#text': '0x000000000004aa3b'}, {'@Name': 'TargetName', '#text': 'MicrosoftAccount:user=2602805087@qq.com'}, {'@Name': 'Type', '#text': '0'}, {'@Name': 'CountOfCredentialsReturned', '#text': '1'}, {'@Name': 'ReadOperation', '#text': '%%8100'}, {'@Name': 'ReturnCode', '#text': '0'}, {'@Name': 'ProcessCreationTime', '#text': '2026-08-22 14:00:12.273180+00:00'}, {'@Name': 'ClientProcessId', '#text': '16168'}]}}"
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": []
+  },
+  {
+    "event_id": "evt-4624-3103738",
+    "timestamp": "2026-08-24 14:13:31.961174+00:00",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "pulin",
+      "ip": null,
+      "os": null
+    },
+    "event_type": "user_login",
+    "subject": {
+      "type": "user",
+      "name": "林雨泓",
+      "pid": null,
+      "user": "林雨泓"
+    },
+    "object": null,
+    "network": null,
+    "action": "login",
+    "raw_data": {
+      "xml_snippet": "{'@xmlns': 'http://schemas.microsoft.com/win/2004/08/events/event', 'System': {'Provider': {'@Name': 'Microsoft-Windows-Security-Auditing', '@Guid': '{54849625-5478-4994-a5ba-3e3b0328c30d}'}, 'EventID': {'@Qualifiers': '', '#text': '4624'}, 'Version': '3', 'Level': '0', 'Task': '12544', 'Opcode': '0', 'Keywords': '0x8020000000000000', 'TimeCreated': {'@SystemTime': '2026-08-24 14:13:31.961174+00:00'}, 'EventRecordID': '3103738', 'Correlation': {'@ActivityID': '{7a27ff99-323e-0000-0512-287a3e32dd01}', '@RelatedActivityID': ''}, 'Execution': {'@ProcessID': '1676', '@ThreadID': '28320'}, 'Channel': 'Security', 'Computer': 'pulin', 'Security': {'@UserID': ''}}, 'EventData': {'Data': [{'@Name': 'SubjectUserSid', '#text': 'S-1-5-18'}, {'@Name': 'SubjectUserName', '#text': 'PULIN$'}, {'@Name': 'SubjectDomainName', '#text': 'WORKGROUP'}, {'@Name': 'SubjectLogonId', '#text': '0x00000000000003e7'}, {'@Name': 'TargetUserSid', '#text': 'S-1-5-21-2222422504-699399365-637677962-1001'}, {'@Name': 'TargetUserName', '#text': '林雨泓'}, {'@Name': 'TargetDomainName', '#text': 'pulin'}, {'@Name': 'TargetLogonId', '#text': '0x000000000bd1267e'}, {'@Name': 'LogonType', '#text': '2'}, {'@Name': 'LogonProcessName', '#text': 'User32'}, {'@Name': 'AuthenticationPackageName', '#text': 'Negotiate'}, {'@Name': 'WorkstationName', '#text': 'PULIN'}, {'@Name': 'LogonGuid', '#text': '{00000000-0000-0000-0000-000000000000}'}, {'@Name': 'TransmittedServices', '#text': '-'}, {'@Name': 'LmPackageName', '#text': '-'}, {'@Name': 'KeyLength', '#text': '0'}, {'@Name': 'ProcessId', '#text': '0x0000000000000bd8'}, {'@Name': 'ProcessName', '#text': 'C:\\\\Windows\\\\System32\\\\svchost.exe'}, {'@Name': 'IpAddress', '#text': '127.0.0.1'}, {'@Name': 'IpPort', '#text': '0'}, {'@Name': 'ImpersonationLevel', '#text': '%%1833'}, {'@Name': 'RestrictedAdminMode', '#text': '-'}, {'@Name': 'RemoteCredentialGuard', '#text': '-'}, {'@Name': 'TargetOutboundUserName', '#text': '-'}, {'@Name': 'TargetOutboundDomainName', '#text': '-'}, {'@Name': 'VirtualAccount', '#text': '%%1843'}, {'@Name': 'TargetLinkedLogonId', '#text': '0x000000000bd1270a'}, {'@Name': 'ElevatedToken', '#text': '%%1842'}]}}"
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": []
+  },
+  {
+    "event_id": "evt-4672-3101154",
+    "timestamp": "2026-08-23 15:12:36.813189+00:00",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "pulin",
+      "ip": null,
+      "os": null
+    },
+    "event_type": "privilege_assigned",
+    "subject": {
+      "type": "user",
+      "name": "SYSTEM",
+      "pid": null,
+      "user": "SYSTEM"
+    },
+    "object": null,
+    "network": null,
+    "action": "assign_privilege",
+    "raw_data": {
+      "xml_snippet": "{'@xmlns': 'http://schemas.microsoft.com/win/2004/08/events/event', 'System': {'Provider': {'@Name': 'Microsoft-Windows-Security-Auditing', '@Guid': '{54849625-5478-4994-a5ba-3e3b0328c30d}'}, 'EventID': {'@Qualifiers': '', '#text': '4672'}, 'Version': '0', 'Level': '0', 'Task': '12548', 'Opcode': '0', 'Keywords': '0x8020000000000000', 'TimeCreated': {'@SystemTime': '2026-08-23 15:12:36.813189+00:00'}, 'EventRecordID': '3101154', 'Correlation': {'@ActivityID': '{7a27ff99-323e-0000-0512-287a3e32dd01}', '@RelatedActivityID': ''}, 'Execution': {'@ProcessID': '1676', '@ThreadID': '2372'}, 'Channel': 'Security', 'Computer': 'pulin', 'Security': {'@UserID': ''}}, 'EventData': {'Data': [{'@Name': 'SubjectUserSid', '#text': 'S-1-5-18'}, {'@Name': 'SubjectUserName', '#text': 'SYSTEM'}, {'@Name': 'SubjectDomainName', '#text': 'NT AUTHORITY'}, {'@Name': 'SubjectLogonId', '#text': '0x00000000000003e7'}, {'@Name': 'PrivilegeList', '#text': 'SeAssignPrimaryTokenPrivilege\\n\\t\\t\\tSeTcbPrivilege\\n\\t\\t\\tSeSecurityPrivilege\\n\\t\\t\\tSeTakeOwnershipPrivilege\\n\\t\\t\\tSeLoadDriverPrivilege\\n\\t\\t\\tSeBackupPrivilege\\n\\t\\t\\tSeRestorePrivilege\\n\\t\\t\\tSeDebugPrivilege\\n\\t\\t\\tSeAuditPrivilege\\n\\t\\t\\tSeSystemEnvironmentPrivilege\\n\\t\\t\\tSeImpersonatePrivilege\\n\\t\\t\\tSeDelegateSessionUserImpersonatePrivilege'}]}}"
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": []
+  },
+  {
+    "event_id": "evt-4798-3101419",
+    "timestamp": "2026-08-23 15:32:49.675131+00:00",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "pulin",
+      "ip": null,
+      "os": null
+    },
+    "event_type": "group_enumeration",
+    "subject": {
+      "type": "user",
+      "name": "PULIN$",
+      "pid": null,
+      "user": "PULIN$"
+    },
+    "object": null,
+    "network": null,
+    "action": "enumerate_group",
+    "raw_data": {
+      "xml_snippet": "{'@xmlns': 'http://schemas.microsoft.com/win/2004/08/events/event', 'System': {'Provider': {'@Name': 'Microsoft-Windows-Security-Auditing', '@Guid': '{54849625-5478-4994-a5ba-3e3b0328c30d}'}, 'EventID': {'@Qualifiers': '', '#text': '4798'}, 'Version': '0', 'Level': '0', 'Task': '13824', 'Opcode': '0', 'Keywords': '0x8020000000000000', 'TimeCreated': {'@SystemTime': '2026-08-23 15:32:49.675131+00:00'}, 'EventRecordID': '3101419', 'Correlation': {'@ActivityID': '{7a27ff99-323e-0000-0512-287a3e32dd01}', '@RelatedActivityID': ''}, 'Execution': {'@ProcessID': '1676', '@ThreadID': '24172'}, 'Channel': 'Security', 'Computer': 'pulin', 'Security': {'@UserID': ''}}, 'EventData': {'Data': [{'@Name': 'TargetUserName', '#text': 'Administrator'}, {'@Name': 'TargetDomainName', '#text': 'pulin'}, {'@Name': 'TargetSid', '#text': 'S-1-5-21-2222422504-699399365-637677962-500'}, {'@Name': 'SubjectUserSid', '#text': 'S-1-5-18'}, {'@Name': 'SubjectUserName', '#text': 'PULIN$'}, {'@Name': 'SubjectDomainName', '#text': 'WORKGROUP'}, {'@Name': 'SubjectLogonId', '#text': '0x00000000000003e7'}, {'@Name': 'CallerProcessId', '#text': '0x0000000000004cc8'}, {'@Name': 'CallerProcessName', '#text': 'C:\\\\Windows\\\\System32\\\\svchost.exe'}]}}"
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": []
+  }
+]
