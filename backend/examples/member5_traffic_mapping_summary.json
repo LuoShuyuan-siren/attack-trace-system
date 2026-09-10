@@ -1,0 +1,357 @@
+{
+  "total_detections": 25,
+  "mapped_null_techniques": 10,
+  "preserved_existing_techniques": 15,
+  "mappings": [
+    {
+      "detection_id": "det-8f84f1fc-a34f-4d18-8bdd-ebd70863008a",
+      "analyzer": "dns_analyzer",
+      "title": "高频 DNS 查询 (源: 192.168.1.10)",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-cd161ca4-1523-4995-8c29-bd4b2068ac6b",
+      "analyzer": "dns_analyzer",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.100)",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-2146de35-4f24-4cad-aef4-62f14502ddc4",
+      "analyzer": "dns_analyzer",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.200)",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-455d1fbb-d76d-4cd3-b6fa-85038ead7c65",
+      "analyzer": "dns_analyzer",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.1)",
+      "technique_id": "T1071.004",
+      "technique_name": "DNS",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-b7f10500-fb19-44d6-a2f6-018dd5b76086",
+      "analyzer": "http_analyzer",
+      "title": "疑似 HTTP Beacon 行为 (源: 192.168.1.100 -> 目标: 203.0.113.10)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-ea1c5a36-e9f0-4248-876a-87cb569255b6",
+      "analyzer": "http_analyzer",
+      "title": "疑似 HTTP 隐蔽信道通信 (源: 192.168.1.50 -> 目标: 10.0.0.5)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-254d34f6-e4b3-43bf-b296-46f6907a4063",
+      "analyzer": "http_analyzer",
+      "title": "疑似 HTTP Beacon 行为 (源: 192.168.1.30 -> 目标: 10.0.0.20)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-56a4d85f-a517-4654-b7bd-7b38dab14c14",
+      "analyzer": "http_analyzer",
+      "title": "高频 HTTP 请求 (源: 192.168.1.30)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-090bbfea-1609-4b85-be63-1d61214f9749",
+      "analyzer": "http_analyzer",
+      "title": "高频 HTTP 请求 (源: 192.168.1.1)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-c0874d81-3da4-4d98-b76f-56f118608549",
+      "analyzer": "icmp_analyzer",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.10 <-> 8.8.8.8)",
+      "technique_id": "T1571.004",
+      "technique_name": "ICMP",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-becdc4a2-0d65-42fa-bb49-88bae23aa2b5",
+      "analyzer": "icmp_analyzer",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.100 <-> 192.168.1.100)",
+      "technique_id": "T1571.004",
+      "technique_name": "ICMP",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-95d1beb3-b005-415c-92ab-913a2f46d0c3",
+      "analyzer": "icmp_analyzer",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.40 <-> 8.8.8.8)",
+      "technique_id": "T1571.004",
+      "technique_name": "ICMP",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-4c33d6bf-34bf-499c-99e7-eaef2b6e4aff",
+      "analyzer": "connection_analyzer",
+      "title": "长连接检测 (源: 192.168.1.10)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-fcdb0c7c-7d1f-4c49-9da8-8499d703daa8",
+      "analyzer": "connection_analyzer",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.100)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-88d63fda-fbf5-4d96-a528-54e48aaf8f9e",
+      "analyzer": "connection_analyzer",
+      "title": "高频连接行为 (源: 192.168.1.100)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-e5009430-1500-49dd-b861-b0b8f7957b93",
+      "analyzer": "connection_analyzer",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.200)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-947f63f5-5bed-4a5f-b397-5079847a6ce1",
+      "analyzer": "connection_analyzer",
+      "title": "疑似 Beacon 通信 (源: 203.0.113.20)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-f0cf6c74-6238-460c-9d88-0fc1b0f2b823",
+      "analyzer": "connection_analyzer",
+      "title": "疑似端口扫描行为 (源: 192.168.1.66)",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "tactics": [
+        {
+          "tactic_id": "TA0007",
+          "tactic_name": "Discovery",
+          "stage": "discovery"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-513442fa-e6ac-45ff-8738-b02cd3a34331",
+      "analyzer": "connection_analyzer",
+      "title": "非常用端口通信 (源: 192.168.1.66)",
+      "technique_id": "T1046",
+      "technique_name": "Network Service Discovery",
+      "tactics": [
+        {
+          "tactic_id": "TA0007",
+          "tactic_name": "Discovery",
+          "stage": "discovery"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-31c29492-31ca-4c18-a738-2261bde43fc0",
+      "analyzer": "connection_analyzer",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.30)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-1571c54b-6776-4c1e-a7b6-aa9d480e2566",
+      "analyzer": "connection_analyzer",
+      "title": "高频连接行为 (源: 192.168.1.30)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-1136f6e1-1028-4e71-ae6e-1324416f2c9c",
+      "analyzer": "connection_analyzer",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.40)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-605f3c5a-ba5c-4495-a568-b1f91b8b9449",
+      "analyzer": "connection_analyzer",
+      "title": "高频连接行为 (源: 192.168.1.40)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-a701aae6-e058-4d57-a20c-481e8677626c",
+      "analyzer": "connection_analyzer",
+      "title": "长连接检测 (源: 192.168.1.1)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    },
+    {
+      "detection_id": "det-f37e68cf-baf2-47e0-91f4-4433c651cb70",
+      "analyzer": "connection_analyzer",
+      "title": "长连接检测 (源: 192.168.1.2)",
+      "technique_id": "T1071.001",
+      "technique_name": "Web Protocols",
+      "tactics": [
+        {
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
+        }
+      ]
+    }
+  ]
+}
