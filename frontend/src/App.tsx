@@ -1,18 +1,35 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { mockEvents } from './mock/events';
-import { mockAttackGraph } from './mock/attackGraph';
-import { mockAttackChain } from './mock/attackChain';
-import { mockTasks } from './mock/tasks';
 import { getEvents } from './api/events';
+import { getDetections } from './api/detections';
 import { getAttackChain, getAttackGraph } from './api/attack';
-import { getTasks } from './api/tasks';
+import { cancelTask, getTask, getTasks, retryTask } from './api/tasks';
+import { uploadDataFile } from './api/upload';
 import type { EventItem } from './types/event';
 import type { AttackChain, AttackGraph } from './types/attack';
 import type { TaskItem } from './types/task';
+import type { UploadSourceType } from './types/upload';
+import type { DetectionItem } from './types/detection';
 
 const tabs = ['仪表盘', '事件', '告警', 'ATT&CK', '攻击图谱', '攻击链', '任务'] as const;
 
 type TabName = (typeof tabs)[number];
+type AlertRecord = {
+  id: string;
+  title: string;
+  severity: string;
+  status: 'new';
+  host: string;
+  source: string;
+  evidence: string;
+  technique: string;
+  updated: string;
+  description?: string;
+  confidence?: number;
+  tags?: string[];
+  relatedEventIds?: string[];
+  relatedEntityIds?: string[];
+  evidenceDetails?: Record<string, unknown>;
+};
 
 const severityLabels: Record<string, string> = {
   info: '信息',
@@ -70,12 +87,7 @@ const formatStageName = (stage: string) => {
 
 type GraphLayoutMode = 'tree' | 'ring' | 'free';
 
-const DEFAULT_NODE_POSITIONS: Record<string, { left: string; top: string }> = {
-  'host:WEB01': { left: '18%', top: '25%' },
-  'host:PC01': { left: '52%', top: '38%' },
-  'host:CORE-SRV': { left: '76%', top: '62%' },
-  'ip:203.0.113.9': { left: '38%', top: '72%' },
-};
+const DEFAULT_NODE_POSITIONS: Record<string, { left: string; top: string }> = {};
 
 const GRAPH_LAYOUT_STORAGE_KEY = 'attack-trace-graph-layout';
 
@@ -91,52 +103,10 @@ const relationColors: Record<string, string> = {
   c2_communication: '#f87171',
 };
 
-const relationDescriptions: Record<string, string> = {
-  lateral_movement: '通过远程服务从 WEB01 向内网工作站移动',
-  privilege_escalation: '利用异常权限令牌进入核心服务器',
-  c2_communication: '核心服务器与外部 C2 建立周期性通信',
-};
-
-const stageDescriptions: Record<string, string> = {
-  initial_access: '边界入口发现可疑 Web 请求',
-  execution: '执行编码脚本并创建异常进程',
-  lateral_movement: '通过认证与远程服务进入内网主机',
-  privilege_escalation: '出现高权限令牌与异常进程行为',
-  command_and_control: '建立周期性外联与 DNS/HTTPS 信道',
-  exfiltration: '读取敏感文件并准备加密外传',
-};
-
-const stageSources: Record<string, string> = {
-  initial_access: '边界设备日志',
-  execution: 'Windows Sysmon',
-  lateral_movement: '认证日志 / 网络流量',
-  privilege_escalation: '主机行为监控',
-  command_and_control: 'Zeek DNS / HTTP',
-  exfiltration: '文件行为 / 网络流量',
-};
-
 const alertStatusLabels: Record<string, string> = {
   new: '待研判',
-  investigating: '调查中',
-  contained: '已遏制',
 };
-
-const alertRecords = [
-  { id: 'ALT-20260908-001', title: 'WEB01 可疑权限提升链', severity: 'critical', status: 'investigating', host: 'WEB01', source: '主机行为 + 网络流量', evidence: '异常进程注入 / 外联 beaconing', technique: 'T1068', updated: '10:45' },
-  { id: 'ALT-20260908-002', title: 'PowerShell 编码命令执行', severity: 'high', status: 'contained', host: 'WIN-PC01', source: 'Windows Sysmon', evidence: '编码命令行 / 异常父子进程', technique: 'T1059.001', updated: '10:22' },
-  { id: 'ALT-20260908-003', title: 'DNS 隧道外传疑似行为', severity: 'medium', status: 'new', host: 'CORE-SRV', source: 'Zeek DNS', evidence: '高熵子域 / 周期性解析', technique: 'T1071.004', updated: '10:35' },
-] as const;
-
-const attackTechniqueRows = [
-  { id: 'T1190', name: '利用面向公网的应用', tactic: '初始访问', stage: '初始访问', hosts: 'WEB01', confidence: 0.94, evidence: '边界访问日志 / Web 异常请求' },
-  { id: 'T1059.001', name: 'PowerShell', tactic: '执行', stage: '执行', hosts: 'WIN-PC01', confidence: 0.91, evidence: 'Sysmon 进程创建 / 编码命令行' },
-  { id: 'T1021', name: '远程服务', tactic: '横向移动', stage: '横向移动', hosts: 'WEB01 → PC01', confidence: 0.88, evidence: '认证日志 / SMB 连接' },
-  { id: 'T1068', name: '利用提权漏洞', tactic: '权限提升', stage: '权限提升', hosts: 'PC01 → CORE-SRV', confidence: 0.81, evidence: '异常权限令牌 / 进程行为链' },
-  { id: 'T1071.004', name: 'DNS', tactic: '命令与控制', stage: '命令与控制', hosts: 'CORE-SRV → 203.0.113.9', confidence: 0.92, evidence: 'Zeek DNS / 周期性 beaconing' },
-  { id: 'T1041', name: '通过 C2 信道外传', tactic: '外传', stage: '数据窃取', hosts: 'CORE-SRV', confidence: 0.76, evidence: '文件读取 / 加密外联流量' },
-] as const;
-
-const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph = mockAttackGraph): Record<string, { left: string; top: string }> => {
+const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph): Record<string, { left: string; top: string }> => {
   const nodeIds = graph.nodes.map((node) => node.node_id);
 
   if (mode === 'ring') {
@@ -156,12 +126,11 @@ const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph = mockAtta
   }
 
   if (mode === 'tree') {
-    return {
-      'host:WEB01': { left: '22%', top: '34%' },
-      'host:PC01': { left: '50%', top: '50%' },
-      'host:CORE-SRV': { left: '74%', top: '62%' },
-      'ip:203.0.113.9': { left: '46%', top: '78%' },
-    };
+    return nodeIds.reduce<Record<string, { left: string; top: string }>>((result, nodeId, index) => {
+      const progress = nodeIds.length > 1 ? index / (nodeIds.length - 1) : 0.5;
+      result[nodeId] = { left: `${22 + progress * 56}%`, top: `${30 + progress * 38}%` };
+      return result;
+    }, {});
   }
 
   return DEFAULT_NODE_POSITIONS;
@@ -169,65 +138,101 @@ const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph = mockAtta
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabName>('仪表盘');
-  const [events, setEvents] = useState<EventItem[]>(mockEvents);
-  const [attackGraph, setAttackGraph] = useState<AttackGraph>(mockAttackGraph);
-  const [attackChain, setAttackChain] = useState<AttackChain>(mockAttackChain);
-  const [tasks, setTasks] = useState<TaskItem[]>(mockTasks);
-  const [dataMode, setDataMode] = useState<'loading' | 'live' | 'mock'>('loading');
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [attackGraph, setAttackGraph] = useState<AttackGraph>({ nodes: [], edges: [] });
+  const [attackChain, setAttackChain] = useState<AttackChain>({ stages: [] });
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
+  const [detections, setDetections] = useState<DetectionItem[]>([]);
+  const [detectionStatus, setDetectionStatus] = useState<'loading' | 'ready' | 'unavailable'>('loading');
+  const [dataMode, setDataMode] = useState<'loading' | 'live' | 'unavailable'>('loading');
+  const [dataError, setDataError] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadSourceType, setUploadSourceType] = useState<UploadSourceType>('host_log');
+  const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [uploadMessage, setUploadMessage] = useState('');
   const [severityFilter, setSeverityFilter] = useState('all');
   const [hostFilter, setHostFilter] = useState('all');
+  const [sourceTypeFilter, setSourceTypeFilter] = useState('all');
+  const [eventTypeFilter, setEventTypeFilter] = useState('all');
+  const [eventSearch, setEventSearch] = useState('');
   const [alertStatusFilter, setAlertStatusFilter] = useState('all');
-  const [selectedEventId, setSelectedEventId] = useState<string>(mockEvents[0].event_id);
-  const [selectedGraphNodeId, setSelectedGraphNodeId] = useState<string>(mockAttackGraph.nodes[0].node_id);
+  const [alertSeverityFilter, setAlertSeverityFilter] = useState('all');
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
+  const [graphZoom, setGraphZoom] = useState(1);
+  const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null);
+  const [taskActionMessage, setTaskActionMessage] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('');
+  const [selectedGraphNodeId, setSelectedGraphNodeId] = useState('');
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
   const [graphLayoutMode, setGraphLayoutMode] = useState<GraphLayoutMode>('tree');
+  const [graphSearch, setGraphSearch] = useState('');
+  const [graphNodeTypeFilter, setGraphNodeTypeFilter] = useState('all');
+  const [graphSeverityFilter, setGraphSeverityFilter] = useState('all');
+  const [selectedStageIndex, setSelectedStageIndex] = useState<number | null>(null);
   const workflowRef = useRef<HTMLDivElement>(null);
+  const eventFiltersRef = useRef<HTMLDivElement>(null);
   const [nodePositions, setNodePositions] = useState<Record<string, { left: string; top: string }>>(() => {
     const savedPositions = localStorage.getItem(GRAPH_LAYOUT_STORAGE_KEY);
 
     if (!savedPositions) {
-      return getLayoutPositions('tree');
+      return {};
     }
 
     try {
-      return { ...getLayoutPositions('tree'), ...JSON.parse(savedPositions) };
+      return { ...JSON.parse(savedPositions) };
     } catch {
-      return getLayoutPositions('tree');
+      return {};
     }
   });
 
-  useEffect(() => {
-    let active = true;
+  const loadData = (isActive: () => boolean = () => true) => {
+    setIsRefreshing(true);
+    setDataMode('loading');
+    setDataError('');
 
-    Promise.allSettled([getEvents(), getAttackGraph(), getAttackChain(), getTasks()]).then((results) => {
-      if (!active) {
+    const detectionRequest = getDetections()
+      .then((items) => {
+        setDetections(items);
+        setDetectionStatus('ready');
+      })
+      .catch(() => {
+        setDetectionStatus('unavailable');
+      });
+
+    return Promise.allSettled([getEvents(), getAttackGraph(), getAttackChain(), getTasks(), detectionRequest]).then((results) => {
+      if (!isActive()) {
         return;
       }
 
       const [eventsResult, graphResult, chainResult, tasksResult] = results;
-      let liveDataLoaded = false;
-
-      if (eventsResult.status === 'fulfilled' && eventsResult.value.length > 0) {
+      if (eventsResult.status === 'fulfilled') {
         setEvents(eventsResult.value);
-        liveDataLoaded = true;
       }
-      if (graphResult.status === 'fulfilled' && graphResult.value.nodes.length > 0) {
+      if (graphResult.status === 'fulfilled') {
         setAttackGraph(graphResult.value);
-        setSelectedGraphNodeId(graphResult.value.nodes[0].node_id);
-        setNodePositions(getLayoutPositions('tree', graphResult.value));
-        liveDataLoaded = true;
+        if (graphResult.value.nodes.length > 0) {
+          setSelectedGraphNodeId(graphResult.value.nodes[0].node_id);
+          setNodePositions(getLayoutPositions('tree', graphResult.value));
+        }
       }
-      if (chainResult.status === 'fulfilled' && chainResult.value.stages.length > 0) {
+      if (chainResult.status === 'fulfilled') {
         setAttackChain(chainResult.value);
-        liveDataLoaded = true;
       }
-      if (tasksResult.status === 'fulfilled' && tasksResult.value.length > 0) {
+      if (tasksResult.status === 'fulfilled') {
         setTasks(tasksResult.value);
-        liveDataLoaded = true;
       }
 
-      setDataMode(liveDataLoaded ? 'live' : 'mock');
+      const rejectedCount = results.slice(0, 4).filter((result) => result.status === 'rejected').length;
+      setDataMode(rejectedCount === 0 ? 'live' : 'unavailable');
+      setDataError(rejectedCount > 0 ? `${rejectedCount} 项数据加载失败，当前仅展示已获得的数据。` : '');
+      setIsRefreshing(false);
     });
+  };
+
+  useEffect(() => {
+    let active = true;
+    loadData(() => active);
 
     return () => {
       active = false;
@@ -290,7 +295,7 @@ function App() {
   };
 
   const resetGraphLayout = () => {
-    setNodePositions(getLayoutPositions(graphLayoutMode === 'free' ? 'tree' : graphLayoutMode));
+    setNodePositions(getLayoutPositions(graphLayoutMode === 'free' ? 'tree' : graphLayoutMode, attackGraph));
   };
 
   const scrollWorkflow = (direction: 'left' | 'right') => {
@@ -300,11 +305,92 @@ function App() {
     });
   };
 
+  const scrollEventFilters = (direction: 'left' | 'right') => {
+    eventFiltersRef.current?.scrollBy({
+      left: direction === 'left' ? -260 : 260,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadState('error');
+      setUploadMessage('请先选择数据文件');
+      return;
+    }
+
+    const acceptedExtensions = ['.json', '.log', '.evtx', '.pcap', '.pcapng', '.cap'];
+    const fileExtension = selectedFile.name.slice(selectedFile.name.lastIndexOf('.')).toLowerCase();
+    const maxFileSize = 500 * 1024 * 1024;
+
+    if (!acceptedExtensions.includes(fileExtension)) {
+      setUploadState('error');
+      setUploadMessage('暂不支持该文件格式，请选择 JSON、日志、EVTX 或 PCAP 文件');
+      return;
+    }
+
+    if (selectedFile.size > maxFileSize) {
+      setUploadState('error');
+      setUploadMessage('文件大小不能超过 500 MB');
+      return;
+    }
+
+    setUploadState('uploading');
+    setUploadMessage('正在提交数据分析任务...');
+
+    try {
+      const result = await uploadDataFile(selectedFile, uploadSourceType);
+      setUploadState('success');
+      setUploadMessage(result.task_id ? `分析任务已创建：${result.task_id}` : '分析任务已创建');
+      setSelectedFile(null);
+      if (result.task_id) {
+        await waitForTask(result.task_id);
+      }
+      await loadData();
+    } catch (error) {
+      setUploadState('error');
+      setUploadMessage(error instanceof Error ? error.message : '数据提交失败，请稍后重试');
+    }
+  };
+
+  const runTaskAction = async (task: TaskItem, action: 'cancel' | 'retry') => {
+    setTaskActionMessage(`${action === 'cancel' ? '正在取消' : '正在重试'}任务...`);
+
+    try {
+      const updatedTask = action === 'cancel' ? await cancelTask(task.task_id) : await retryTask(task.task_id);
+      setTasks((current) => current.map((item) => item.task_id === updatedTask.task_id ? updatedTask : item));
+      setSelectedTask(updatedTask);
+      setTaskActionMessage(action === 'cancel' ? '任务已取消' : '任务已重新提交');
+    } catch (error) {
+      setTaskActionMessage(error instanceof Error && error.message.includes('404') ? '当前任务操作尚未启用' : '任务操作失败，请稍后重试');
+    }
+  };
+
+  const waitForTask = async (taskId: string) => {
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      await new Promise((resolve) => window.setTimeout(resolve, 1000));
+      const task = await getTask(taskId);
+
+      if (task.status === 'success') {
+        setUploadMessage('分析完成，数据已更新');
+        return;
+      }
+
+      if (task.status === 'failed') {
+        throw new Error('分析任务执行失败');
+      }
+
+      setUploadMessage(`分析进行中：${task.progress}%`);
+    }
+
+    throw new Error('分析任务仍在执行，请稍后刷新查看结果');
+  };
+
   const exportReport = () => {
     const report = {
       report_title: '攻击溯源分析报告',
       generated_at: new Date().toISOString(),
-      data_mode: dataMode === 'live' ? '接口数据' : '演示数据',
+      data_mode: dataMode === 'live' ? '实时数据' : '数据暂不可用',
       events,
       attack_graph: attackGraph,
       attack_chain: attackChain,
@@ -321,15 +407,63 @@ function App() {
     URL.revokeObjectURL(url);
   };
 
-  const stats = useMemo(
-    () => [
-      { label: '事件总量', value: '3,284', detail: '较昨日 +12.4%' },
-      { label: '高危告警', value: '18', detail: '4 台高风险主机' },
-      { label: '攻击链数', value: '7', detail: '新增 2 个检测' },
-      { label: '任务完成率', value: '93%', detail: '3 个运行 / 1 个待处理' },
-    ],
-    [],
+  const stats = useMemo(() => {
+    const completedTasks = tasks.filter((task) => task.status === 'success').length;
+    const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
+
+    return [
+      { label: '事件总量', value: events.length.toLocaleString(), detail: '当前数据范围' },
+      { label: '高危事件', value: events.filter((event) => event.severity === 'high' || event.severity === 'critical').length.toString(), detail: '按风险等级统计' },
+      { label: '攻击链阶段', value: attackChain.stages.length.toString(), detail: '当前关联结果' },
+      { label: '任务完成率', value: `${completionRate}%`, detail: `${tasks.length} 个分析任务` },
+    ];
+  }, [attackChain.stages.length, events, tasks]);
+
+  const hostOptions = useMemo(
+    () => [...new Set(events.map((event) => event.host.hostname).filter((hostname): hostname is string => Boolean(hostname)))]
+      .sort((left, right) => left.localeCompare(right)),
+    [events],
   );
+
+  const sourceTypeOptions = useMemo(
+    () => [...new Set(events.map((event) => event.source_type))].sort(),
+    [events],
+  );
+
+  const eventTypeOptions = useMemo(
+    () => [...new Set(events.map((event) => event.event_type))].sort(),
+    [events],
+  );
+
+  const graphConfidence = attackGraph.edges.reduce(
+    (highest, edge) => Math.max(highest, edge.confidence ?? 0),
+    0,
+  );
+  const affectedHostCount = new Set(
+    attackGraph.nodes.filter((node) => node.node_type === 'host').map((node) => node.node_id),
+  ).size;
+  const latestEvent = [...events].sort((left, right) => right.timestamp.localeCompare(left.timestamp))[0];
+  const sourceSummary = [...new Set(events.map((event) => event.source))].join('、') || '暂无';
+
+  const graphNodeTypes = [...new Set(attackGraph.nodes.map((node) => node.node_type))].sort();
+  const visibleGraphNodeIds = new Set(
+    attackGraph.nodes
+      .filter((node) => graphNodeTypeFilter === 'all' || node.node_type === graphNodeTypeFilter)
+      .filter((node) => graphSeverityFilter === 'all' || node.severity === graphSeverityFilter)
+      .filter((node) => !graphSearch.trim() || `${node.name} ${node.node_id} ${node.tags.join(' ')}`.toLowerCase().includes(graphSearch.trim().toLowerCase()))
+      .map((node) => node.node_id),
+  );
+
+  const exportGraph = () => {
+    const graphExport = JSON.stringify({ graph: attackGraph, exported_at: new Date().toISOString() }, null, 2);
+    const blob = new Blob([graphExport], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `attack-graph-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const traceDimensions = useMemo(
     () => [
@@ -343,17 +477,8 @@ function App() {
   );
 
   const labNodes = useMemo(
-    () => [
-      { name: '攻击节点', role: '外部攻击源' },
-      { name: 'C2 服务器', role: '控制基础设施' },
-      { name: '防火墙', role: '边界防护' },
-      { name: 'Web 服务器', role: '初始入口' },
-      { name: 'Email 服务器', role: '邮件入口' },
-      { name: '内网交换机', role: '内部网络' },
-      { name: '办公区域计算机', role: '用户终端' },
-      { name: '核心服务器', role: '关键资产' },
-    ],
-    [],
+    () => attackGraph.nodes.map((node) => ({ name: node.name, role: node.node_type })),
+    [attackGraph.nodes],
   );
 
   const analysisWorkflow = useMemo(
@@ -366,12 +491,18 @@ function App() {
   );
 
   const experimentResults = useMemo(
-    () => [
-      { label: '链路重建准确率', value: '89.6%' },
-      { label: '威胁定位覆盖率', value: '93.1%' },
-      { label: '响应耗时下降', value: '41.2%' },
-    ],
-    [],
+    () => {
+      const averageProgress = tasks.length > 0
+        ? Math.round(tasks.reduce((total, task) => total + task.progress, 0) / tasks.length)
+        : 0;
+
+      return [
+        { label: '事件数', value: events.length.toString() },
+        { label: '图谱关系数', value: attackGraph.edges.length.toString() },
+        { label: '任务平均进度', value: `${averageProgress}%` },
+      ];
+    },
+    [attackGraph.edges.length, events.length, tasks],
   );
 
   const technologyHighlights = useMemo(
@@ -395,29 +526,150 @@ function App() {
   const filteredEvents = events.filter((event) => {
     const severityMatch = severityFilter === 'all' || event.severity === severityFilter;
     const hostMatch = hostFilter === 'all' || event.host.hostname === hostFilter;
-    return severityMatch && hostMatch;
+    const sourceTypeMatch = sourceTypeFilter === 'all' || event.source_type === sourceTypeFilter;
+    const eventTypeMatch = eventTypeFilter === 'all' || event.event_type === eventTypeFilter;
+    const searchValue = eventSearch.trim().toLowerCase();
+    const searchMatch = !searchValue || [
+      event.event_id,
+      event.host.hostname,
+      event.host.ip,
+      event.source,
+      event.event_type,
+      event.action,
+      ...(event.tags ?? []),
+    ].some((value) => value?.toLowerCase().includes(searchValue));
+
+    return severityMatch && hostMatch && sourceTypeMatch && eventTypeMatch && searchMatch;
   });
 
+  const timelineEvents = [...filteredEvents].sort((left, right) => left.timestamp.localeCompare(right.timestamp));
+
+  const graphAlertRecords = useMemo<AlertRecord[]>(() => attackGraph.edges.map((edge) => {
+    const sourceNode = attackGraph.nodes.find((node) => node.node_id === edge.source);
+    const targetNode = attackGraph.nodes.find((node) => node.node_id === edge.target);
+    const relatedEvent = events.find((event) => edge.related_event_ids?.includes(event.event_id));
+    const host = targetNode?.name ?? sourceNode?.name ?? '未知实体';
+
+    return {
+      id: edge.edge_id,
+      title: relationLabels[edge.relation] ?? edge.relation,
+      severity: relatedEvent?.severity ?? targetNode?.severity ?? 'medium',
+      status: 'new',
+      host,
+      source: relatedEvent?.source ?? '攻击图谱',
+      evidence: relatedEvent?.event_type ?? edge.related_event_ids?.join(', ') ?? '攻击边',
+      technique: edge.attack_technique_id ?? '未映射',
+      updated: edge.timestamp ?? '未提供',
+    };
+  }), [attackGraph, events]);
+
+  const alertRecords = useMemo<AlertRecord[]>(() => {
+    if (detections.length === 0) {
+      return graphAlertRecords;
+    }
+
+    return detections.map((detection) => {
+      const relatedEvent = events.find((event) => detection.related_event_ids?.includes(event.event_id));
+      return {
+        id: detection.detection_id,
+        title: detection.title,
+        severity: detection.severity,
+        status: 'new',
+        host: relatedEvent?.host.hostname ?? detection.related_entity_ids?.[0] ?? '关联实体',
+        source: relatedEvent?.source ?? detection.analyzer,
+        evidence: detection.description ?? detection.tags?.join(', ') ?? '检测结果',
+        technique: detection.attack_technique_id ?? '未映射',
+        updated: detection.timestamp,
+        description: detection.description ?? undefined,
+        confidence: detection.confidence,
+        tags: detection.tags,
+          relatedEventIds: detection.related_event_ids,
+          relatedEntityIds: detection.related_entity_ids,
+          evidenceDetails: detection.evidence,
+      };
+    });
+  }, [detections, events, graphAlertRecords]);
+
+  const attackTechniqueRows = useMemo(() => {
+    const rows = new Map<string, {
+      id: string;
+      name: string;
+      tactic: string;
+      hosts: string;
+      confidence: number | null;
+      evidence: string;
+    }>();
+
+    attackGraph.edges.forEach((edge) => {
+      if (!edge.attack_technique_id) {
+        return;
+      }
+
+      const source = attackGraph.nodes.find((node) => node.node_id === edge.source)?.name ?? edge.source;
+      const target = attackGraph.nodes.find((node) => node.node_id === edge.target)?.name ?? edge.target;
+      rows.set(edge.attack_technique_id, {
+        id: edge.attack_technique_id,
+        name: relationLabels[edge.relation] ?? edge.relation,
+        tactic: relationLabels[edge.relation] ?? edge.relation,
+        hosts: `${source} → ${target}`,
+        confidence: edge.confidence ?? null,
+        evidence: edge.related_event_ids?.join(', ') ?? '攻击图谱',
+      });
+    });
+
+    detections.forEach((detection) => {
+      if (!detection.attack_technique_id) {
+        return;
+      }
+
+      const relatedEvent = events.find((event) => detection.related_event_ids?.includes(event.event_id));
+      rows.set(detection.attack_technique_id, {
+        id: detection.attack_technique_id,
+        name: detection.title,
+        tactic: detection.detection_type,
+        hosts: relatedEvent?.host.hostname ?? detection.related_entity_ids?.join(', ') ?? '关联实体',
+        confidence: detection.confidence,
+        evidence: detection.description ?? detection.tags?.join(', ') ?? detection.analyzer,
+      });
+    });
+
+    attackChain.stages.forEach((stage) => {
+      if (!rows.has(stage.technique_id)) {
+        rows.set(stage.technique_id, {
+          id: stage.technique_id,
+          name: stage.stage,
+          tactic: formatStageName(stage.stage),
+          hosts: stage.host,
+          confidence: null,
+          evidence: '攻击链结果',
+        });
+      }
+    });
+
+    return [...rows.values()];
+  }, [attackChain.stages, attackGraph, detections, events]);
+
   const filteredAlerts = alertRecords.filter(
-    (alert) => alertStatusFilter === 'all' || alert.status === alertStatusFilter,
+    (alert) => (alertStatusFilter === 'all' || alert.status === alertStatusFilter)
+      && (alertSeverityFilter === 'all' || alert.severity === alertSeverityFilter),
   );
 
   const selectedEvent =
-    filteredEvents.find((event) => event.event_id === selectedEventId) ?? filteredEvents[0] ?? events[0] ?? mockEvents[0];
+    filteredEvents.find((event) => event.event_id === selectedEventId) ?? filteredEvents[0];
 
   const selectedGraphNode =
     attackGraph.nodes.find((node) => node.node_id === selectedGraphNodeId) ?? attackGraph.nodes[0];
 
   const relatedGraphEdges = attackGraph.edges.filter(
-    (edge) => edge.source === selectedGraphNode.node_id || edge.target === selectedGraphNode.node_id,
+    (edge) => selectedGraphNode && (edge.source === selectedGraphNode.node_id || edge.target === selectedGraphNode.node_id),
   );
 
   const relatedGraphNodeIds = new Set(
-    relatedGraphEdges.flatMap((edge) => [edge.source, edge.target]).filter((id) => id !== selectedGraphNode.node_id),
+    relatedGraphEdges.flatMap((edge) => [edge.source, edge.target]).filter((id) => id !== selectedGraphNode?.node_id),
   );
 
   const graphRelationContext = relatedGraphEdges.map((edge) => {
-    const neighborId = edge.source === selectedGraphNode.node_id ? edge.target : edge.source;
+    const neighborId = edge.source === selectedGraphNode?.node_id ? edge.target : edge.source;
     const neighbor = attackGraph.nodes.find((node) => node.node_id === neighborId);
 
     return {
@@ -428,7 +680,9 @@ function App() {
     };
   });
 
-  const graphEdgePaths = attackGraph.edges.map((edge) => {
+  const visibleGraphEdges = attackGraph.edges.filter((edge) => visibleGraphNodeIds.has(edge.source) && visibleGraphNodeIds.has(edge.target));
+
+  const graphEdgePaths = visibleGraphEdges.map((edge) => {
     const sourcePosition = nodePositions[edge.source] ?? DEFAULT_NODE_POSITIONS[edge.source] ?? { left: '50%', top: '50%' };
     const targetPosition = nodePositions[edge.target] ?? DEFAULT_NODE_POSITIONS[edge.target] ?? { left: '50%', top: '50%' };
     const x1 = Number.parseFloat(sourcePosition.left);
@@ -438,7 +692,7 @@ function App() {
     const ctrlX = (x1 + x2) / 2;
     const ctrlY = Math.min(y1, y2) - 12;
     const d = `M ${x1} ${y1} Q ${ctrlX} ${ctrlY} ${x2} ${y2}`;
-    const isActive = edge.source === selectedGraphNode.node_id || edge.target === selectedGraphNode.node_id;
+    const isActive = selectedGraphNode !== undefined && (edge.source === selectedGraphNode.node_id || edge.target === selectedGraphNode.node_id);
     const labelX = (x1 + x2) / 2;
     const labelY = (y1 + y2) / 2 - 6;
 
@@ -477,10 +731,10 @@ function App() {
             <div className="eyebrow">安全运营</div>
             <h1>威胁分析监控台</h1>
             <div className="topbar-meta">
-              <span className={`status-pill ${dataMode === 'mock' ? 'demo' : ''}`}>
-                {dataMode === 'loading' ? '正在连接接口' : dataMode === 'live' ? '接口数据' : '演示数据'}
+              <span className={`status-pill ${dataMode === 'unavailable' ? 'demo' : ''}`}>
+                {dataMode === 'loading' ? '正在加载数据' : dataMode === 'live' ? '实时数据' : '数据暂不可用'}
               </span>
-              <span className="status-note">最后同步 2 分钟前</span>
+              <span className="status-note">{dataError || '数据已同步'}</span>
             </div>
           </div>
           <div className="header-actions">
@@ -488,6 +742,9 @@ function App() {
               <span className="chip active">威胁狩猎</span>
               <span className="chip">安全分析员</span>
             </div>
+            <button type="button" className="primary-btn" onClick={() => loadData()} disabled={isRefreshing}>
+              {isRefreshing ? '刷新中...' : '刷新数据'}
+            </button>
             <button type="button" className="primary-btn" onClick={exportReport}>导出报告</button>
           </div>
         </header>
@@ -497,23 +754,23 @@ function App() {
             <section className="overview-banner">
               <div className="overview-copy">
                 <span className="tag">重点事件</span>
-                <h2>检测到 WEB01 发生可疑权限提升攻击链</h2>
+                <h2>{attackChain.stages.length > 0 ? '已形成攻击链关联结果' : '暂未形成攻击链'}</h2>
                 <p>
-                  已关联 3 台终端发生横向移动，且在过去 12 分钟内出现凭据滥用和 beaconing 行为。
+                  当前加载 {events.length} 条事件、{attackGraph.edges.length} 条图谱关系，数据来源：{sourceSummary}。
                 </p>
               </div>
               <div className="overview-metrics">
                 <div className="mini-metric">
-                  <span>风险评分</span>
-                  <strong>92 / 100</strong>
+                  <span>最高关联置信度</span>
+                  <strong>{Math.round(graphConfidence * 100)}%</strong>
                 </div>
                 <div className="mini-metric">
-                  <span>处置进度</span>
-                  <strong>63%</strong>
+                  <span>任务平均进度</span>
+                  <strong>{tasks.length > 0 ? `${Math.round(tasks.reduce((total, task) => total + task.progress, 0) / tasks.length)}%` : '暂无'}</strong>
                 </div>
                 <div className="mini-metric">
-                  <span>受影响主机</span>
-                  <strong>7 台</strong>
+                  <span>图谱主机数</span>
+                  <strong>{affectedHostCount} 台</strong>
                 </div>
               </div>
             </section>
@@ -534,21 +791,18 @@ function App() {
                   <h2>风险分布</h2>
                 </div>
                 <div className="bar-stack">
-                  <div className="bar-row">
-                    <span>严重</span>
-                    <div className="bar-track"><i style={{ width: '42%' }} /></div>
-                    <strong>42%</strong>
-                  </div>
-                  <div className="bar-row">
-                    <span>高危</span>
-                    <div className="bar-track"><i style={{ width: '31%' }} /></div>
-                    <strong>31%</strong>
-                  </div>
-                  <div className="bar-row">
-                    <span>中等</span>
-                    <div className="bar-track"><i style={{ width: '27%' }} /></div>
-                    <strong>27%</strong>
-                  </div>
+                  {(['critical', 'high', 'medium', 'low', 'info'] as const).map((severity) => {
+                    const count = events.filter((event) => event.severity === severity).length;
+                    const percentage = events.length > 0 ? Math.round((count / events.length) * 100) : 0;
+
+                    return (
+                      <div className="bar-row" key={severity}>
+                        <span>{formatSeverity(severity)}</span>
+                        <div className="bar-track"><i style={{ width: `${percentage}%` }} /></div>
+                        <strong>{percentage}%</strong>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -559,15 +813,15 @@ function App() {
                 <ul className="status-list">
                   <li>
                     <span className="bullet good" />
-                    WEB01 已隔离出域认证
+                    {tasks.filter((task) => task.status === 'success').length} 个分析任务已完成
                   </li>
                   <li>
                     <span className="bullet warn" />
-                    CORE-SRV 终端正在审查
+                    {tasks.filter((task) => task.status === 'running').length} 个分析任务运行中
                   </li>
                   <li>
                     <span className="bullet neutral" />
-                    自动化狩猎流程正在运行
+                    {tasks.filter((task) => task.status === 'pending').length} 个分析任务待处理
                   </li>
                 </ul>
               </div>
@@ -577,7 +831,7 @@ function App() {
                   <h2>调查说明</h2>
                 </div>
                 <div className="note-box">
-                  在钓鱼诱导后观察到可疑的 PowerShell 执行行为，随后出现权限滥用并向已知外部地址发送 beaconing 流量。
+                  {latestEvent ? `最近事件：${latestEvent.event_id}，类型为${formatEventType(latestEvent.event_type)}，来源为${latestEvent.source}。` : '暂未获取到事件数据。'}
                 </div>
               </div>
             </section>
@@ -585,18 +839,18 @@ function App() {
             <section className="summary-strip">
               <div className="summary-card accent">
                 <span className="summary-kicker">建议动作</span>
-                <strong>隔离受影响主机</strong>
-                <small>阻断外联 beaconing 并撤销高权限会话。</small>
+                <strong>审查高风险事件</strong>
+                <small>当前高危及严重事件共 {events.filter((event) => event.severity === 'high' || event.severity === 'critical').length} 条。</small>
               </div>
               <div className="summary-card">
                 <span className="summary-kicker">关键证据</span>
-                <strong>PowerShell + PsExec</strong>
-                <small>与 WEB01 和 CORE-SRV 的凭据滥用事件相吻合。</small>
+                <strong>{sourceSummary}</strong>
+                <small>当前数据中的采集器集合。</small>
               </div>
               <div className="summary-card">
                 <span className="summary-kicker">分析说明</span>
-                <strong>攻击范围已受控</strong>
-                <small>攻击链仍集中在已识别的子网段内。</small>
+                <strong>{attackGraph.nodes.length} 个图谱节点</strong>
+                <small>当前分析范围内的攻击关系。</small>
               </div>
             </section>
 
@@ -619,10 +873,10 @@ function App() {
               <div className="panel lab-panel">
                 <div className="panel-header">
                   <h2>靶场拓扑</h2>
-                  <p className="panel-subtitle">8 节点演示环境，覆盖攻击入口、边界设备与内网核心区域。</p>
+                  <p className="panel-subtitle">当前分析范围包含 {labNodes.length} 个关系节点。</p>
                 </div>
                 <div className="lab-node-list">
-                  {labNodes.map((node, index) => (
+                  {labNodes.length > 0 ? labNodes.map((node, index) => (
                     <div key={node.name} className="lab-node-item">
                       <span className="lab-node-index">{index + 1}</span>
                       <span className="lab-node-copy">
@@ -630,7 +884,7 @@ function App() {
                         <small>{node.role}</small>
                       </span>
                     </div>
-                  ))}
+                  )) : <div className="empty-state">暂无关系节点数据。</div>}
                 </div>
               </div>
             </section>
@@ -640,7 +894,7 @@ function App() {
                 <div className="panel-header row-header">
                   <div>
                     <h2>检测流程</h2>
-                    <p className="panel-subtitle">当前为演示链路：数据采集 → 关联分析 → 响应决策</p>
+                    <p className="panel-subtitle">展示从数据采集到关联研判的完整处理流程。</p>
                   </div>
                   <div className="workflow-scroll-controls" aria-label="检测流程横向滚动控制">
                     <button type="button" onClick={() => scrollWorkflow('left')} aria-label="向左查看检测流程">←</button>
@@ -659,8 +913,8 @@ function App() {
 
               <div className="panel result-panel">
                 <div className="panel-header">
-                  <h2>演示评估指标</h2>
-                  <p className="panel-subtitle">当前为前端演示数据，不代表真实实验测量结果。</p>
+                  <h2>分析统计指标</h2>
+                  <p className="panel-subtitle">指标根据当前分析范围动态计算。</p>
                 </div>
                 <div className="result-list">
                   {experimentResults.map((item) => (
@@ -779,8 +1033,8 @@ function App() {
                       <span className="timeline-marker">{index + 1}</span>
                       <div>
                         <strong>{formatStageName(stage.stage)}</strong>
-                        <div className="timeline-host">{stage.host} · {stageDescriptions[stage.stage]}</div>
-                        <small>{stage.technique_id} · {stageSources[stage.stage]}</small>
+                        <div className="timeline-host">{stage.host} · {stage.stage}</div>
+                        <small>{stage.technique_id} · 攻击链关联结果</small>
                       </div>
                     </div>
                   ))}
@@ -803,7 +1057,7 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {events.map((event) => (
+                    {events.length > 0 ? events.map((event) => (
                       <tr key={event.event_id} onClick={() => setSelectedEventId(event.event_id)} className="clickable-row">
                         <td>{event.timestamp}</td>
                         <td>{event.host.hostname}</td>
@@ -812,7 +1066,7 @@ function App() {
                           <span className={`severity-badge ${event.severity}`}>{formatSeverity(event.severity)}</span>
                         </td>
                       </tr>
-                    ))}
+                    )) : <tr><td colSpan={4}>暂无事件数据。</td></tr>}
                   </tbody>
                 </table>
               </div>
@@ -823,18 +1077,18 @@ function App() {
                 </div>
                 <div className="detail-card">
                   <div className="detail-label">事件 ID</div>
-                  <div className="detail-value">{selectedEvent.event_id}</div>
+                  <div className="detail-value">{selectedEvent?.event_id ?? '暂无事件数据'}</div>
 
                   <div className="detail-label">严重级别</div>
                   <div className="detail-value">
-                    <span className={`severity-badge ${selectedEvent.severity}`}>{formatSeverity(selectedEvent.severity)}</span>
+                    <span className={`severity-badge ${selectedEvent?.severity ?? 'info'}`}>{selectedEvent ? formatSeverity(selectedEvent.severity) : '暂无数据'}</span>
                   </div>
 
                   <div className="detail-label">主机</div>
-                  <div className="detail-value">{selectedEvent.host.hostname}</div>
+                  <div className="detail-value">{selectedEvent?.host.hostname ?? '暂无事件数据'}</div>
 
                   <div className="detail-label">来源</div>
-                  <div className="detail-value">{selectedEvent.source}</div>
+                  <div className="detail-value">{selectedEvent?.source ?? '暂无事件数据'}</div>
                 </div>
               </div>
             </section>
@@ -846,19 +1100,73 @@ function App() {
             <div className="panel full-panel events-panel">
               <div className="panel-header row-header">
                 <h2>安全事件</h2>
-                <div className="filters">
+                <div className="filter-controls">
+                  <button
+                    type="button"
+                    className="filter-scroll-button"
+                    onClick={() => scrollEventFilters('left')}
+                    aria-label="向左查看查询条件"
+                    title="向左查看查询条件"
+                  >
+                    ←
+                  </button>
+                  <div className="filters filter-scroll-area" ref={eventFiltersRef}>
+                  <input
+                    type="search"
+                    value={eventSearch}
+                    onChange={(event) => setEventSearch(event.target.value)}
+                    placeholder="搜索事件、主机、IP、标签"
+                    aria-label="搜索事件、主机、IP、标签"
+                  />
                   <select value={severityFilter} onChange={(e) => setSeverityFilter(e.target.value)}>
                     <option value="all">全部级别</option>
                     <option value="critical">严重</option>
                     <option value="high">高危</option>
                     <option value="medium">中等</option>
+                    <option value="low">低危</option>
+                    <option value="info">信息</option>
                   </select>
                   <select value={hostFilter} onChange={(e) => setHostFilter(e.target.value)}>
                     <option value="all">全部主机</option>
-                    <option value="WEB01">WEB01</option>
-                    <option value="WIN-PC01">WIN-PC01</option>
-                    <option value="CORE-SRV">CORE-SRV</option>
+                    {hostOptions.map((hostname) => (
+                      <option value={hostname} key={hostname}>{hostname}</option>
+                    ))}
                   </select>
+                  <select value={sourceTypeFilter} onChange={(event) => setSourceTypeFilter(event.target.value)}>
+                    <option value="all">全部数据源</option>
+                    {sourceTypeOptions.map((sourceType) => (
+                      <option value={sourceType} key={sourceType}>{formatSourceType(sourceType)}</option>
+                    ))}
+                  </select>
+                  <select value={eventTypeFilter} onChange={(event) => setEventTypeFilter(event.target.value)}>
+                    <option value="all">全部事件类型</option>
+                    {eventTypeOptions.map((eventType) => (
+                      <option value={eventType} key={eventType}>{formatEventType(eventType)}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="reset-layout-btn"
+                    onClick={() => {
+                      setEventSearch('');
+                      setSeverityFilter('all');
+                      setHostFilter('all');
+                      setSourceTypeFilter('all');
+                      setEventTypeFilter('all');
+                    }}
+                  >
+                    清空筛选
+                  </button>
+                  </div>
+                  <button
+                    type="button"
+                    className="filter-scroll-button"
+                    onClick={() => scrollEventFilters('right')}
+                    aria-label="向右查看查询条件"
+                    title="向右查看查询条件"
+                  >
+                    →
+                  </button>
                 </div>
               </div>
 
@@ -875,11 +1183,11 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredEvents.map((event) => (
+                  {filteredEvents.length > 0 ? filteredEvents.map((event) => (
                     <tr
                       key={event.event_id}
                       onClick={() => setSelectedEventId(event.event_id)}
-                      className={`clickable-row ${selectedEvent.event_id === event.event_id ? 'active-row' : ''}`}
+                      className={`clickable-row ${selectedEvent?.event_id === event.event_id ? 'active-row' : ''}`}
                     >
                       <td>{event.event_id}</td>
                       <td>{event.timestamp}</td>
@@ -891,9 +1199,29 @@ function App() {
                       </td>
                       <td>{formatTags(event.tags)}</td>
                     </tr>
-                  ))}
+                  )) : <tr><td colSpan={7}>没有符合当前筛选条件的事件。</td></tr>}
                 </tbody>
               </table>
+              <div className="event-timeline-panel">
+                <div className="panel-header">
+                  <h3>事件时间线</h3>
+                  <p className="panel-subtitle">按当前筛选结果排列，辅助追踪多源行为顺序。</p>
+                </div>
+                <div className="event-timeline">
+                  {timelineEvents.length > 0 ? timelineEvents.map((event) => (
+                    <button
+                      type="button"
+                      className={`event-timeline-item ${selectedEvent?.event_id === event.event_id ? 'active' : ''}`}
+                      key={`timeline-${event.event_id}`}
+                      onClick={() => setSelectedEventId(event.event_id)}
+                    >
+                      <time>{event.timestamp}</time>
+                      <strong>{formatEventType(event.event_type)}</strong>
+                      <span>{event.host.hostname ?? '未知主机'} · {event.source}</span>
+                    </button>
+                  )) : <div className="empty-state">暂无符合条件的时间线事件。</div>}
+                </div>
+              </div>
             </div>
 
             <aside className="panel detail-panel">
@@ -902,30 +1230,58 @@ function App() {
               </div>
               <div className="detail-card">
                 <div className="detail-label">事件 ID</div>
-                <div className="detail-value">{selectedEvent.event_id}</div>
+                <div className="detail-value">{selectedEvent?.event_id ?? '暂无事件数据'}</div>
 
                 <div className="detail-label">时间戳</div>
-                <div className="detail-value">{selectedEvent.timestamp}</div>
+                <div className="detail-value">{selectedEvent?.timestamp ?? '暂无事件数据'}</div>
 
                 <div className="detail-label">数据源类型</div>
-                <div className="detail-value">{formatSourceType(selectedEvent.source_type)}</div>
+                <div className="detail-value">{selectedEvent ? formatSourceType(selectedEvent.source_type) : '暂无事件数据'}</div>
 
                 <div className="detail-label">采集器</div>
-                <div className="detail-value">{selectedEvent.source}</div>
+                <div className="detail-value">{selectedEvent?.source ?? '暂无事件数据'}</div>
 
                 <div className="detail-label">主机</div>
-                <div className="detail-value">{selectedEvent.host.hostname} / {selectedEvent.host.ip}</div>
+                <div className="detail-value">{selectedEvent ? `${selectedEvent.host.hostname} / ${selectedEvent.host.ip ?? '-'}` : '暂无事件数据'}</div>
 
                 <div className="detail-label">严重级别</div>
                 <div className="detail-value">
-                  <span className={`severity-badge ${selectedEvent.severity}`}>{formatSeverity(selectedEvent.severity)}</span>
+                  <span className={`severity-badge ${selectedEvent?.severity ?? 'info'}`}>{selectedEvent ? formatSeverity(selectedEvent.severity) : '暂无数据'}</span>
                 </div>
 
                 <div className="detail-label">标签</div>
-                <div className="detail-value">{formatTags(selectedEvent.tags)}</div>
+                <div className="detail-value">{formatTags(selectedEvent?.tags)}</div>
+
+                <div className="detail-label">行为主体</div>
+                <div className="detail-value">
+                  {selectedEvent?.subject
+                    ? `${selectedEvent.subject.type ?? '未知'} / ${selectedEvent.subject.name ?? '未知'}${selectedEvent.subject.pid ? ` / PID ${selectedEvent.subject.pid}` : ''}`
+                    : '暂无数据'}
+                </div>
+
+                <div className="detail-label">行为对象</div>
+                <div className="detail-value">
+                  {selectedEvent?.object
+                    ? `${selectedEvent.object.type ?? '未知'} / ${selectedEvent.object.name ?? selectedEvent.object.path ?? '未知'}`
+                    : '暂无数据'}
+                </div>
+
+                <div className="detail-label">网络信息</div>
+                <div className="detail-value">
+                  {selectedEvent?.network
+                    ? `${selectedEvent.network.src_ip ?? '-'}:${selectedEvent.network.src_port ?? '-'} -> ${selectedEvent.network.dst_ip ?? '-'}:${selectedEvent.network.dst_port ?? '-'} (${selectedEvent.network.protocol ?? '-'})`
+                    : '暂无数据'}
+                </div>
+
+                <div className="detail-label">ATT&CK 映射</div>
+                <div className="detail-value">
+                  {selectedEvent?.attack
+                    ? `${selectedEvent.attack.technique_id ?? '未提供'} / ${selectedEvent.attack.technique_name ?? '未提供'} / ${selectedEvent.attack.tactic ?? '未提供'}`
+                    : '暂无数据'}
+                </div>
 
                 <div className="detail-label">原始数据</div>
-                <pre className="detail-json">{JSON.stringify(selectedEvent.raw_data, null, 2)}</pre>
+                <pre className="detail-json">{JSON.stringify(selectedEvent?.raw_data ?? {}, null, 2)}</pre>
               </div>
             </aside>
           </section>
@@ -937,25 +1293,38 @@ function App() {
               <div className="panel-header row-header">
                 <div>
                   <h2>告警列表</h2>
-                  <p className="panel-subtitle">将多源检测结果聚合为可处置的攻击告警，并保留证据链上下文。</p>
+                  <p className="panel-subtitle">
+                    {detectionStatus === 'ready' && detections.length > 0
+                      ? `已加载 ${detections.length} 条检测结果。`
+                      : '当前展示基于攻击关系整理的关联项，检测详情将在分析结果完善后呈现。'}
+                  </p>
                 </div>
                 <div className="filters">
                   <select value={alertStatusFilter} onChange={(event) => setAlertStatusFilter(event.target.value)}>
                     <option value="all">全部状态</option>
                     <option value="new">待研判</option>
-                    <option value="investigating">调查中</option>
-                    <option value="contained">已遏制</option>
+                  </select>
+                  <select value={alertSeverityFilter} onChange={(event) => setAlertSeverityFilter(event.target.value)}>
+                    <option value="all">全部级别</option>
+                    <option value="critical">严重</option>
+                    <option value="high">高危</option>
+                    <option value="medium">中等</option>
+                    <option value="low">低危</option>
                   </select>
                 </div>
               </div>
               <div className="alert-summary-row">
-                <div><strong>{alertRecords.length}</strong><span>关联告警</span></div>
-                <div><strong>{alertRecords.filter((alert) => alert.status === 'investigating').length}</strong><span>调查中</span></div>
-                <div><strong>{alertRecords.filter((alert) => alert.severity === 'critical').length}</strong><span>严重告警</span></div>
+                <div><strong>{alertRecords.length}</strong><span>图谱关系</span></div>
+                <div><strong>{alertRecords.filter((alert) => alert.status === 'new').length}</strong><span>待研判关系</span></div>
+                <div><strong>{alertRecords.filter((alert) => alert.severity === 'critical').length}</strong><span>严重关系</span></div>
               </div>
               <div className="alert-list">
-                {filteredAlerts.map((alert) => (
-                  <article className="alert-item" key={alert.id}>
+                {filteredAlerts.length > 0 ? filteredAlerts.map((alert) => (
+                  <article
+                    className={`alert-item ${selectedAlertId === alert.id ? 'selected-alert' : ''}`}
+                    key={alert.id}
+                    onClick={() => setSelectedAlertId(selectedAlertId === alert.id ? null : alert.id)}
+                  >
                     <div className="alert-main">
                       <div className="alert-title-row">
                         <span className={`severity-badge ${alert.severity}`}>{formatSeverity(alert.severity)}</span>
@@ -968,9 +1337,24 @@ function App() {
                       <span className={`task-status ${alert.status}`}>{alertStatusLabels[alert.status]}</span>
                       <span className="source-pill">{alert.source}</span>
                       <strong>{alert.technique}</strong>
+                      {alert.confidence !== undefined && <small>置信度 {Math.round(alert.confidence * 100)}%</small>}
                     </div>
+                    {selectedAlertId === alert.id && (
+                      <div className="alert-detail-expanded">
+                        <span>详细说明</span>
+                        <p>{alert.description ?? alert.evidence}</p>
+                        <span>标签</span>
+                        <p>{alert.tags?.join('、') || '暂无数据'}</p>
+                        <span>关联事件</span>
+                        <p>{alert.relatedEventIds?.join('、') || '暂无数据'}</p>
+                        <span>关联实体</span>
+                        <p>{alert.relatedEntityIds?.join('、') || '暂无数据'}</p>
+                        <span>证据详情</span>
+                        <pre>{alert.evidenceDetails ? JSON.stringify(alert.evidenceDetails, null, 2) : '暂无数据'}</pre>
+                      </div>
+                    )}
                   </article>
-                ))}
+                )) : <div className="empty-state">暂无可展示的攻击关系。</div>}
               </div>
             </div>
           </section>
@@ -1008,7 +1392,7 @@ function App() {
                         <td><span className="tactic-chip compact">{technique.tactic}</span></td>
                         <td>{technique.hosts}</td>
                         <td>{technique.evidence}</td>
-                        <td><strong className="confidence-value">{Math.round(technique.confidence * 100)}%</strong></td>
+                        <td><strong className="confidence-value">{technique.confidence === null ? '暂无数据' : `${Math.round(technique.confidence * 100)}%`}</strong></td>
                       </tr>
                     ))}
                   </tbody>
@@ -1020,17 +1404,17 @@ function App() {
               <div className="panel context-panel">
                 <div className="panel-header"><h2>攻击者指纹</h2></div>
                 <div className="fingerprint-list">
-                  <div><span>工具 / 脚本</span><strong>PowerShell · PsExec · 自定义 Loader</strong></div>
-                  <div><span>C2 通信特征</span><strong>周期性 HTTPS / DNS 高熵子域</strong></div>
-                  <div><span>配置特征</span><strong>固定 User-Agent · 加密配置段</strong></div>
+                  <div><span>事件标签</span><strong>{[...new Set(events.flatMap((event) => event.tags ?? []))].join('、') || '暂无数据'}</strong></div>
+                  <div><span>关联关系</span><strong>{[...new Set(attackGraph.edges.map((edge) => edge.relation))].join('、') || '暂无数据'}</strong></div>
+                  <div><span>数据来源</span><strong>{sourceSummary}</strong></div>
                 </div>
               </div>
               <div className="panel context-panel">
                 <div className="panel-header"><h2>C2 基础设施关联</h2></div>
                 <div className="infrastructure-list">
-                  <div><span>地址</span><strong>203.0.113.9</strong></div>
-                  <div><span>协议</span><strong>HTTPS / DNS</strong></div>
-                  <div><span>匹配结果</span><strong className="match-positive">TTP 相似度 87%</strong></div>
+                  <div><span>地址</span><strong>{attackGraph.nodes.filter((node) => node.node_type === 'ip').map((node) => node.name).join('、') || '暂无数据'}</strong></div>
+                  <div><span>关系</span><strong>{attackGraph.edges.filter((edge) => edge.relation === 'c2_communication').map((edge) => edge.relation).join('、') || '暂无数据'}</strong></div>
+                  <div><span>最高置信度</span><strong className="match-positive">{graphConfidence > 0 ? `${Math.round(graphConfidence * 100)}%` : '暂无数据'}</strong></div>
                 </div>
               </div>
             </div>
@@ -1040,8 +1424,35 @@ function App() {
         {activeTab === '攻击图谱' && (
           <section className="panel full-panel">
             <div className="panel-header row-header">
-              <h2>攻击关系图</h2>
+              <div>
+                <h2>攻击关系图</h2>
+                <p className="panel-subtitle">
+                  {attackGraph.graph_id ?? '暂无图谱编号'} · {attackGraph.description ?? '暂无图谱描述'}
+                  {' · '}
+                  {attackGraph.start_time ?? '未提供开始时间'} - {attackGraph.end_time ?? '未提供结束时间'}
+                </p>
+              </div>
               <div className="graph-controls">
+                <input
+                  className="graph-search"
+                  type="search"
+                  value={graphSearch}
+                  onChange={(event) => setGraphSearch(event.target.value)}
+                  placeholder="搜索节点"
+                  aria-label="搜索图谱节点"
+                />
+                <select value={graphNodeTypeFilter} onChange={(event) => setGraphNodeTypeFilter(event.target.value)} aria-label="按节点类型筛选">
+                  <option value="all">全部节点</option>
+                  {graphNodeTypes.map((nodeType) => <option value={nodeType} key={nodeType}>{nodeType}</option>)}
+                </select>
+                <select value={graphSeverityFilter} onChange={(event) => setGraphSeverityFilter(event.target.value)} aria-label="按节点风险筛选">
+                  <option value="all">全部风险</option>
+                  <option value="critical">严重</option>
+                  <option value="high">高危</option>
+                  <option value="medium">中等</option>
+                  <option value="low">低危</option>
+                  <option value="info">信息</option>
+                </select>
                 <button
                   type="button"
                   className={`layout-mode-btn ${graphLayoutMode === 'tree' ? 'active' : ''}`}
@@ -1066,9 +1477,19 @@ function App() {
                 <button type="button" className="reset-layout-btn" onClick={resetGraphLayout}>
                   重置布局
                 </button>
+                <button type="button" className="reset-layout-btn" onClick={exportGraph}>
+                  导出图谱
+                </button>
               </div>
             </div>
             <div className="graph-box large-box">
+              <div className="graph-zoom-controls" aria-label="图谱缩放控制">
+                <button type="button" onClick={() => setGraphZoom((value) => Math.min(value + 0.1, 1.8))} aria-label="放大图谱">+</button>
+                <span>{Math.round(graphZoom * 100)}%</span>
+                <button type="button" onClick={() => setGraphZoom((value) => Math.max(value - 0.1, 0.6))} aria-label="缩小图谱">−</button>
+                <button type="button" onClick={() => setGraphZoom(1)} aria-label="重置图谱缩放">重置</button>
+              </div>
+              <div className="graph-zoom-layer" style={{ transform: `scale(${graphZoom})` }}>
               <svg className="graph-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <defs>
                   {Object.entries(relationColors).map(([relation, color]) => (
@@ -1113,7 +1534,7 @@ function App() {
                   <button
                     key={node.node_id}
                     type="button"
-                    className={`node ${node.severity} ${isSelected ? 'selected' : ''} ${isConnected ? 'connected' : ''} ${draggingNodeId === node.node_id ? 'dragging' : ''}`}
+                    className={`node ${node.severity} ${visibleGraphNodeIds.has(node.node_id) ? '' : 'filtered-out'} ${isSelected ? 'selected' : ''} ${isConnected ? 'connected' : ''} ${draggingNodeId === node.node_id ? 'dragging' : ''}`}
                     style={{ left: pos.left, top: pos.top }}
                     onClick={() => setSelectedGraphNodeId(node.node_id)}
                     onPointerDown={(event) => handleNodePointerDown(event, node.node_id)}
@@ -1132,6 +1553,7 @@ function App() {
                   </button>
                 );
               })}
+              </div>
             </div>
 
             <div className="graph-legend" aria-label="关系图例">
@@ -1148,20 +1570,20 @@ function App() {
             <div className="graph-detail-card">
               <div className="graph-detail-header">
                 <span className="graph-tag">已选节点</span>
-                <strong>{selectedGraphNode.name}</strong>
+                <strong>{selectedGraphNode?.name ?? '暂无图谱数据'}</strong>
               </div>
               <div className="graph-detail-grid">
                 <div>
                   <span className="detail-label">类型</span>
-                  <div className="detail-value">{selectedGraphNode.node_type}</div>
+                  <div className="detail-value">{selectedGraphNode?.node_type ?? '暂无数据'}</div>
                 </div>
                 <div>
                   <span className="detail-label">严重级别</span>
-                  <div className="detail-value"><span className={`severity-badge ${selectedGraphNode.severity}`}>{formatSeverity(selectedGraphNode.severity)}</span></div>
+                  <div className="detail-value"><span className={`severity-badge ${selectedGraphNode?.severity ?? 'info'}`}>{selectedGraphNode ? formatSeverity(selectedGraphNode.severity) : '暂无数据'}</span></div>
                 </div>
                 <div>
                   <span className="detail-label">标签</span>
-                  <div className="detail-value">{formatTags(selectedGraphNode.tags)}</div>
+                  <div className="detail-value">{formatTags(selectedGraphNode?.tags)}</div>
                 </div>
                 <div>
                   <span className="detail-label">关联事件</span>
@@ -1179,8 +1601,8 @@ function App() {
                           {edge.relationLabel}
                         </span>
                         <span className="context-relation">
-                          {selectedGraphNode.node_id === edge.source ? `${selectedGraphNode.name} → ${edge.neighborName}` : `${edge.neighborName} → ${selectedGraphNode.name}`}
-                          <small>{edge.attack_technique_id} · 置信度 {Math.round((edge.confidence ?? 0) * 100)}%</small>
+                          {selectedGraphNode?.node_id === edge.source ? `${selectedGraphNode.name} → ${edge.neighborName}` : `${edge.neighborName} → ${selectedGraphNode?.name ?? ''}`}
+                          <small>{edge.attack_technique_id ?? '未映射'} · 置信度 {edge.confidence === undefined ? '暂无数据' : `${Math.round(edge.confidence * 100)}%`}</small>
                         </span>
                       </div>
                     ))
@@ -1199,23 +1621,31 @@ function App() {
               <h2>攻击链重建</h2>
             </div>
             <div className="chain-grid">
-              {attackChain.stages.map((stage, index) => (
-                <div className="chain-card" key={`${stage.stage}-${index}`}>
+              {attackChain.stages.length > 0 ? attackChain.stages.map((stage, index) => (
+                <button
+                  type="button"
+                  className={`chain-card ${selectedStageIndex === index ? 'selected-chain-card' : ''}`}
+                  key={`${stage.stage}-${index}`}
+                  onClick={() => setSelectedStageIndex(selectedStageIndex === index ? null : index)}
+                >
                   <div className="chain-step">步骤 {index + 1}</div>
                   <h3>
-                    {stage.stage === 'initial_access' && '初始访问'}
-                    {stage.stage === 'execution' && '执行'}
-                    {stage.stage === 'lateral_movement' && '横向移动'}
-                    {stage.stage === 'privilege_escalation' && '权限提升'}
-                    {stage.stage === 'command_and_control' && '命令与控制'}
-                    {stage.stage === 'exfiltration' && '数据窃取'}
+                    {formatStageName(stage.stage)}
                   </h3>
                   <p>主机：{stage.host}</p>
                   <p>技术：{stage.technique_id}</p>
-                  <div className="chain-evidence">{stageDescriptions[stage.stage]}</div>
-                  <small className="chain-source">证据：{stageSources[stage.stage]}</small>
-                </div>
-              ))}
+                  <div className="chain-evidence">阶段：{stage.stage}</div>
+                  <small className="chain-source">来源：攻击链关联结果</small>
+                  {selectedStageIndex === index && (
+                    <div className="chain-detail-expanded">
+                      <span>关联事件</span>
+                      <strong>{events.filter((event) => event.host.hostname === stage.host).length} 条</strong>
+                      <span>相关检测</span>
+                      <strong>{detections.filter((detection) => detection.related_event_ids?.some((eventId) => events.find((event) => event.event_id === eventId)?.host.hostname === stage.host)).length} 条</strong>
+                    </div>
+                  )}
+                </button>
+              )) : <div className="empty-state">暂无攻击链阶段。</div>}
             </div>
           </section>
         )}
@@ -1224,16 +1654,61 @@ function App() {
           <section className="panel full-panel">
             <div className="panel-header">
               <h2>分析任务队列</h2>
+              <p className="panel-subtitle">提交主机日志、主机行为或网络流量数据，启动统一分析流程。</p>
+            </div>
+            <div className="upload-panel">
+              <div className="upload-fields">
+                <label className="field-label" htmlFor="upload-source-type">数据类型</label>
+                <select
+                  id="upload-source-type"
+                  value={uploadSourceType}
+                  onChange={(event) => setUploadSourceType(event.target.value as UploadSourceType)}
+                  disabled={uploadState === 'uploading'}
+                >
+                  <option value="host_log">主机日志</option>
+                  <option value="host_behavior">主机行为</option>
+                  <option value="network_traffic">网络流量</option>
+                </select>
+              </div>
+              <div className="upload-fields">
+                <label className="field-label" htmlFor="data-file">数据文件</label>
+                <input
+                  id="data-file"
+                  type="file"
+                    accept=".json,.log,.evtx,.pcap,.pcapng,.cap"
+                  onChange={(event) => {
+                    setSelectedFile(event.target.files?.[0] ?? null);
+                    setUploadState('idle');
+                    setUploadMessage('');
+                  }}
+                  disabled={uploadState === 'uploading'}
+                />
+              </div>
+              <button type="button" className="primary-btn" onClick={handleUpload} disabled={uploadState === 'uploading'}>
+                {uploadState === 'uploading' ? '提交中...' : '提交分析'}
+              </button>
+              {selectedFile && <span className="upload-file-name">已选择：{selectedFile.name}</span>}
+              {uploadMessage && <span className={`upload-message ${uploadState}`}>{uploadMessage}</span>}
             </div>
             <div className="task-list big-list">
-              {tasks.map((task) => {
-                const statusLabel = task.status === 'success' ? '已完成' : task.status === 'running' ? '进行中' : '待处理';
+              {tasks.length > 0 ? tasks.map((task) => {
+                const statusLabel = task.status === 'success'
+                  ? '已完成'
+                  : task.status === 'running'
+                    ? '进行中'
+                    : task.status === 'failed'
+                      ? '失败'
+                      : '待处理';
 
                 return (
                   <div className="task-item" key={task.task_id}>
                     <div className="task-header">
-                      <span>{task.name}</span>
-                      <span className={`task-status ${task.status}`}>{statusLabel}</span>
+                      <button type="button" className="task-name-button" onClick={() => setSelectedTask(task)}>{task.name}</button>
+                      <div className="task-actions">
+                        <span className={`task-status ${task.status}`}>{statusLabel}</span>
+                        {task.status === 'running' && <button type="button" className="task-action-button" onClick={() => runTaskAction(task, 'cancel')}>取消</button>}
+                        {task.status === 'failed' && <button type="button" className="task-action-button" onClick={() => runTaskAction(task, 'retry')}>重试</button>}
+                      </div>
                     </div>
                     <div className="progress-bar">
                       <span style={{ width: `${task.progress}%` }} />
@@ -1241,8 +1716,23 @@ function App() {
                     <small>{task.progress}% 已完成</small>
                   </div>
                 );
-              })}
+              }) : <div className="empty-state">暂无分析任务数据。</div>}
             </div>
+            {selectedTask && (
+              <div className="task-detail-card">
+                <div className="panel-header row-header">
+                  <h3>任务详情</h3>
+                  <button type="button" className="task-action-button" onClick={() => setSelectedTask(null)}>关闭</button>
+                </div>
+                <div className="task-detail-grid">
+                  <span>任务编号</span><strong>{selectedTask.task_id}</strong>
+                  <span>状态</span><strong>{selectedTask.status}</strong>
+                  <span>创建时间</span><strong>{selectedTask.created_at}</strong>
+                  <span>更新时间</span><strong>{selectedTask.updated_at ?? '暂无数据'}</strong>
+                </div>
+                {taskActionMessage && <p className="task-action-message">{taskActionMessage}</p>}
+              </div>
+            )}
           </section>
         )}
       </main>
