@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from app.analyzers.attack_mapping import AttackMapper
 from app.schemas.detection import DetectionResult
 
-from tests.fixtures import detection
+from tests.member6_fixtures import detection
 
 
 def test_explicit_technique_is_used():
