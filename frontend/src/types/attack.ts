@@ -23,8 +23,12 @@ export interface AttackEdge {
 }
 
 export interface AttackGraph {
+  graph_id?: string;
   nodes: AttackNode[];
   edges: AttackEdge[];
+  start_time?: string | null;
+  end_time?: string | null;
+  description?: string | null;
 }
 
 export interface AttackStage {

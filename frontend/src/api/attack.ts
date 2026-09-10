@@ -2,7 +2,8 @@ import { requestJson } from './client';
 import type { AttackChain, AttackGraph } from '../types/attack';
 
 export function getAttackGraph(): Promise<AttackGraph> {
-  return requestJson<AttackGraph & { graph_id?: string }>('/api/v1/attack/graph').then((data) => ({
+  return requestJson<AttackGraph>('/api/v1/attack/graph').then((data) => ({
+    ...data,
     nodes: data.nodes ?? [],
     edges: data.edges ?? [],
   }));
