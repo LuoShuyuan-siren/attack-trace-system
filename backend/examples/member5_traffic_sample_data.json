@@ -1,0 +1,2345 @@
+{
+  "summary": {
+    "total_events": 248,
+    "total_detections": 25,
+    "scenarios": [
+      {
+        "name": "正常 DNS 解析",
+        "event_count": 3
+      },
+      {
+        "name": "DNS 隧道（攻击）",
+        "event_count": 40
+      },
+      {
+        "name": "NXDOMAIN 风暴（攻击）",
+        "event_count": 10
+      },
+      {
+        "name": "正常 HTTP 浏览",
+        "event_count": 5
+      },
+      {
+        "name": "HTTP Beacon（攻击）",
+        "event_count": 10
+      },
+      {
+        "name": "HTTP 可疑行为（攻击）",
+        "event_count": 2
+      },
+      {
+        "name": "正常 ICMP（ping）",
+        "event_count": 5
+      },
+      {
+        "name": "ICMP 隧道（攻击）",
+        "event_count": 25
+      },
+      {
+        "name": "端口扫描（攻击）",
+        "event_count": 25
+      },
+      {
+        "name": "长连接（攻击）",
+        "event_count": 2
+      },
+      {
+        "name": "SSL/TLS 握手",
+        "event_count": 1
+      },
+      {
+        "name": "非常用端口通信（攻击）",
+        "event_count": 6
+      },
+      {
+        "name": "高频 HTTP（异常）",
+        "event_count": 70
+      },
+      {
+        "name": "高频 ICMP（异常）",
+        "event_count": 25
+      },
+      {
+        "name": "PCAP 真实解析",
+        "event_count": 3
+      },
+      {
+        "name": "Zeek 真实解析",
+        "event_count": 11
+      },
+      {
+        "name": "Suricata 真实解析",
+        "event_count": 5
+      }
+    ],
+    "analyzer_counts": {
+      "dns_analyzer": 4,
+      "http_analyzer": 5,
+      "icmp_analyzer": 3,
+      "connection_analyzer": 13
+    }
+  },
+  "normalized_events": [
+    {
+      "event_id": "evt-24c924db-0e9b-4514-8b92-24f77e113b12",
+      "timestamp": "2026-09-08T10:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "dns_query",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "udp"
+      },
+      "action": "dns_query",
+      "raw_data": {
+        "dns": {
+          "query": "example.com",
+          "query_type": "A",
+          "rcode": "NOERROR"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "dns"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-a212ca6b-07a9-456b-958f-7b93a828eae9",
+      "timestamp": "2026-09-08T10:00:03+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "dns_query",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "udp"
+      },
+      "action": "dns_query",
+      "raw_data": {
+        "dns": {
+          "query": "google.com",
+          "query_type": "A",
+          "rcode": "NOERROR"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "dns"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-3861775a-a527-4437-a38d-ccf93f20b106",
+      "timestamp": "2026-09-08T10:00:07+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "dns_query",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "udp"
+      },
+      "action": "dns_query",
+      "raw_data": {
+        "dns": {
+          "query": "github.com",
+          "query_type": "A",
+          "rcode": "NOERROR"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "dns"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-815ed1cb-0fc2-41ec-b557-d2f53a9904b4",
+      "timestamp": "2026-09-08T11:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "dns_query",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.100",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "udp"
+      },
+      "action": "dns_query",
+      "raw_data": {
+        "dns": {
+          "query": "xaji0y6dpbhsahxthv3a3zmf8mdd4v30t9nt3w5u.tunnel.example",
+          "query_type": "TXT",
+          "rcode": "NOERROR"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "dns"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-2e16dad0-271a-4a57-a514-c15df5863e3d",
+      "timestamp": "2026-09-08T11:00:01+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "dns_query",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.100",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "udp"
+      },
+      "action": "dns_query",
+      "raw_data": {
+        "dns": {
+          "query": "zbikcidkwnnhj7xvg0fn9xuy41ibljh75lxo6qji.tunnel.example",
+          "query_type": "TXT",
+          "rcode": "NOERROR"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "dns"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-c3bda6b2-5bf0-4cd0-aa3c-4270ed829704",
+      "timestamp": "2026-09-08T13:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 12345,
+        "dst_ip": "93.184.216.34",
+        "dst_port": 80,
+        "protocol": "tcp"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "http": {
+          "method": "GET",
+          "host": "example.com",
+          "uri": "/",
+          "user_agent": "Mozilla/5.0",
+          "status_code": 200,
+          "content_length": 0
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "http"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-9926feca-c9c3-4425-b592-ff2ac9498118",
+      "timestamp": "2026-09-08T13:00:30+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 12345,
+        "dst_ip": "93.184.216.34",
+        "dst_port": 80,
+        "protocol": "tcp"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "http": {
+          "method": "GET",
+          "host": "example.com",
+          "uri": "/about",
+          "user_agent": "Mozilla/5.0",
+          "status_code": 200,
+          "content_length": 0
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "http"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-a753e82f-27de-425b-b757-b8bb1bb5a8d5",
+      "timestamp": "2026-09-08T13:01:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 12345,
+        "dst_ip": "140.82.114.4",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "http": {
+          "method": "GET",
+          "host": "github.com",
+          "uri": "/explore",
+          "user_agent": "Mozilla/5.0",
+          "status_code": 200,
+          "content_length": 0
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "http"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-00efb16c-04e2-48ae-8c8f-1de02778e65a",
+      "timestamp": "2026-09-08T13:01:30+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 12345,
+        "dst_ip": "140.82.114.4",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "http": {
+          "method": "GET",
+          "host": "github.com",
+          "uri": "/topics",
+          "user_agent": "Mozilla/5.0",
+          "status_code": 200,
+          "content_length": 0
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "http"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-f36058f9-4c54-4b19-92b5-616b6ae0ee40",
+      "timestamp": "2026-09-08T13:02:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 12345,
+        "dst_ip": "142.250.190.78",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "http": {
+          "method": "GET",
+          "host": "google.com",
+          "uri": "/",
+          "user_agent": "Mozilla/5.0",
+          "status_code": 200,
+          "content_length": 0
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "http"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-72918656-18f5-4b8e-9752-502224c1a9bf",
+      "timestamp": "2026-09-08T16:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "icmp_packet",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "icmp"
+      },
+      "action": "icmp_packet",
+      "raw_data": {
+        "payload_length": 16,
+        "payload_hex": "6162636465666768696a6b6c6d6e6f70",
+        "icmp_type": 8,
+        "icmp_code": 0,
+        "icmp": {
+          "type": 8,
+          "code": 0,
+          "payload_hex": "6162636465666768696a6b6c6d6e6f70"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "icmp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-46483f1d-0c5a-4bdd-b021-a01382c12b63",
+      "timestamp": "2026-09-08T16:00:01+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "icmp_packet",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "icmp"
+      },
+      "action": "icmp_packet",
+      "raw_data": {
+        "payload_length": 16,
+        "payload_hex": "6162636465666768696a6b6c6d6e6f70",
+        "icmp_type": 8,
+        "icmp_code": 0,
+        "icmp": {
+          "type": 8,
+          "code": 0,
+          "payload_hex": "6162636465666768696a6b6c6d6e6f70"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "icmp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-aff27eeb-3b0e-4e75-b2c0-c96480935e7c",
+      "timestamp": "2026-09-08T16:00:02+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "icmp_packet",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "icmp"
+      },
+      "action": "icmp_packet",
+      "raw_data": {
+        "payload_length": 16,
+        "payload_hex": "6162636465666768696a6b6c6d6e6f70",
+        "icmp_type": 8,
+        "icmp_code": 0,
+        "icmp": {
+          "type": 8,
+          "code": 0,
+          "payload_hex": "6162636465666768696a6b6c6d6e6f70"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "icmp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-8c66ee51-df62-444a-bffb-b9e1aa8de87f",
+      "timestamp": "2026-09-08T16:00:03+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "icmp_packet",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "icmp"
+      },
+      "action": "icmp_packet",
+      "raw_data": {
+        "payload_length": 16,
+        "payload_hex": "6162636465666768696a6b6c6d6e6f70",
+        "icmp_type": 8,
+        "icmp_code": 0,
+        "icmp": {
+          "type": 8,
+          "code": 0,
+          "payload_hex": "6162636465666768696a6b6c6d6e6f70"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "icmp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-458dd228-fcf5-4b19-874b-ffed9da8bc81",
+      "timestamp": "2026-09-08T16:00:04+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "icmp_packet",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": null,
+        "dst_ip": "8.8.8.8",
+        "dst_port": null,
+        "protocol": "icmp"
+      },
+      "action": "icmp_packet",
+      "raw_data": {
+        "payload_length": 16,
+        "payload_hex": "6162636465666768696a6b6c6d6e6f70",
+        "icmp_type": 8,
+        "icmp_code": 0,
+        "icmp": {
+          "type": 8,
+          "code": 0,
+          "payload_hex": "6162636465666768696a6b6c6d6e6f70"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "icmp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-19008e75-19c7-4c43-b6f5-230f92017b0c",
+      "timestamp": "2026-09-08T18:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "network_flow",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.66",
+        "src_port": 40000,
+        "dst_ip": "10.0.0.99",
+        "dst_port": 20,
+        "protocol": "tcp"
+      },
+      "action": "flow_recorded",
+      "raw_data": {},
+      "severity": "info",
+      "tags": [
+        "flow"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-2050c758-9be8-4748-b2e7-125ba2be90e7",
+      "timestamp": "2026-09-08T18:00:00.100000+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "network_flow",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.66",
+        "src_port": 40000,
+        "dst_ip": "10.0.0.99",
+        "dst_port": 21,
+        "protocol": "tcp"
+      },
+      "action": "flow_recorded",
+      "raw_data": {},
+      "severity": "info",
+      "tags": [
+        "flow"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-524d79dd-3e11-4f93-8713-c69135d94959",
+      "timestamp": "2026-09-08T18:00:00.200000+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "network_flow",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.66",
+        "src_port": 40000,
+        "dst_ip": "10.0.0.99",
+        "dst_port": 22,
+        "protocol": "tcp"
+      },
+      "action": "flow_recorded",
+      "raw_data": {},
+      "severity": "info",
+      "tags": [
+        "flow"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-79a91f8d-6e0e-40a1-b77a-73cb1277cfd6",
+      "timestamp": "2026-09-08T18:00:00.300000+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "network_flow",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.66",
+        "src_port": 40000,
+        "dst_ip": "10.0.0.99",
+        "dst_port": 23,
+        "protocol": "tcp"
+      },
+      "action": "flow_recorded",
+      "raw_data": {},
+      "severity": "info",
+      "tags": [
+        "flow"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-8d3917c8-b9e3-4cfc-8845-04e8ad961f25",
+      "timestamp": "2026-09-08T18:00:00.400000+00:00",
+      "source_type": "network_traffic",
+      "source": "sample",
+      "event_type": "network_flow",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.66",
+        "src_port": 40000,
+        "dst_ip": "10.0.0.99",
+        "dst_port": 24,
+        "protocol": "tcp"
+      },
+      "action": "flow_recorded",
+      "raw_data": {},
+      "severity": "info",
+      "tags": [
+        "flow"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-143b792c-199d-4e1b-bb05-9e50f455c522",
+      "timestamp": "2026-09-08T19:00:00+00:00",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "event_type": "tls_handshake",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.10",
+        "src_port": 50000,
+        "dst_ip": "10.0.0.5",
+        "dst_port": 443,
+        "protocol": "tcp"
+      },
+      "action": "tls_handshake",
+      "raw_data": {
+        "tls": {
+          "subject": "CN=www.example.com",
+          "issuerdn": "CN=Let's Encrypt Authority X3",
+          "sni": "www.example.com",
+          "version": "TLS 1.2"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "ssl",
+        "tls"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-9561aaa9-af38-43db-ad17-ee1a5445ea6a",
+      "timestamp": "2001-09-09T01:46:40+00:00",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "event_type": "network_connection",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.1",
+        "src_port": 12345,
+        "dst_ip": "10.0.0.1",
+        "dst_port": 80,
+        "protocol": "TCP"
+      },
+      "action": "connection_established",
+      "raw_data": {
+        "duration": "1.000000",
+        "orig_bytes": "100",
+        "resp_bytes": "200",
+        "service": "http",
+        "conn_state": "SF",
+        "uid": "CXYZ123"
+      },
+      "severity": "info",
+      "tags": [
+        "zeek",
+        "conn",
+        "tcp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-28e7a926-cd73-49d5-936c-87bcff5c3c97",
+      "timestamp": "2001-09-09T01:46:41+00:00",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "event_type": "network_connection",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.1",
+        "src_port": 54321,
+        "dst_ip": "8.8.8.8",
+        "dst_port": 53,
+        "protocol": "UDP"
+      },
+      "action": "connection_established",
+      "raw_data": {
+        "duration": "0.000100",
+        "orig_bytes": "60",
+        "resp_bytes": "120",
+        "service": "dns",
+        "conn_state": "SF",
+        "uid": "CXYZ124"
+      },
+      "severity": "info",
+      "tags": [
+        "zeek",
+        "conn",
+        "udp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-d76d6f3e-d166-43e7-a67a-7a5d980fc3df",
+      "timestamp": "2001-09-09T01:46:42+00:00",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "event_type": "network_connection",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.2",
+        "src_port": 23456,
+        "dst_ip": "10.0.0.2",
+        "dst_port": 443,
+        "protocol": "TCP"
+      },
+      "action": "connection_established",
+      "raw_data": {
+        "duration": "3600.000000",
+        "orig_bytes": "5000",
+        "resp_bytes": "100000",
+        "service": "ssl",
+        "conn_state": "SF",
+        "uid": "CXYZ125"
+      },
+      "severity": "info",
+      "tags": [
+        "zeek",
+        "conn",
+        "tcp"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-a9e7f779-b8c6-43d8-914a-5c204593fcb0",
+      "timestamp": "2001-09-09T01:46:42+00:00",
+      "source_type": "network_traffic",
+      "source": "zeek",
+      "event_type": "ssl_handshake",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.2",
+        "src_port": 23456,
+        "dst_ip": "10.0.0.2",
+        "dst_port": 443,
+        "protocol": "TCP"
+      },
+      "action": "ssl_handshake",
+      "raw_data": {
+        "ssl": {
+          "server_name": "www.example.com",
+          "ssl_version": "TLSv12",
+          "cipher": "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+          "uid": "SABC111"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "zeek",
+        "ssl"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-abe1f218-4193-4ec7-a1fd-bbd04c7cea64",
+      "timestamp": "2026-09-08T10:00:03+00:00",
+      "source_type": "network_traffic",
+      "source": "suricata",
+      "event_type": "alert",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "10.0.0.1",
+        "src_port": 80,
+        "dst_ip": "192.168.1.1",
+        "dst_port": 12345,
+        "protocol": "TCP"
+      },
+      "action": "alert_triggered",
+      "raw_data": {
+        "signature": "ET POLICY Suspicious HTTP Request",
+        "category": "A Network Trojan was Detected",
+        "severity": 1,
+        "signature_id": 2000001,
+        "gid": 1,
+        "rev": 1
+      },
+      "severity": "high",
+      "tags": [
+        "suricata",
+        "alert"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-ec995343-e6cb-4479-9678-975a9991af9b",
+      "timestamp": "2026-09-08T10:00:04+00:00",
+      "source_type": "network_traffic",
+      "source": "suricata",
+      "event_type": "tls_handshake",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.2",
+        "src_port": 23456,
+        "dst_ip": "10.0.0.2",
+        "dst_port": 443,
+        "protocol": "TCP"
+      },
+      "action": "tls_handshake",
+      "raw_data": {
+        "tls": {
+          "subject": "CN=www.example.com",
+          "issuer": "CN=Let's Encrypt Authority X3",
+          "fingerprint": "sha256:abcdef1234567890",
+          "sni": "www.example.com",
+          "version": "TLS 1.2"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "suricata",
+        "tls"
+      ],
+      "attack": null
+    },
+    {
+      "event_id": "evt-6e294dc1-4aea-4b43-af0b-cee868a5508e",
+      "timestamp": "2001-09-09T01:46:40+00:00",
+      "source_type": "network_traffic",
+      "source": "pcap",
+      "event_type": "http_request",
+      "host": {
+        "hostname": null,
+        "ip": null,
+        "os": null
+      },
+      "network": {
+        "src_ip": "192.168.1.1",
+        "src_port": 12345,
+        "dst_ip": "10.0.0.1",
+        "dst_port": 80,
+        "protocol": "TCP"
+      },
+      "action": "http_communication",
+      "raw_data": {
+        "packet_length": 57,
+        "tcp_flags": [
+          "PSH",
+          "ACK"
+        ],
+        "tcp_seq": 0,
+        "tcp_ack": 0,
+        "tcp_window": 8192,
+        "http": {
+          "method": "GET",
+          "uri": "/",
+          "version": "HTTP/1.1",
+          "host": "example.com"
+        }
+      },
+      "severity": "info",
+      "tags": [
+        "pcap",
+        "tcp",
+        "http"
+      ],
+      "attack": null
+    }
+  ],
+  "detection_results": [
+    {
+      "detection_id": "det-8f84f1fc-a34f-4d18-8bdd-ebd70863008a",
+      "timestamp": "2026-09-08T12:19:37.021263+00:00",
+      "analyzer": "dns_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频 DNS 查询 (源: 192.168.1.10)",
+      "description": "源 IP 192.168.1.10 DNS 查询速率 40/min，超过阈值 30/min",
+      "severity": "low",
+      "confidence": 0.6,
+      "related_event_ids": [
+        "evt-24c924db-0e9b-4514-8b92-24f77e113b12",
+        "evt-a212ca6b-07a9-456b-958f-7b93a828eae9",
+        "evt-3861775a-a527-4437-a38d-ccf93f20b106"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "dns",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.10",
+        "max_query_rate_per_min": 40.0,
+        "total_queries": 3,
+        "threshold": 30
+      }
+    },
+    {
+      "detection_id": "det-cd161ca4-1523-4995-8c29-bd4b2068ac6b",
+      "timestamp": "2026-09-08T12:19:37.022262+00:00",
+      "analyzer": "dns_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.100)",
+      "description": "源 IP 192.168.1.100 的 DNS 查询触发 7 项隧道特征: 高频查询 (120/min > 30/min); 异常长域名 (max=55 > 50); 子域高熵 (avg=4.46 > 3.5); 大量唯一子域 (40 > 20); TXT 查询异常 (ratio=1.00 > 0.1)",
+      "severity": "high",
+      "confidence": 0.95,
+      "related_event_ids": [
+        "evt-815ed1cb-0fc2-41ec-b557-d2f53a9904b4",
+        "evt-2e16dad0-271a-4a57-a514-c15df5863e3d",
+        "evt-5707c2e2-2a3d-429d-8e5c-4c1a31723561",
+        "evt-95de231a-62f7-4cea-b933-3b27f4af9546",
+        "evt-3667aa7f-320b-4a98-99a5-e2b906f86aba",
+        "evt-c6d01803-e495-4db0-ade3-fab931cbe09b",
+        "evt-b10a0d84-54e0-4075-8ee2-23be6357ce2b",
+        "evt-1db37aa1-d786-4484-bea7-14a9d88f4a3a",
+        "evt-07fe1009-5367-484a-aafa-cff67bce76b8",
+        "evt-4b1f5218-0edf-4ab4-8b25-16e8fe6c09da",
+        "evt-8313f5aa-bab7-4ef3-9a63-d0cfc7d19ff9",
+        "evt-e2c25881-d8d7-4aa4-85f8-8788616eab42",
+        "evt-c442e07c-030f-4550-bbdb-02f2322558ee",
+        "evt-de52bdd7-c6f8-4e4b-a20a-5b53729680b1",
+        "evt-6d2a607d-c777-47e7-85ea-55e7edffeac0",
+        "evt-f604bce8-5711-4862-99d7-6d5eeb4bb3d2",
+        "evt-a4e22977-eb0d-4170-80f7-7a95b41d1a70",
+        "evt-4676ae67-f241-4479-a583-040ff6742ba1",
+        "evt-d5b8650e-9634-48ec-bca6-40df8b9c54e6",
+        "evt-f6005f53-2a17-4eec-9289-b8f592f5306d",
+        "evt-02e99ae5-4d55-46cd-9df5-6e03d391e001",
+        "evt-2457dd0e-7d90-49c8-be49-5193327e3718",
+        "evt-9ab33d2e-9cc8-4a95-9762-ae25f014bcda",
+        "evt-0c5b8c22-986f-446d-aed8-4e5c9c84ac51",
+        "evt-63dcc6fe-7c2a-4b0b-ac2a-84bb0a252892",
+        "evt-90d1d084-7548-4a22-937f-61efc0465040",
+        "evt-bfa5a229-54ad-4e51-83b3-956fa1da2c88",
+        "evt-f1a96d0b-dfaa-4385-ac13-498d0fa602df",
+        "evt-d301cd00-f6d9-4ede-ae2c-0ab8c2fe078c",
+        "evt-9d03e08d-bd3a-4cfb-a91b-81efd7f44d11",
+        "evt-f2e3add0-2261-40d3-9edd-95ce98e38e3c",
+        "evt-5c4aac72-8a5b-46ea-bd34-098f9ff486e7",
+        "evt-cd01995b-c038-46bd-bf5f-c5a5d91e3bb0",
+        "evt-d8ce6e01-e1ab-4dc1-bbcd-51fdade4305f",
+        "evt-5a7698b2-998a-4552-b781-32eb2c160f21",
+        "evt-64d84dc8-a0ae-4801-a89f-a99f96b2bb49",
+        "evt-29aa1648-c3b8-41f1-838e-6d1e2fb865fd",
+        "evt-550ab48b-9711-4d11-a2a7-310dea436289",
+        "evt-b4f4a82c-b49e-4278-a3e2-e84d77e0137e",
+        "evt-b61cce32-9ff0-436d-a30a-4a0ffa14b1e0"
+      ],
+      "attack_technique_id": "T1071.004",
+      "tags": [
+        "dns",
+        "dns_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.100",
+        "indicators": {
+          "max_query_rate_per_min": 120.0,
+          "max_domain_length": 55,
+          "max_subdomain_length": 40,
+          "max_subdomain_entropy": 4.73,
+          "avg_subdomain_entropy": 4.46,
+          "unique_subdomains": 40,
+          "txt_query_ratio": 1.0,
+          "nxdomain_ratio": 0.0,
+          "total_queries": 40
+        },
+        "triggered_rules": [
+          "高频查询 (120/min > 30/min)",
+          "异常长域名 (max=55 > 50)",
+          "子域高熵 (avg=4.46 > 3.5)",
+          "大量唯一子域 (40 > 20)",
+          "TXT 查询异常 (ratio=1.00 > 0.1)"
+        ],
+        "score": 7
+      }
+    },
+    {
+      "detection_id": "det-2146de35-4f24-4cad-aef4-62f14502ddc4",
+      "timestamp": "2026-09-08T12:19:37.022262+00:00",
+      "analyzer": "dns_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.200)",
+      "description": "源 IP 192.168.1.200 的 DNS 查询触发 3 项隧道特征: 高频查询 (120/min > 30/min); 高 NXDOMAIN 比例 (ratio=1.00 > 0.5)",
+      "severity": "medium",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-08e1ef4d-364c-47ac-b0a1-1c7a494516f7",
+        "evt-e5d91dd6-cd37-4c4d-b464-8b2234d7a831",
+        "evt-45b35fdf-598d-4b1a-a257-2604fcfda6b0",
+        "evt-76b650b6-f269-46e4-b25c-592716fc3af2",
+        "evt-705f9e45-ec99-4487-a4b3-3ec64a7c0acc",
+        "evt-363b82ca-1c5d-4596-af3c-db3201fbd0d1",
+        "evt-24a26906-4ad2-4865-a630-2d117988e1c7",
+        "evt-0dd429fe-7843-40d8-9b1d-3dcf04707147",
+        "evt-0d84f7bb-6475-45a0-9321-8bebf2d7adc2",
+        "evt-5b0cc90d-47d9-4c8e-9ffd-faf4b04a8d3d"
+      ],
+      "attack_technique_id": "T1071.004",
+      "tags": [
+        "dns",
+        "dns_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.200",
+        "indicators": {
+          "max_query_rate_per_min": 120.0,
+          "max_domain_length": 19,
+          "max_subdomain_length": 0,
+          "avg_subdomain_entropy": 0.0,
+          "unique_subdomains": 0,
+          "txt_query_ratio": 0.0,
+          "nxdomain_ratio": 1.0,
+          "total_queries": 10
+        },
+        "triggered_rules": [
+          "高频查询 (120/min > 30/min)",
+          "高 NXDOMAIN 比例 (ratio=1.00 > 0.5)"
+        ],
+        "score": 3
+      }
+    },
+    {
+      "detection_id": "det-455d1fbb-d76d-4cd3-b6fa-85038ead7c65",
+      "timestamp": "2026-09-08T12:19:37.022262+00:00",
+      "analyzer": "dns_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 DNS 隧道通信 (源: 192.168.1.1)",
+      "description": "源 IP 192.168.1.1 的 DNS 查询触发 4 项隧道特征: 异常长域名 (max=64 > 50); 子域高熵 (avg=3.88 > 3.5); TXT 查询异常 (ratio=0.17 > 0.1)",
+      "severity": "medium",
+      "confidence": 0.95,
+      "related_event_ids": [
+        "evt-7ee5baa6-7ef2-4860-9ac3-b2b5e8ac499c",
+        "evt-1941dd51-29e6-43c9-9186-0e00d2a1b4d3",
+        "evt-0ea73644-24ae-4bca-92b7-45de29c357c6",
+        "evt-587e6d46-c7cb-43a7-ad8f-816914034278",
+        "evt-e72aa7ec-4bbb-427f-8af2-0cdb7bf6f2b4",
+        "evt-4df88d47-fe63-49b0-b49b-0dce170b1943"
+      ],
+      "attack_technique_id": "T1071.004",
+      "tags": [
+        "dns",
+        "dns_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.1",
+        "indicators": {
+          "max_query_rate_per_min": 180.0,
+          "max_domain_length": 64,
+          "max_subdomain_length": 52,
+          "max_subdomain_entropy": 5.0,
+          "avg_subdomain_entropy": 3.88,
+          "unique_subdomains": 3,
+          "txt_query_ratio": 0.17,
+          "nxdomain_ratio": 0.17,
+          "total_queries": 6
+        },
+        "triggered_rules": [
+          "异常长域名 (max=64 > 50)",
+          "子域高熵 (avg=3.88 > 3.5)",
+          "TXT 查询异常 (ratio=0.17 > 0.1)"
+        ],
+        "score": 4
+      }
+    },
+    {
+      "detection_id": "det-b7f10500-fb19-44d6-a2f6-018dd5b76086",
+      "timestamp": "2026-09-08T12:19:37.022262+00:00",
+      "analyzer": "http_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 HTTP Beacon 行为 (源: 192.168.1.100 -> 目标: 203.0.113.10)",
+      "description": "HTTP 通信呈现周期性特征，间隔 60.0s，低抖动，疑似 C2 Beacon 通信",
+      "severity": "medium",
+      "confidence": 0.6,
+      "related_event_ids": [
+        "evt-64edd866-185c-482a-85d1-027880989b51",
+        "evt-f54bdbec-20f4-4567-86ce-08e44d13f26c",
+        "evt-b7816615-a81b-474b-bd4f-e05f46748f41",
+        "evt-b490ce1d-3f64-4476-87b3-ca72c97b0cc4",
+        "evt-8521ca64-1cba-4209-8bac-8341c00b5d77",
+        "evt-6c4f5e63-b7c4-4c4d-ba14-5142e0e8348e",
+        "evt-56de83e1-5a3f-487e-a76d-65bb4aa1bdd3",
+        "evt-3ab1e48d-88d2-4e81-922f-482d2800a826",
+        "evt-1d34af3e-b100-4d17-8ad9-09dfc34054df",
+        "evt-fb15afdf-d805-4c5c-9f1e-d30ce225771a"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "http",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "total_requests": 10,
+        "max_uri_length": 9,
+        "max_uri_entropy": 2.95,
+        "max_request_rate_per_min": 2.0,
+        "suspicious_user_agents": 0,
+        "large_uploads": 0,
+        "post_ratio": 0.0,
+        "beacon_jitter_ratio": 0.0,
+        "beacon_interval_sec": 60.0
+      }
+    },
+    {
+      "detection_id": "det-ea1c5a36-e9f0-4248-876a-87cb569255b6",
+      "timestamp": "2026-09-08T12:19:37.022262+00:00",
+      "analyzer": "http_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 HTTP 隐蔽信道通信 (源: 192.168.1.50 -> 目标: 10.0.0.5)",
+      "description": "HTTP 通信触发 3 项隐蔽信道特征: 异常长 URI (max=601 > 500); 可疑 User-Agent (sqlmap/1.5); 大数据上传 (1 次 > 10485760 bytes)",
+      "severity": "medium",
+      "confidence": 0.8,
+      "related_event_ids": [
+        "evt-ebfd1b4a-8a17-4994-a36a-4a764dc6a9af",
+        "evt-345f6aa9-7f79-48bf-a4d5-82257f697b74"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "http",
+        "covert_channel",
+        "http_tunnel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.50",
+        "dst_ip": "10.0.0.5",
+        "indicators": {
+          "total_requests": 2,
+          "max_uri_length": 601,
+          "max_uri_entropy": 3.69,
+          "max_request_rate_per_min": 24.0,
+          "suspicious_user_agents": 2,
+          "large_uploads": 1,
+          "post_ratio": 0.5
+        },
+        "triggered_rules": [
+          "异常长 URI (max=601 > 500)",
+          "可疑 User-Agent (sqlmap/1.5)",
+          "大数据上传 (1 次 > 10485760 bytes)"
+        ],
+        "score": 3
+      }
+    },
+    {
+      "detection_id": "det-254d34f6-e4b3-43bf-b296-46f6907a4063",
+      "timestamp": "2026-09-08T12:19:37.023261+00:00",
+      "analyzer": "http_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 HTTP Beacon 行为 (源: 192.168.1.30 -> 目标: 10.0.0.20)",
+      "description": "HTTP 通信呈现周期性特征，间隔 0.9s，低抖动，疑似 C2 Beacon 通信",
+      "severity": "medium",
+      "confidence": 0.6,
+      "related_event_ids": [
+        "evt-623b5cf5-980e-4bd2-9f6b-002d2794a697",
+        "evt-5c8cf74b-b104-4506-a4ac-6e32f6f86c6d",
+        "evt-3a81f438-f56f-41be-ab9b-b22830873ea5",
+        "evt-9515d2c5-26e3-4640-84f5-5bc87eadb706",
+        "evt-e233e703-24d1-4422-abc9-8ed6e72c3129",
+        "evt-1bb3d661-ed4c-4790-901b-c6244f10fd59",
+        "evt-5fa92567-f4b9-4222-be1d-892877ff2a0c",
+        "evt-d623fbf3-292b-4362-8909-1615384c2895",
+        "evt-5fb6d031-11a2-4c3e-b4e7-bbcb47c8e54a",
+        "evt-ea01876c-83d3-47b1-9498-bdaa31b377ca",
+        "evt-7087fdf0-a0c9-4dd1-82d5-e1a8ad40731f",
+        "evt-a3332547-9b42-4bac-934f-68a320b9c999",
+        "evt-a4ac96ad-a2b3-4003-bee5-bbd2561b90f3",
+        "evt-e3ed520c-8399-4674-8e50-739f2e1900e7",
+        "evt-1e9a3bb4-05a3-406b-9809-82de960ea3a9",
+        "evt-d7d8565a-f46b-4ce6-a945-4f413e3bfe17",
+        "evt-6e79819b-41ce-4da1-b05c-2f201d56f388",
+        "evt-927e6e7e-45ac-4951-a7dc-f8f0d2509919",
+        "evt-66276626-4b18-42e3-93bf-b577ecfe3b17",
+        "evt-22b35c58-920d-4243-a120-eb75266a34c1",
+        "evt-527f5b52-2c14-4c14-ab70-b6a9f36c4505",
+        "evt-81c9a4c8-2a86-4bad-89c6-d9735e1cd945",
+        "evt-940c0345-baa2-4290-b3de-fd9acbac4692",
+        "evt-d355ad62-f6c7-4193-9235-85a22d130283",
+        "evt-4bd38817-19e9-40e5-8168-ab973838d3c6",
+        "evt-1b7eaa77-54a2-4bee-9b39-1e1f97100339",
+        "evt-ba3a0332-5398-4042-940d-38303ab4f82d",
+        "evt-2e5e32c7-6917-4f60-9c4a-fb83c9b28027",
+        "evt-5fd556aa-ccf3-4d8c-b6c5-211f997a2e79",
+        "evt-e138641a-0235-43ac-96d6-c9b00e92b8c9",
+        "evt-c0eac286-ea5a-412b-8528-439518e73cb3",
+        "evt-dd005da9-c928-4d9f-b7db-972049197f14",
+        "evt-5d16169a-0209-4c1f-8745-d41f6f09d740",
+        "evt-daf75d3f-1673-4db6-bb17-a19beb9617ae",
+        "evt-4cf663b3-6435-43bc-a3af-7ec8e61b5161",
+        "evt-3fa15152-ed4a-4611-92d8-cced8acac241",
+        "evt-a7dc9514-af51-4a0f-be33-8b50b513b381",
+        "evt-212b1ff3-504f-485f-a363-4f1cba2cf8bc",
+        "evt-ba434e99-d7cc-4c6e-a873-30794261aeaf",
+        "evt-50b24bfc-86e8-4fe7-9101-2312158eb605",
+        "evt-aa354de1-445b-46d0-8767-fbc202fbe477",
+        "evt-a781dab0-f730-4423-9204-28147f52482a",
+        "evt-e3030151-13ba-4bdb-b982-ed657201f79b",
+        "evt-331999b5-3bee-4ece-aef9-e182fc96941c",
+        "evt-ec82e3fd-ee03-480d-9ea8-3255ecc51aa3",
+        "evt-6b45972e-587e-4b0f-8b23-949dc2f18d4b",
+        "evt-dea7f67d-a9d3-4573-9421-7e875028a198",
+        "evt-6b985b85-1f90-45d3-b56c-44021746d33e",
+        "evt-5fba67b3-1490-4ca2-93a3-b18c172c0bbe",
+        "evt-b4564e82-4644-406a-8858-9801dd913c83"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "http",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "total_requests": 70,
+        "max_uri_length": 11,
+        "max_uri_entropy": 2.85,
+        "max_request_rate_per_min": 120.0,
+        "suspicious_user_agents": 0,
+        "large_uploads": 0,
+        "post_ratio": 0.0,
+        "beacon_jitter_ratio": 0.0,
+        "beacon_interval_sec": 0.9
+      }
+    },
+    {
+      "detection_id": "det-56a4d85f-a517-4654-b7bd-7b38dab14c14",
+      "timestamp": "2026-09-08T12:19:37.023261+00:00",
+      "analyzer": "http_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频 HTTP 请求 (源: 192.168.1.30)",
+      "description": "HTTP 请求速率 120/min，超过阈值 60/min",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-623b5cf5-980e-4bd2-9f6b-002d2794a697",
+        "evt-5c8cf74b-b104-4506-a4ac-6e32f6f86c6d",
+        "evt-3a81f438-f56f-41be-ab9b-b22830873ea5",
+        "evt-9515d2c5-26e3-4640-84f5-5bc87eadb706",
+        "evt-e233e703-24d1-4422-abc9-8ed6e72c3129",
+        "evt-1bb3d661-ed4c-4790-901b-c6244f10fd59",
+        "evt-5fa92567-f4b9-4222-be1d-892877ff2a0c",
+        "evt-d623fbf3-292b-4362-8909-1615384c2895",
+        "evt-5fb6d031-11a2-4c3e-b4e7-bbcb47c8e54a",
+        "evt-ea01876c-83d3-47b1-9498-bdaa31b377ca",
+        "evt-7087fdf0-a0c9-4dd1-82d5-e1a8ad40731f",
+        "evt-a3332547-9b42-4bac-934f-68a320b9c999",
+        "evt-a4ac96ad-a2b3-4003-bee5-bbd2561b90f3",
+        "evt-e3ed520c-8399-4674-8e50-739f2e1900e7",
+        "evt-1e9a3bb4-05a3-406b-9809-82de960ea3a9",
+        "evt-d7d8565a-f46b-4ce6-a945-4f413e3bfe17",
+        "evt-6e79819b-41ce-4da1-b05c-2f201d56f388",
+        "evt-927e6e7e-45ac-4951-a7dc-f8f0d2509919",
+        "evt-66276626-4b18-42e3-93bf-b577ecfe3b17",
+        "evt-22b35c58-920d-4243-a120-eb75266a34c1",
+        "evt-527f5b52-2c14-4c14-ab70-b6a9f36c4505",
+        "evt-81c9a4c8-2a86-4bad-89c6-d9735e1cd945",
+        "evt-940c0345-baa2-4290-b3de-fd9acbac4692",
+        "evt-d355ad62-f6c7-4193-9235-85a22d130283",
+        "evt-4bd38817-19e9-40e5-8168-ab973838d3c6",
+        "evt-1b7eaa77-54a2-4bee-9b39-1e1f97100339",
+        "evt-ba3a0332-5398-4042-940d-38303ab4f82d",
+        "evt-2e5e32c7-6917-4f60-9c4a-fb83c9b28027",
+        "evt-5fd556aa-ccf3-4d8c-b6c5-211f997a2e79",
+        "evt-e138641a-0235-43ac-96d6-c9b00e92b8c9",
+        "evt-c0eac286-ea5a-412b-8528-439518e73cb3",
+        "evt-dd005da9-c928-4d9f-b7db-972049197f14",
+        "evt-5d16169a-0209-4c1f-8745-d41f6f09d740",
+        "evt-daf75d3f-1673-4db6-bb17-a19beb9617ae",
+        "evt-4cf663b3-6435-43bc-a3af-7ec8e61b5161",
+        "evt-3fa15152-ed4a-4611-92d8-cced8acac241",
+        "evt-a7dc9514-af51-4a0f-be33-8b50b513b381",
+        "evt-212b1ff3-504f-485f-a363-4f1cba2cf8bc",
+        "evt-ba434e99-d7cc-4c6e-a873-30794261aeaf",
+        "evt-50b24bfc-86e8-4fe7-9101-2312158eb605",
+        "evt-aa354de1-445b-46d0-8767-fbc202fbe477",
+        "evt-a781dab0-f730-4423-9204-28147f52482a",
+        "evt-e3030151-13ba-4bdb-b982-ed657201f79b",
+        "evt-331999b5-3bee-4ece-aef9-e182fc96941c",
+        "evt-ec82e3fd-ee03-480d-9ea8-3255ecc51aa3",
+        "evt-6b45972e-587e-4b0f-8b23-949dc2f18d4b",
+        "evt-dea7f67d-a9d3-4573-9421-7e875028a198",
+        "evt-6b985b85-1f90-45d3-b56c-44021746d33e",
+        "evt-5fba67b3-1490-4ca2-93a3-b18c172c0bbe",
+        "evt-b4564e82-4644-406a-8858-9801dd913c83"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "http",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.30",
+        "max_request_rate_per_min": 120.0,
+        "total_requests": 70,
+        "threshold": 60
+      }
+    },
+    {
+      "detection_id": "det-090bbfea-1609-4b85-be63-1d61214f9749",
+      "timestamp": "2026-09-08T12:19:37.023261+00:00",
+      "analyzer": "http_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频 HTTP 请求 (源: 192.168.1.1)",
+      "description": "HTTP 请求速率 180/min，超过阈值 60/min",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-6e294dc1-4aea-4b43-af0b-cee868a5508e",
+        "evt-701e24b7-cf6c-4135-ad68-6817d865961e",
+        "evt-c89825d0-1f08-4b32-8562-fb5db13d3fa0",
+        "evt-8decbcb0-1339-4048-b475-f0eb867b6f62",
+        "evt-fe75eaab-9e6b-4813-ae2e-1e14cd5c11b0"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "http",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.1",
+        "max_request_rate_per_min": 180.0,
+        "total_requests": 5,
+        "threshold": 60
+      }
+    },
+    {
+      "detection_id": "det-c0874d81-3da4-4d98-b76f-56f118608549",
+      "timestamp": "2026-09-08T12:19:37.023261+00:00",
+      "analyzer": "icmp_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.10 <-> 8.8.8.8)",
+      "description": "ICMP 通信触发 3 项隧道特征: payload 长度异常稳定 (std=0.00 < 5.0); payload 高熵 (entropy=4.00 > 3.5)",
+      "severity": "medium",
+      "confidence": 0.8,
+      "related_event_ids": [
+        "evt-72918656-18f5-4b8e-9752-502224c1a9bf",
+        "evt-46483f1d-0c5a-4bdd-b021-a01382c12b63",
+        "evt-aff27eeb-3b0e-4e75-b2c0-c96480935e7c",
+        "evt-8c66ee51-df62-444a-bffb-b9e1aa8de87f",
+        "evt-458dd228-fcf5-4b19-874b-ffed9da8bc81"
+      ],
+      "attack_technique_id": "T1571.004",
+      "tags": [
+        "icmp",
+        "icmp_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.10",
+        "dst_ip": "8.8.8.8",
+        "indicators": {
+          "total_packets": 5,
+          "max_frequency_per_min": 120.0,
+          "max_payload_size": 16,
+          "avg_payload_size": 16.0,
+          "payload_size_std": 0.0,
+          "max_payload_entropy": 4.0,
+          "is_bidirectional": false
+        },
+        "triggered_rules": [
+          "payload 长度异常稳定 (std=0.00 < 5.0)",
+          "payload 高熵 (entropy=4.00 > 3.5)"
+        ],
+        "score": 3
+      }
+    },
+    {
+      "detection_id": "det-becdc4a2-0d65-42fa-bb49-88bae23aa2b5",
+      "timestamp": "2026-09-08T12:19:37.024261+00:00",
+      "analyzer": "icmp_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.100 <-> 192.168.1.100)",
+      "description": "ICMP 通信触发 7 项隧道特征: 高频 ICMP (180/min > 20/min); payload 异常大 (max=200 > 64); payload 长度异常稳定 (std=0.00 < 5.0); payload 高熵 (entropy=7.08 > 3.5); 双向 ICMP 通信 (25 包)",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-158dfc02-ca41-4da8-b2a8-5f33ebf9e213",
+        "evt-55e36078-d362-4d68-9557-8e2bf9511fcc",
+        "evt-ebb022fd-6772-4679-9b35-3745864e85f4",
+        "evt-1478ceb0-b79f-4684-8da4-fa736c050035",
+        "evt-0fff1d7a-3620-463e-bf89-862beb660f6a",
+        "evt-22edf76a-e236-41c5-bca7-683614b53c2b",
+        "evt-20faac60-a5bf-4ac3-bfe2-6fd50b02338a",
+        "evt-9aa8bcb8-3d9a-401e-9854-632da45adf82",
+        "evt-35395c8a-8287-4a5b-95bf-bec00981135c",
+        "evt-e03dc7ff-fac1-4369-b3cc-3f25c360eec0",
+        "evt-cdbd022b-a001-439c-9270-427126d99ff7",
+        "evt-53efd22c-ae77-48a4-b47d-9449f928efd8",
+        "evt-7252d702-99ae-4e0e-a1ba-78c7a2bc112a",
+        "evt-2ddbba1c-f6df-4d2c-bf04-d201831c12a3",
+        "evt-0dfc2bc9-7be0-4c6a-896b-bd915379ff13",
+        "evt-05794174-9c30-4d26-b091-e4c27b7bae02",
+        "evt-93f58cbd-c93e-42c4-a4a3-4ce9cd6161cc",
+        "evt-f1865e9d-4c25-4887-933f-9e3d9f2ad4ef",
+        "evt-53b32226-617d-4807-ad54-77f64bb3bcc4",
+        "evt-acc89335-3bd3-4a1a-91d6-0228b4ca776e",
+        "evt-c6eaaee9-86ea-4fbf-9889-1cf6238e0073",
+        "evt-c875bf3f-ffe1-4690-9529-e598acb4159b",
+        "evt-15a8e102-69ad-43f3-be66-2ca005db7fdb",
+        "evt-a8712032-aaea-4cac-aca8-22d7a6ff3223",
+        "evt-f31c30da-903f-41bc-b1d0-76b89b61fd25"
+      ],
+      "attack_technique_id": "T1571.004",
+      "tags": [
+        "icmp",
+        "icmp_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.100",
+        "dst_ip": "192.168.1.100",
+        "indicators": {
+          "total_packets": 25,
+          "max_frequency_per_min": 180.0,
+          "max_payload_size": 200,
+          "avg_payload_size": 200.0,
+          "payload_size_std": 0.0,
+          "max_payload_entropy": 7.08,
+          "is_bidirectional": true
+        },
+        "triggered_rules": [
+          "高频 ICMP (180/min > 20/min)",
+          "payload 异常大 (max=200 > 64)",
+          "payload 长度异常稳定 (std=0.00 < 5.0)",
+          "payload 高熵 (entropy=7.08 > 3.5)",
+          "双向 ICMP 通信 (25 包)"
+        ],
+        "score": 7
+      }
+    },
+    {
+      "detection_id": "det-95d1beb3-b005-415c-92ab-913a2f46d0c3",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "icmp_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 ICMP 隧道通信 (192.168.1.40 <-> 8.8.8.8)",
+      "description": "ICMP 通信触发 3 项隧道特征: 高频 ICMP (60/min > 20/min); payload 长度异常稳定 (std=0.00 < 5.0); 周期性 ICMP (interval=2.0s, 低抖动)",
+      "severity": "medium",
+      "confidence": 0.8,
+      "related_event_ids": [
+        "evt-3adc1a8c-a1b0-4fcb-b3e7-3420ab2ba213",
+        "evt-0d58d592-abf5-4b4a-b7f2-ce736d080f7e",
+        "evt-23ba3a2c-4063-4a61-bcbd-4941336bbdae",
+        "evt-f52fed19-ce8e-4e19-86a9-01b0824e6262",
+        "evt-2d176b43-eff8-4fce-a4d2-5faa35048dae",
+        "evt-98da2a5c-b042-4675-a30a-41c0d2c91148",
+        "evt-6da9b26b-c2e0-41a1-89d1-81dc79ef6312",
+        "evt-e0f97005-f42d-493a-ad14-85a9c9d109bd",
+        "evt-7eeac215-f9a5-471d-a294-1118b9172c2d",
+        "evt-fe526e04-0948-49cf-848f-266e5cbc6967",
+        "evt-e9293217-2324-44a2-944a-f516e2290da5",
+        "evt-93f3f585-10fb-426c-9355-2a112b27b960",
+        "evt-03c86ab2-31b1-443e-9edf-fcd94e2d4e76",
+        "evt-9c7f3bb7-8ae9-4668-a08c-3b2299a562a9",
+        "evt-ef95488a-53d4-4d43-94aa-3909ed7e1de4",
+        "evt-33b5f060-15d9-44bb-994c-37bd3e8035dd",
+        "evt-5e99cce8-307f-45fc-8198-0559ee96a1cd",
+        "evt-4c913e0b-816b-45d5-8373-710a7666eeb6",
+        "evt-bc844bd3-4c8c-4d6b-be9a-958352592ef1",
+        "evt-d827b04e-0583-48ef-9953-a3ba45e4c67c",
+        "evt-1d305c6c-aa18-4b45-a902-9ec8304d7d78",
+        "evt-3887cf78-7e85-411a-8553-2539ab3774f8",
+        "evt-93d6af5b-6c7a-4a53-9803-895f875b379a",
+        "evt-97e40786-4455-4b8c-914e-df5c5ed643d4",
+        "evt-5df23eaf-7e95-408b-8e71-ff87d8e86bcf"
+      ],
+      "attack_technique_id": "T1571.004",
+      "tags": [
+        "icmp",
+        "icmp_tunnel",
+        "covert_channel"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.40",
+        "dst_ip": "8.8.8.8",
+        "indicators": {
+          "total_packets": 25,
+          "max_frequency_per_min": 60.0,
+          "max_payload_size": 4,
+          "avg_payload_size": 4.0,
+          "payload_size_std": 0.0,
+          "max_payload_entropy": 2.0,
+          "periodic_jitter_ratio": 0.0,
+          "periodic_interval_sec": 2.0,
+          "is_bidirectional": false
+        },
+        "triggered_rules": [
+          "高频 ICMP (60/min > 20/min)",
+          "payload 长度异常稳定 (std=0.00 < 5.0)",
+          "周期性 ICMP (interval=2.0s, 低抖动)"
+        ],
+        "score": 3
+      }
+    },
+    {
+      "detection_id": "det-4c33d6bf-34bf-499c-99e7-eaef2b6e4aff",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "长连接检测 (源: 192.168.1.10)",
+      "description": "源 IP 192.168.1.10 存在 1 个长连接，持续时间超过 3600 秒",
+      "severity": "medium",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-24c924db-0e9b-4514-8b92-24f77e113b12",
+        "evt-a212ca6b-07a9-456b-958f-7b93a828eae9",
+        "evt-3861775a-a527-4437-a38d-ccf93f20b106",
+        "evt-c3bda6b2-5bf0-4cd0-aa3c-4270ed829704",
+        "evt-9926feca-c9c3-4425-b592-ff2ac9498118",
+        "evt-a753e82f-27de-425b-b757-b8bb1bb5a8d5",
+        "evt-00efb16c-04e2-48ae-8c8f-1de02778e65a",
+        "evt-f36058f9-4c54-4b19-92b5-616b6ae0ee40",
+        "evt-72918656-18f5-4b8e-9752-502224c1a9bf",
+        "evt-46483f1d-0c5a-4bdd-b021-a01382c12b63",
+        "evt-aff27eeb-3b0e-4e75-b2c0-c96480935e7c",
+        "evt-8c66ee51-df62-444a-bffb-b9e1aa8de87f",
+        "evt-458dd228-fcf5-4b19-874b-ffed9da8bc81",
+        "evt-aa881a56-6982-4416-919d-389ea9e43c53",
+        "evt-931a5552-a5c9-45ea-a306-99579b4f1436",
+        "evt-143b792c-199d-4e1b-bb05-9e50f455c522"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "long_connection"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.10",
+        "long_connections": [
+          "192.168.1.10:10.0.0.5:443"
+        ],
+        "threshold_sec": 3600
+      }
+    },
+    {
+      "detection_id": "det-fcdb0c7c-7d1f-4c49-9da8-8499d703daa8",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.100)",
+      "description": "源 IP 192.168.1.100 存在 3 组周期性连接，间隔规律性高，疑似 C2 Beacon 通信",
+      "severity": "high",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-815ed1cb-0fc2-41ec-b557-d2f53a9904b4",
+        "evt-2e16dad0-271a-4a57-a514-c15df5863e3d",
+        "evt-5707c2e2-2a3d-429d-8e5c-4c1a31723561",
+        "evt-95de231a-62f7-4cea-b933-3b27f4af9546",
+        "evt-3667aa7f-320b-4a98-99a5-e2b906f86aba",
+        "evt-c6d01803-e495-4db0-ade3-fab931cbe09b",
+        "evt-b10a0d84-54e0-4075-8ee2-23be6357ce2b",
+        "evt-1db37aa1-d786-4484-bea7-14a9d88f4a3a",
+        "evt-07fe1009-5367-484a-aafa-cff67bce76b8",
+        "evt-4b1f5218-0edf-4ab4-8b25-16e8fe6c09da",
+        "evt-8313f5aa-bab7-4ef3-9a63-d0cfc7d19ff9",
+        "evt-e2c25881-d8d7-4aa4-85f8-8788616eab42",
+        "evt-c442e07c-030f-4550-bbdb-02f2322558ee",
+        "evt-de52bdd7-c6f8-4e4b-a20a-5b53729680b1",
+        "evt-6d2a607d-c777-47e7-85ea-55e7edffeac0",
+        "evt-f604bce8-5711-4862-99d7-6d5eeb4bb3d2",
+        "evt-a4e22977-eb0d-4170-80f7-7a95b41d1a70",
+        "evt-4676ae67-f241-4479-a583-040ff6742ba1",
+        "evt-d5b8650e-9634-48ec-bca6-40df8b9c54e6",
+        "evt-f6005f53-2a17-4eec-9289-b8f592f5306d",
+        "evt-02e99ae5-4d55-46cd-9df5-6e03d391e001",
+        "evt-2457dd0e-7d90-49c8-be49-5193327e3718",
+        "evt-9ab33d2e-9cc8-4a95-9762-ae25f014bcda",
+        "evt-0c5b8c22-986f-446d-aed8-4e5c9c84ac51",
+        "evt-63dcc6fe-7c2a-4b0b-ac2a-84bb0a252892",
+        "evt-90d1d084-7548-4a22-937f-61efc0465040",
+        "evt-bfa5a229-54ad-4e51-83b3-956fa1da2c88",
+        "evt-f1a96d0b-dfaa-4385-ac13-498d0fa602df",
+        "evt-d301cd00-f6d9-4ede-ae2c-0ab8c2fe078c",
+        "evt-9d03e08d-bd3a-4cfb-a91b-81efd7f44d11",
+        "evt-f2e3add0-2261-40d3-9edd-95ce98e38e3c",
+        "evt-5c4aac72-8a5b-46ea-bd34-098f9ff486e7",
+        "evt-cd01995b-c038-46bd-bf5f-c5a5d91e3bb0",
+        "evt-d8ce6e01-e1ab-4dc1-bbcd-51fdade4305f",
+        "evt-5a7698b2-998a-4552-b781-32eb2c160f21",
+        "evt-64d84dc8-a0ae-4801-a89f-a99f96b2bb49",
+        "evt-29aa1648-c3b8-41f1-838e-6d1e2fb865fd",
+        "evt-550ab48b-9711-4d11-a2a7-310dea436289",
+        "evt-b4f4a82c-b49e-4278-a3e2-e84d77e0137e",
+        "evt-b61cce32-9ff0-436d-a30a-4a0ffa14b1e0",
+        "evt-64edd866-185c-482a-85d1-027880989b51",
+        "evt-f54bdbec-20f4-4567-86ce-08e44d13f26c",
+        "evt-b7816615-a81b-474b-bd4f-e05f46748f41",
+        "evt-b490ce1d-3f64-4476-87b3-ca72c97b0cc4",
+        "evt-8521ca64-1cba-4209-8bac-8341c00b5d77",
+        "evt-6c4f5e63-b7c4-4c4d-ba14-5142e0e8348e",
+        "evt-56de83e1-5a3f-487e-a76d-65bb4aa1bdd3",
+        "evt-3ab1e48d-88d2-4e81-922f-482d2800a826",
+        "evt-1d34af3e-b100-4d17-8ad9-09dfc34054df",
+        "evt-fb15afdf-d805-4c5c-9f1e-d30ce225771a"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "connection",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.100",
+        "beacon_connections": [
+          "192.168.1.100:8.8.8.8:53",
+          "192.168.1.100:203.0.113.10:80",
+          "192.168.1.100:203.0.113.20:None"
+        ]
+      }
+    },
+    {
+      "detection_id": "det-88d63fda-fbf5-4d96-a528-54e48aaf8f9e",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频连接行为 (源: 192.168.1.100)",
+      "description": "源 IP 192.168.1.100 连接速率 120/min，超过阈值 50/min",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-815ed1cb-0fc2-41ec-b557-d2f53a9904b4",
+        "evt-2e16dad0-271a-4a57-a514-c15df5863e3d",
+        "evt-5707c2e2-2a3d-429d-8e5c-4c1a31723561",
+        "evt-95de231a-62f7-4cea-b933-3b27f4af9546",
+        "evt-3667aa7f-320b-4a98-99a5-e2b906f86aba",
+        "evt-c6d01803-e495-4db0-ade3-fab931cbe09b",
+        "evt-b10a0d84-54e0-4075-8ee2-23be6357ce2b",
+        "evt-1db37aa1-d786-4484-bea7-14a9d88f4a3a",
+        "evt-07fe1009-5367-484a-aafa-cff67bce76b8",
+        "evt-4b1f5218-0edf-4ab4-8b25-16e8fe6c09da",
+        "evt-8313f5aa-bab7-4ef3-9a63-d0cfc7d19ff9",
+        "evt-e2c25881-d8d7-4aa4-85f8-8788616eab42",
+        "evt-c442e07c-030f-4550-bbdb-02f2322558ee",
+        "evt-de52bdd7-c6f8-4e4b-a20a-5b53729680b1",
+        "evt-6d2a607d-c777-47e7-85ea-55e7edffeac0",
+        "evt-f604bce8-5711-4862-99d7-6d5eeb4bb3d2",
+        "evt-a4e22977-eb0d-4170-80f7-7a95b41d1a70",
+        "evt-4676ae67-f241-4479-a583-040ff6742ba1",
+        "evt-d5b8650e-9634-48ec-bca6-40df8b9c54e6",
+        "evt-f6005f53-2a17-4eec-9289-b8f592f5306d",
+        "evt-02e99ae5-4d55-46cd-9df5-6e03d391e001",
+        "evt-2457dd0e-7d90-49c8-be49-5193327e3718",
+        "evt-9ab33d2e-9cc8-4a95-9762-ae25f014bcda",
+        "evt-0c5b8c22-986f-446d-aed8-4e5c9c84ac51",
+        "evt-63dcc6fe-7c2a-4b0b-ac2a-84bb0a252892",
+        "evt-90d1d084-7548-4a22-937f-61efc0465040",
+        "evt-bfa5a229-54ad-4e51-83b3-956fa1da2c88",
+        "evt-f1a96d0b-dfaa-4385-ac13-498d0fa602df",
+        "evt-d301cd00-f6d9-4ede-ae2c-0ab8c2fe078c",
+        "evt-9d03e08d-bd3a-4cfb-a91b-81efd7f44d11",
+        "evt-f2e3add0-2261-40d3-9edd-95ce98e38e3c",
+        "evt-5c4aac72-8a5b-46ea-bd34-098f9ff486e7",
+        "evt-cd01995b-c038-46bd-bf5f-c5a5d91e3bb0",
+        "evt-d8ce6e01-e1ab-4dc1-bbcd-51fdade4305f",
+        "evt-5a7698b2-998a-4552-b781-32eb2c160f21",
+        "evt-64d84dc8-a0ae-4801-a89f-a99f96b2bb49",
+        "evt-29aa1648-c3b8-41f1-838e-6d1e2fb865fd",
+        "evt-550ab48b-9711-4d11-a2a7-310dea436289",
+        "evt-b4f4a82c-b49e-4278-a3e2-e84d77e0137e",
+        "evt-b61cce32-9ff0-436d-a30a-4a0ffa14b1e0",
+        "evt-64edd866-185c-482a-85d1-027880989b51",
+        "evt-f54bdbec-20f4-4567-86ce-08e44d13f26c",
+        "evt-b7816615-a81b-474b-bd4f-e05f46748f41",
+        "evt-b490ce1d-3f64-4476-87b3-ca72c97b0cc4",
+        "evt-8521ca64-1cba-4209-8bac-8341c00b5d77",
+        "evt-6c4f5e63-b7c4-4c4d-ba14-5142e0e8348e",
+        "evt-56de83e1-5a3f-487e-a76d-65bb4aa1bdd3",
+        "evt-3ab1e48d-88d2-4e81-922f-482d2800a826",
+        "evt-1d34af3e-b100-4d17-8ad9-09dfc34054df",
+        "evt-fb15afdf-d805-4c5c-9f1e-d30ce225771a"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.100",
+        "max_connection_rate_per_min": 120.0,
+        "total_connections": 65
+      }
+    },
+    {
+      "detection_id": "det-e5009430-1500-49dd-b861-b0b8f7957b93",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.200)",
+      "description": "源 IP 192.168.1.200 存在 1 组周期性连接，间隔规律性高，疑似 C2 Beacon 通信",
+      "severity": "high",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-08e1ef4d-364c-47ac-b0a1-1c7a494516f7",
+        "evt-e5d91dd6-cd37-4c4d-b464-8b2234d7a831",
+        "evt-45b35fdf-598d-4b1a-a257-2604fcfda6b0",
+        "evt-76b650b6-f269-46e4-b25c-592716fc3af2",
+        "evt-705f9e45-ec99-4487-a4b3-3ec64a7c0acc",
+        "evt-363b82ca-1c5d-4596-af3c-db3201fbd0d1",
+        "evt-24a26906-4ad2-4865-a630-2d117988e1c7",
+        "evt-0dd429fe-7843-40d8-9b1d-3dcf04707147",
+        "evt-0d84f7bb-6475-45a0-9321-8bebf2d7adc2",
+        "evt-5b0cc90d-47d9-4c8e-9ffd-faf4b04a8d3d"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "connection",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.200",
+        "beacon_connections": [
+          "192.168.1.200:8.8.8.8:53"
+        ]
+      }
+    },
+    {
+      "detection_id": "det-947f63f5-5bed-4a5f-b397-5079847a6ce1",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 Beacon 通信 (源: 203.0.113.20)",
+      "description": "源 IP 203.0.113.20 存在 1 组周期性连接，间隔规律性高，疑似 C2 Beacon 通信",
+      "severity": "high",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-05794174-9c30-4d26-b091-e4c27b7bae02",
+        "evt-93f58cbd-c93e-42c4-a4a3-4ce9cd6161cc",
+        "evt-f1865e9d-4c25-4887-933f-9e3d9f2ad4ef",
+        "evt-53b32226-617d-4807-ad54-77f64bb3bcc4",
+        "evt-acc89335-3bd3-4a1a-91d6-0228b4ca776e",
+        "evt-c6eaaee9-86ea-4fbf-9889-1cf6238e0073",
+        "evt-c875bf3f-ffe1-4690-9529-e598acb4159b",
+        "evt-15a8e102-69ad-43f3-be66-2ca005db7fdb",
+        "evt-a8712032-aaea-4cac-aca8-22d7a6ff3223",
+        "evt-f31c30da-903f-41bc-b1d0-76b89b61fd25"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "connection",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "src_ip": "203.0.113.20",
+        "beacon_connections": [
+          "203.0.113.20:192.168.1.100:None"
+        ]
+      }
+    },
+    {
+      "detection_id": "det-f0cf6c74-6238-460c-9d88-0fc1b0f2b823",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似端口扫描行为 (源: 192.168.1.66)",
+      "description": "源 IP 192.168.1.66 在短时间内访问了 25 个不同端口，超过阈值 20",
+      "severity": "medium",
+      "confidence": 0.6,
+      "related_event_ids": [
+        "evt-19008e75-19c7-4c43-b6f5-230f92017b0c",
+        "evt-2050c758-9be8-4748-b2e7-125ba2be90e7",
+        "evt-524d79dd-3e11-4f93-8713-c69135d94959",
+        "evt-79a91f8d-6e0e-40a1-b77a-73cb1277cfd6",
+        "evt-8d3917c8-b9e3-4cfc-8845-04e8ad961f25",
+        "evt-ba7c71d2-b2b2-4704-bbb2-719ea26ae39d",
+        "evt-f4a7c7c8-b249-4c47-8846-225566fa60d2",
+        "evt-207ccae7-2da0-49a4-9119-31ce5dddd3fb",
+        "evt-d40b9d54-69b4-4f93-855d-6c3f4b43a36a",
+        "evt-576c443e-f46a-437a-baa7-a888a2c67b77",
+        "evt-65421712-dc36-4791-a2ec-5db1fb1864e1",
+        "evt-4f65747e-758c-4639-882f-d001c538d26b",
+        "evt-2809b823-14fe-458e-813d-fe2829fa6ab6",
+        "evt-1668690c-76be-4dd7-9ebc-7828e6735b7d",
+        "evt-a0351959-8aeb-49a2-be76-50d48e928b2f",
+        "evt-1e957c01-6e8f-486a-a755-eba3d1d7e58c",
+        "evt-5ec7bb33-0f3a-467a-a971-ab804fb315d1",
+        "evt-de79e219-389e-4c2b-b17e-632913ec6a3a",
+        "evt-e720a35b-555f-4740-a5ce-208259eb5be1",
+        "evt-ba9f1af1-fc3e-4246-a365-4bb551b6d3d6",
+        "evt-c1c73256-958d-4432-9281-d9ed35dee34f",
+        "evt-7a564266-a9e2-40e1-9c48-cf77f1f63ce4",
+        "evt-ea4022af-e719-45fe-9f22-04af858ab477",
+        "evt-67db9485-428f-434e-99ef-1d4d5deaeca9",
+        "evt-16594d0e-73ac-4aa5-a176-06398fbeedd9"
+      ],
+      "attack_technique_id": "T1046",
+      "tags": [
+        "connection",
+        "port_scan"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.66",
+        "unique_dst_ports": 25,
+        "scanned_ports": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44
+        ],
+        "threshold": 20
+      }
+    },
+    {
+      "detection_id": "det-513442fa-e6ac-45ff-8738-b02cd3a34331",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "非常用端口通信 (源: 192.168.1.66)",
+      "description": "源 IP 192.168.1.66 访问了 22 个非常用端口",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-19008e75-19c7-4c43-b6f5-230f92017b0c",
+        "evt-2050c758-9be8-4748-b2e7-125ba2be90e7",
+        "evt-524d79dd-3e11-4f93-8713-c69135d94959",
+        "evt-79a91f8d-6e0e-40a1-b77a-73cb1277cfd6",
+        "evt-8d3917c8-b9e3-4cfc-8845-04e8ad961f25",
+        "evt-ba7c71d2-b2b2-4704-bbb2-719ea26ae39d",
+        "evt-f4a7c7c8-b249-4c47-8846-225566fa60d2",
+        "evt-207ccae7-2da0-49a4-9119-31ce5dddd3fb",
+        "evt-d40b9d54-69b4-4f93-855d-6c3f4b43a36a",
+        "evt-576c443e-f46a-437a-baa7-a888a2c67b77",
+        "evt-65421712-dc36-4791-a2ec-5db1fb1864e1",
+        "evt-4f65747e-758c-4639-882f-d001c538d26b",
+        "evt-2809b823-14fe-458e-813d-fe2829fa6ab6",
+        "evt-1668690c-76be-4dd7-9ebc-7828e6735b7d",
+        "evt-a0351959-8aeb-49a2-be76-50d48e928b2f",
+        "evt-1e957c01-6e8f-486a-a755-eba3d1d7e58c",
+        "evt-5ec7bb33-0f3a-467a-a971-ab804fb315d1",
+        "evt-de79e219-389e-4c2b-b17e-632913ec6a3a",
+        "evt-e720a35b-555f-4740-a5ce-208259eb5be1",
+        "evt-ba9f1af1-fc3e-4246-a365-4bb551b6d3d6",
+        "evt-c1c73256-958d-4432-9281-d9ed35dee34f",
+        "evt-7a564266-a9e2-40e1-9c48-cf77f1f63ce4",
+        "evt-ea4022af-e719-45fe-9f22-04af858ab477",
+        "evt-67db9485-428f-434e-99ef-1d4d5deaeca9",
+        "evt-16594d0e-73ac-4aa5-a176-06398fbeedd9"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "uncommon_port"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.66",
+        "uncommon_ports": [
+          20,
+          21,
+          24,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42
+        ]
+      }
+    },
+    {
+      "detection_id": "det-31c29492-31ca-4c18-a738-2261bde43fc0",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.30)",
+      "description": "源 IP 192.168.1.30 存在 1 组周期性连接，间隔规律性高，疑似 C2 Beacon 通信",
+      "severity": "high",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-623b5cf5-980e-4bd2-9f6b-002d2794a697",
+        "evt-5c8cf74b-b104-4506-a4ac-6e32f6f86c6d",
+        "evt-3a81f438-f56f-41be-ab9b-b22830873ea5",
+        "evt-9515d2c5-26e3-4640-84f5-5bc87eadb706",
+        "evt-e233e703-24d1-4422-abc9-8ed6e72c3129",
+        "evt-1bb3d661-ed4c-4790-901b-c6244f10fd59",
+        "evt-5fa92567-f4b9-4222-be1d-892877ff2a0c",
+        "evt-d623fbf3-292b-4362-8909-1615384c2895",
+        "evt-5fb6d031-11a2-4c3e-b4e7-bbcb47c8e54a",
+        "evt-ea01876c-83d3-47b1-9498-bdaa31b377ca",
+        "evt-7087fdf0-a0c9-4dd1-82d5-e1a8ad40731f",
+        "evt-a3332547-9b42-4bac-934f-68a320b9c999",
+        "evt-a4ac96ad-a2b3-4003-bee5-bbd2561b90f3",
+        "evt-e3ed520c-8399-4674-8e50-739f2e1900e7",
+        "evt-1e9a3bb4-05a3-406b-9809-82de960ea3a9",
+        "evt-d7d8565a-f46b-4ce6-a945-4f413e3bfe17",
+        "evt-6e79819b-41ce-4da1-b05c-2f201d56f388",
+        "evt-927e6e7e-45ac-4951-a7dc-f8f0d2509919",
+        "evt-66276626-4b18-42e3-93bf-b577ecfe3b17",
+        "evt-22b35c58-920d-4243-a120-eb75266a34c1",
+        "evt-527f5b52-2c14-4c14-ab70-b6a9f36c4505",
+        "evt-81c9a4c8-2a86-4bad-89c6-d9735e1cd945",
+        "evt-940c0345-baa2-4290-b3de-fd9acbac4692",
+        "evt-d355ad62-f6c7-4193-9235-85a22d130283",
+        "evt-4bd38817-19e9-40e5-8168-ab973838d3c6",
+        "evt-1b7eaa77-54a2-4bee-9b39-1e1f97100339",
+        "evt-ba3a0332-5398-4042-940d-38303ab4f82d",
+        "evt-2e5e32c7-6917-4f60-9c4a-fb83c9b28027",
+        "evt-5fd556aa-ccf3-4d8c-b6c5-211f997a2e79",
+        "evt-e138641a-0235-43ac-96d6-c9b00e92b8c9",
+        "evt-c0eac286-ea5a-412b-8528-439518e73cb3",
+        "evt-dd005da9-c928-4d9f-b7db-972049197f14",
+        "evt-5d16169a-0209-4c1f-8745-d41f6f09d740",
+        "evt-daf75d3f-1673-4db6-bb17-a19beb9617ae",
+        "evt-4cf663b3-6435-43bc-a3af-7ec8e61b5161",
+        "evt-3fa15152-ed4a-4611-92d8-cced8acac241",
+        "evt-a7dc9514-af51-4a0f-be33-8b50b513b381",
+        "evt-212b1ff3-504f-485f-a363-4f1cba2cf8bc",
+        "evt-ba434e99-d7cc-4c6e-a873-30794261aeaf",
+        "evt-50b24bfc-86e8-4fe7-9101-2312158eb605",
+        "evt-aa354de1-445b-46d0-8767-fbc202fbe477",
+        "evt-a781dab0-f730-4423-9204-28147f52482a",
+        "evt-e3030151-13ba-4bdb-b982-ed657201f79b",
+        "evt-331999b5-3bee-4ece-aef9-e182fc96941c",
+        "evt-ec82e3fd-ee03-480d-9ea8-3255ecc51aa3",
+        "evt-6b45972e-587e-4b0f-8b23-949dc2f18d4b",
+        "evt-dea7f67d-a9d3-4573-9421-7e875028a198",
+        "evt-6b985b85-1f90-45d3-b56c-44021746d33e",
+        "evt-5fba67b3-1490-4ca2-93a3-b18c172c0bbe",
+        "evt-b4564e82-4644-406a-8858-9801dd913c83"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "connection",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.30",
+        "beacon_connections": [
+          "192.168.1.30:10.0.0.20:80"
+        ]
+      }
+    },
+    {
+      "detection_id": "det-1571c54b-6776-4c1e-a7b6-aa9d480e2566",
+      "timestamp": "2026-09-08T12:19:37.025263+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频连接行为 (源: 192.168.1.30)",
+      "description": "源 IP 192.168.1.30 连接速率 120/min，超过阈值 50/min",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-623b5cf5-980e-4bd2-9f6b-002d2794a697",
+        "evt-5c8cf74b-b104-4506-a4ac-6e32f6f86c6d",
+        "evt-3a81f438-f56f-41be-ab9b-b22830873ea5",
+        "evt-9515d2c5-26e3-4640-84f5-5bc87eadb706",
+        "evt-e233e703-24d1-4422-abc9-8ed6e72c3129",
+        "evt-1bb3d661-ed4c-4790-901b-c6244f10fd59",
+        "evt-5fa92567-f4b9-4222-be1d-892877ff2a0c",
+        "evt-d623fbf3-292b-4362-8909-1615384c2895",
+        "evt-5fb6d031-11a2-4c3e-b4e7-bbcb47c8e54a",
+        "evt-ea01876c-83d3-47b1-9498-bdaa31b377ca",
+        "evt-7087fdf0-a0c9-4dd1-82d5-e1a8ad40731f",
+        "evt-a3332547-9b42-4bac-934f-68a320b9c999",
+        "evt-a4ac96ad-a2b3-4003-bee5-bbd2561b90f3",
+        "evt-e3ed520c-8399-4674-8e50-739f2e1900e7",
+        "evt-1e9a3bb4-05a3-406b-9809-82de960ea3a9",
+        "evt-d7d8565a-f46b-4ce6-a945-4f413e3bfe17",
+        "evt-6e79819b-41ce-4da1-b05c-2f201d56f388",
+        "evt-927e6e7e-45ac-4951-a7dc-f8f0d2509919",
+        "evt-66276626-4b18-42e3-93bf-b577ecfe3b17",
+        "evt-22b35c58-920d-4243-a120-eb75266a34c1",
+        "evt-527f5b52-2c14-4c14-ab70-b6a9f36c4505",
+        "evt-81c9a4c8-2a86-4bad-89c6-d9735e1cd945",
+        "evt-940c0345-baa2-4290-b3de-fd9acbac4692",
+        "evt-d355ad62-f6c7-4193-9235-85a22d130283",
+        "evt-4bd38817-19e9-40e5-8168-ab973838d3c6",
+        "evt-1b7eaa77-54a2-4bee-9b39-1e1f97100339",
+        "evt-ba3a0332-5398-4042-940d-38303ab4f82d",
+        "evt-2e5e32c7-6917-4f60-9c4a-fb83c9b28027",
+        "evt-5fd556aa-ccf3-4d8c-b6c5-211f997a2e79",
+        "evt-e138641a-0235-43ac-96d6-c9b00e92b8c9",
+        "evt-c0eac286-ea5a-412b-8528-439518e73cb3",
+        "evt-dd005da9-c928-4d9f-b7db-972049197f14",
+        "evt-5d16169a-0209-4c1f-8745-d41f6f09d740",
+        "evt-daf75d3f-1673-4db6-bb17-a19beb9617ae",
+        "evt-4cf663b3-6435-43bc-a3af-7ec8e61b5161",
+        "evt-3fa15152-ed4a-4611-92d8-cced8acac241",
+        "evt-a7dc9514-af51-4a0f-be33-8b50b513b381",
+        "evt-212b1ff3-504f-485f-a363-4f1cba2cf8bc",
+        "evt-ba434e99-d7cc-4c6e-a873-30794261aeaf",
+        "evt-50b24bfc-86e8-4fe7-9101-2312158eb605",
+        "evt-aa354de1-445b-46d0-8767-fbc202fbe477",
+        "evt-a781dab0-f730-4423-9204-28147f52482a",
+        "evt-e3030151-13ba-4bdb-b982-ed657201f79b",
+        "evt-331999b5-3bee-4ece-aef9-e182fc96941c",
+        "evt-ec82e3fd-ee03-480d-9ea8-3255ecc51aa3",
+        "evt-6b45972e-587e-4b0f-8b23-949dc2f18d4b",
+        "evt-dea7f67d-a9d3-4573-9421-7e875028a198",
+        "evt-6b985b85-1f90-45d3-b56c-44021746d33e",
+        "evt-5fba67b3-1490-4ca2-93a3-b18c172c0bbe",
+        "evt-b4564e82-4644-406a-8858-9801dd913c83"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.30",
+        "max_connection_rate_per_min": 120.0,
+        "total_connections": 70
+      }
+    },
+    {
+      "detection_id": "det-1136f6e1-1028-4e71-ae6e-1324416f2c9c",
+      "timestamp": "2026-09-08T12:19:37.026268+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "疑似 Beacon 通信 (源: 192.168.1.40)",
+      "description": "源 IP 192.168.1.40 存在 1 组周期性连接，间隔规律性高，疑似 C2 Beacon 通信",
+      "severity": "high",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-3adc1a8c-a1b0-4fcb-b3e7-3420ab2ba213",
+        "evt-0d58d592-abf5-4b4a-b7f2-ce736d080f7e",
+        "evt-23ba3a2c-4063-4a61-bcbd-4941336bbdae",
+        "evt-f52fed19-ce8e-4e19-86a9-01b0824e6262",
+        "evt-2d176b43-eff8-4fce-a4d2-5faa35048dae",
+        "evt-98da2a5c-b042-4675-a30a-41c0d2c91148",
+        "evt-6da9b26b-c2e0-41a1-89d1-81dc79ef6312",
+        "evt-e0f97005-f42d-493a-ad14-85a9c9d109bd",
+        "evt-7eeac215-f9a5-471d-a294-1118b9172c2d",
+        "evt-fe526e04-0948-49cf-848f-266e5cbc6967",
+        "evt-e9293217-2324-44a2-944a-f516e2290da5",
+        "evt-93f3f585-10fb-426c-9355-2a112b27b960",
+        "evt-03c86ab2-31b1-443e-9edf-fcd94e2d4e76",
+        "evt-9c7f3bb7-8ae9-4668-a08c-3b2299a562a9",
+        "evt-ef95488a-53d4-4d43-94aa-3909ed7e1de4",
+        "evt-33b5f060-15d9-44bb-994c-37bd3e8035dd",
+        "evt-5e99cce8-307f-45fc-8198-0559ee96a1cd",
+        "evt-4c913e0b-816b-45d5-8373-710a7666eeb6",
+        "evt-bc844bd3-4c8c-4d6b-be9a-958352592ef1",
+        "evt-d827b04e-0583-48ef-9953-a3ba45e4c67c",
+        "evt-1d305c6c-aa18-4b45-a902-9ec8304d7d78",
+        "evt-3887cf78-7e85-411a-8553-2539ab3774f8",
+        "evt-93d6af5b-6c7a-4a53-9803-895f875b379a",
+        "evt-97e40786-4455-4b8c-914e-df5c5ed643d4",
+        "evt-5df23eaf-7e95-408b-8e71-ff87d8e86bcf"
+      ],
+      "attack_technique_id": "T1071.001",
+      "tags": [
+        "connection",
+        "beacon",
+        "c2"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.40",
+        "beacon_connections": [
+          "192.168.1.40:8.8.8.8:None"
+        ]
+      }
+    },
+    {
+      "detection_id": "det-605f3c5a-ba5c-4495-a568-b1f91b8b9449",
+      "timestamp": "2026-09-08T12:19:37.026268+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "高频连接行为 (源: 192.168.1.40)",
+      "description": "源 IP 192.168.1.40 连接速率 60/min，超过阈值 50/min",
+      "severity": "low",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-3adc1a8c-a1b0-4fcb-b3e7-3420ab2ba213",
+        "evt-0d58d592-abf5-4b4a-b7f2-ce736d080f7e",
+        "evt-23ba3a2c-4063-4a61-bcbd-4941336bbdae",
+        "evt-f52fed19-ce8e-4e19-86a9-01b0824e6262",
+        "evt-2d176b43-eff8-4fce-a4d2-5faa35048dae",
+        "evt-98da2a5c-b042-4675-a30a-41c0d2c91148",
+        "evt-6da9b26b-c2e0-41a1-89d1-81dc79ef6312",
+        "evt-e0f97005-f42d-493a-ad14-85a9c9d109bd",
+        "evt-7eeac215-f9a5-471d-a294-1118b9172c2d",
+        "evt-fe526e04-0948-49cf-848f-266e5cbc6967",
+        "evt-e9293217-2324-44a2-944a-f516e2290da5",
+        "evt-93f3f585-10fb-426c-9355-2a112b27b960",
+        "evt-03c86ab2-31b1-443e-9edf-fcd94e2d4e76",
+        "evt-9c7f3bb7-8ae9-4668-a08c-3b2299a562a9",
+        "evt-ef95488a-53d4-4d43-94aa-3909ed7e1de4",
+        "evt-33b5f060-15d9-44bb-994c-37bd3e8035dd",
+        "evt-5e99cce8-307f-45fc-8198-0559ee96a1cd",
+        "evt-4c913e0b-816b-45d5-8373-710a7666eeb6",
+        "evt-bc844bd3-4c8c-4d6b-be9a-958352592ef1",
+        "evt-d827b04e-0583-48ef-9953-a3ba45e4c67c",
+        "evt-1d305c6c-aa18-4b45-a902-9ec8304d7d78",
+        "evt-3887cf78-7e85-411a-8553-2539ab3774f8",
+        "evt-93d6af5b-6c7a-4a53-9803-895f875b379a",
+        "evt-97e40786-4455-4b8c-914e-df5c5ed643d4",
+        "evt-5df23eaf-7e95-408b-8e71-ff87d8e86bcf"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "high_frequency"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.40",
+        "max_connection_rate_per_min": 60.0,
+        "total_connections": 25
+      }
+    },
+    {
+      "detection_id": "det-a701aae6-e058-4d57-a20c-481e8677626c",
+      "timestamp": "2026-09-08T12:19:37.026268+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "长连接检测 (源: 192.168.1.1)",
+      "description": "源 IP 192.168.1.1 存在 2 个长连接，持续时间超过 3600 秒",
+      "severity": "medium",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-6e294dc1-4aea-4b43-af0b-cee868a5508e",
+        "evt-7ee5baa6-7ef2-4860-9ac3-b2b5e8ac499c",
+        "evt-1e26b093-eb31-44e5-8646-a394be4b0c4a",
+        "evt-9561aaa9-af38-43db-ad17-ee1a5445ea6a",
+        "evt-28e7a926-cd73-49d5-936c-87bcff5c3c97",
+        "evt-1941dd51-29e6-43c9-9186-0e00d2a1b4d3",
+        "evt-0ea73644-24ae-4bca-92b7-45de29c357c6",
+        "evt-587e6d46-c7cb-43a7-ad8f-816914034278",
+        "evt-e72aa7ec-4bbb-427f-8af2-0cdb7bf6f2b4",
+        "evt-701e24b7-cf6c-4135-ad68-6817d865961e",
+        "evt-c89825d0-1f08-4b32-8562-fb5db13d3fa0",
+        "evt-8decbcb0-1339-4048-b475-f0eb867b6f62",
+        "evt-8fd94b3d-8ea8-4f11-9956-b1c165c8fbbb",
+        "evt-4df88d47-fe63-49b0-b49b-0dce170b1943",
+        "evt-fe75eaab-9e6b-4813-ae2e-1e14cd5c11b0"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "long_connection"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.1",
+        "long_connections": [
+          "192.168.1.1:10.0.0.1:80",
+          "192.168.1.1:8.8.8.8:53"
+        ],
+        "threshold_sec": 3600
+      }
+    },
+    {
+      "detection_id": "det-f37e68cf-baf2-47e0-91f4-4433c651cb70",
+      "timestamp": "2026-09-08T12:19:37.026268+00:00",
+      "analyzer": "connection_analyzer",
+      "detection_type": "anomaly",
+      "title": "长连接检测 (源: 192.168.1.2)",
+      "description": "源 IP 192.168.1.2 存在 1 个长连接，持续时间超过 3600 秒",
+      "severity": "medium",
+      "confidence": 0.5,
+      "related_event_ids": [
+        "evt-d76d6f3e-d166-43e7-a67a-7a5d980fc3df",
+        "evt-a9e7f779-b8c6-43d8-914a-5c204593fcb0",
+        "evt-ec995343-e6cb-4479-9678-975a9991af9b"
+      ],
+      "attack_technique_id": null,
+      "tags": [
+        "connection",
+        "long_connection"
+      ],
+      "evidence": {
+        "src_ip": "192.168.1.2",
+        "long_connections": [
+          "192.168.1.2:10.0.0.2:443"
+        ],
+        "threshold_sec": 3600
+      }
+    }
+  ]
+}
