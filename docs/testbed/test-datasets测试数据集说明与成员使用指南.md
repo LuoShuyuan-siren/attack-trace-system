@@ -16,7 +16,11 @@
 
 当前测试数据均为已经下载并整理好的原始数据。
 
-**数据提供与整理由组员 9 负责，其他组员根据各自负责的模块选择对应数据进行测试。**
+**数据由组员 9 统一整理和提供，各组员根据自己的负责模块使用对应测试数据。**
+
+需要注意，不同公开数据集之间不存在天然的攻击活动关联，因此**不将 LANL、BOTS v1、Linux Attack Data 三个数据集直接拼接为同一次攻击事件**。
+
+攻击链关联测试主要在**同一个数据集内部**进行。
 
 对于数据量较大的数据集，不要求一次性处理全部数据。组员可以根据测试需求选择其中一部分数据、指定时间范围或指定主机进行测试。
 
@@ -135,7 +139,7 @@ LANL 数据集为企业环境中的多源网络安全事件数据，包含身份
 - 网络会话分析
 - 异常网络行为检测
 - 主机之间通信关系分析
-- 多源攻击链关联
+- 与认证、进程等事件进行关联
 
 数据量较大时，可以选择部分时间范围或部分主机进行测试。
 
@@ -154,11 +158,11 @@ LANL 数据集为企业环境中的多源网络安全事件数据，包含身份
 主要用于：
 
 - DNS 行为分析
-- 主机与域名/主机之间的关系分析
+- 主机之间关系分析
 - DNS 异常行为相关测试
 - 与其他网络及主机事件进行关联
 
-该文件可以与 `flows.txt.gz` 配合使用。
+该文件可以与 `flows.txt.gz` 等 LANL 数据配合使用。
 
 ---
 
@@ -172,10 +176,42 @@ LANL 数据集为企业环境中的多源网络安全事件数据，包含身份
 
 - 确定已知攻击活动的时间范围
 - 确定涉及的主机和用户
-- 作为攻击链关联和溯源分析的参考
+- 为攻击链关联提供参考
 - 与 `auth.txt.gz`、`proc.txt.gz`、`flows.txt.gz`、`dns.txt.gz` 进行交叉关联
 
 该文件主要作为**已知攻击活动参考数据**使用，而不是普通业务日志进行单独分析。
+
+---
+
+## 3.6 LANL 攻击链测试
+
+LANL 的多个数据文件属于同一个数据集，因此可以在 LANL 内部进行多源事件关联。
+
+例如：
+
+```text
+redteam
+   ↓
+确定攻击时间 / 主机 / 用户
+   ↓
+auth
+   ↓
+proc
+   ↓
+flows
+   ↓
+dns
+   ↓
+多源事件关联
+   ↓
+攻击链
+   ↓
+AttackGraph
+```
+
+具体使用时，可以根据 `redteam.txt.gz` 确定相关攻击活动，再从其他 LANL 数据中提取对应时间范围和主机的事件。
+
+**这里的攻击链关联仅针对 LANL 数据集内部的数据，不与 BOTS v1 或 Linux Attack Data 直接拼接。**
 
 ---
 
@@ -278,7 +314,7 @@ BOTS-v1/raw/botsv1-attack-only.tgz
 
 ## 4.5 成员 7
 
-根据需要综合使用：
+根据需要综合使用 BOTS v1 中的：
 
 - Windows Event Log
 - Sysmon
@@ -294,6 +330,37 @@ BOTS-v1/raw/botsv1-attack-only.tgz
 - 多源事件关联
 - 攻击链重建
 - 攻击路径分析
+- AttackGraph 构建
+
+---
+
+## 4.6 BOTS v1 攻击链测试
+
+BOTS v1 中的不同日志来源属于同一个攻击数据集，因此可以在 **BOTS v1 内部**进行多源关联。
+
+例如：
+
+```text
+Windows Event
+      +
+Sysmon
+      +
+网络流量
+      +
+DNS / HTTP
+      +
+Suricata
+      ↓
+多源事件关联
+      ↓
+攻击行为链
+      ↓
+AttackGraph
+```
+
+具体关联时，应根据 BOTS v1 中实际存在的时间、主机、进程、网络连接等信息进行关联。
+
+**BOTS v1 的攻击链测试独立于 LANL 和 Linux Attack Data，不将三个数据集混合为同一次攻击。**
 
 ---
 
@@ -301,7 +368,9 @@ BOTS-v1/raw/botsv1-attack-only.tgz
 
 Linux 测试数据来自 Splunk Attack Data，当前整理了 4 类攻击行为数据。
 
-虽然这些文件的体积较小，但包含的攻击行为较为集中，可以用于 Linux 日志解析、主机行为检测以及 MITRE ATT&CK 映射测试。
+这些数据主要用于 Linux 日志解析、主机行为检测以及 MITRE ATT&CK 技术映射测试。
+
+当前数据分别对应不同的攻击技术，不将不同目录中的数据默认视为同一次攻击。
 
 ---
 
@@ -332,7 +401,7 @@ linux_auditd.txt
 - 进程/命令行为分析
 - 权限提升行为检测
 - MITRE ATT&CK T1068 映射
-- 与其他事件进行关联
+- 攻击行为关联
 
 ---
 
@@ -358,7 +427,7 @@ linux_auditd_new_doas.txt
 - sudo/doas 相关行为分析
 - 权限提升行为检测
 - MITRE ATT&CK T1548.003 映射
-- 攻击事件关联
+- 攻击事件分析
 
 ---
 
@@ -385,7 +454,7 @@ linux_auditd_find_ssh_files.txt
 - auditd `EXECVE` 等事件解析
 - SSH 私钥相关行为检测
 - MITRE ATT&CK T1552.004 映射
-- 攻击行为关联
+- 攻击行为分析
 
 ---
 
@@ -412,7 +481,68 @@ linux_auditd_access_credential.txt
 - 凭据访问行为分析
 - `/etc/passwd`、`/etc/shadow` 相关行为检测
 - MITRE ATT&CK T1003.008 映射
-- 攻击行为关联
+- 攻击行为分析
+
+---
+
+# 5.5 Linux 数据的使用方式
+
+Linux Attack Data 中的各目录分别对应不同攻击技术。
+
+因此：
+
+```text
+T1068
+T1548.003
+T1552.004
+T1003.008
+```
+
+主要作为**独立的攻击行为测试样本**使用。
+
+例如：
+
+```text
+Linux Auditd
+    ↓
+事件解析
+    ↓
+行为识别
+    ↓
+DetectionResult
+    ↓
+MITRE ATT&CK
+    ↓
+T1068
+```
+
+或者：
+
+```text
+Linux Auditd
+    ↓
+行为识别
+    ↓
+DetectionResult
+    ↓
+T1552.004
+```
+
+不能仅根据这些独立数据集的文件，就认定：
+
+```text
+T1552.004
+    ↓
+T1003.008
+    ↓
+T1548.003
+    ↓
+T1068
+```
+
+一定属于同一次连续攻击。
+
+如果系统需要测试连续攻击链，应使用具有同一攻击场景和多源事件的数据，例如 LANL 或 BOTS v1。
 
 ---
 
@@ -426,7 +556,7 @@ linux_auditd_access_credential.txt
 | LANL | `dns.txt.gz` | 5、7 | DNS 分析、网络关联 |
 | LANL | `redteam.txt.gz` | 7 | 已知攻击活动、攻击链关联 |
 | BOTS v1 | `botsv1-attack-only.tgz` | 2、4、5、6、7 | Windows、主机行为、网络、ATT&CK、关联 |
-| Linux T1068 | `auth.txt` | 3、4、6、7 | Linux 日志、提权、ATT&CK、关联 |
+| Linux T1068 | `auth.txt` | 3、4、6、7 | Linux 日志、提权、ATT&CK |
 | Linux T1068 | `kern.txt` | 3、4、6、7 | Linux 系统日志、主机行为 |
 | Linux T1068 | `linux_auditd.txt` | 3、4、6、7 | auditd、主机行为、提权 |
 | Linux T1548.003 | `linux_auditd_new_doas.txt` | 3、4、6、7 | sudo/doas、提权 |
@@ -451,7 +581,7 @@ linux_auditd_access_credential.txt
 
 例如 LANL 数据可以先根据 `redteam.txt.gz` 确定攻击时间和涉及主机，再从 `auth.txt.gz`、`proc.txt.gz`、`flows.txt.gz`、`dns.txt.gz` 中截取对应范围的数据进行测试。
 
-BOTS v1 同样可以根据具体模块选择需要的日志类型，不需要一次处理整个压缩包。
+BOTS v1 可以根据具体模块选择需要的日志类型，也可以选择其中一部分数据进行测试，不要求一次处理整个压缩包。
 
 Linux 数据文件体积较小，可以直接用于完整测试；也可以根据具体测试模块选择其中的日志文件。
 
@@ -479,7 +609,7 @@ MITRE ATT&CK 映射
 AttackGraph / 攻击链
 ```
 
-不同数据集可以分别验证不同阶段：
+不同数据集对应的测试重点如下：
 
 ```text
 LANL
@@ -489,7 +619,9 @@ LANL
  ├── DNS
  └── 红队活动参考
           ↓
-     多源事件关联
+     LANL 内部多源关联
+          ↓
+       攻击链
 
 
 BOTS v1
@@ -500,7 +632,9 @@ BOTS v1
  ├── Suricata
  └── 其他网络数据
           ↓
- Windows + 主机行为 + 网络 + ATT&CK + 关联
+     BOTS v1 内部多源关联
+          ↓
+       攻击链
 
 
 Linux Attack Data
@@ -510,8 +644,12 @@ Linux Attack Data
  ├── SSH 私钥访问
  └── passwd/shadow 访问
           ↓
- Linux 日志 + 主机行为 + ATT&CK
+     单项攻击行为检测
+          ↓
+     MITRE ATT&CK 映射
 ```
+
+**LANL、BOTS v1、Linux Attack Data 分别独立进行测试，不将不同数据集直接拼接为同一次攻击链。**
 
 ---
 
@@ -521,6 +659,6 @@ Linux Attack Data
 
 各组员负责根据自己的模块使用对应测试数据，并将测试结果用于系统开发和测试。
 
-**本目录只负责提供测试数据，不规定各组员必须处理完整数据集。**
-
 对于数据量较大的数据，各组员可以自行选择合适的数据范围进行测试。
+
+**本目录负责提供测试数据，不要求各组员完整处理所有数据，也不要求不同公开数据集之间建立不存在的攻击关联。**
