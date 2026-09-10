@@ -1,6 +1,6 @@
 from app.analyzers.attack_mapping import AttackMapper, build_ttp_profile
 
-from tests.fixtures import detection
+from tests.fixtures.attack_mapping import detection
 
 
 def test_ttp_profile_aggregates_mapped_detections():

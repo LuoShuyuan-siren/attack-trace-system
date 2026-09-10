@@ -1,6 +1,6 @@
 from app.analyzers.attack_mapping import AttackMapper, map_and_build_stages
 
-from tests.fixtures import detection
+from tests.fixtures.attack_mapping import detection
 
 
 def test_stages_are_sorted_by_timestamp():
