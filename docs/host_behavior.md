@@ -73,7 +73,7 @@ time_delta_seconds when applicable.
 
 ## Shareable fixtures
 
-The examples directory contains 20 NormalizedEvent records: 7 normal events
+The backend/examples directory contains 20 NormalizedEvent records: 7 normal events
 and 13 attack events across Windows and Linux. The current analyzer produces
 13 DetectionResult records from this fixture. Run the following command from
 the repository root to regenerate both JSON files:
@@ -103,4 +103,5 @@ From the backend directory:
 
     python -m unittest discover -s tests -v
 
-The example input is available in examples/host_behavior_events.json.
+The example input is available in
+backend/examples/member4_host_behavior_events.json.

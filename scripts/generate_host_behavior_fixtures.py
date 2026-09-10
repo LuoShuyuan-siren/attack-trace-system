@@ -471,10 +471,10 @@ def main() -> None:
     results = HostBehaviorAnalyzer().analyze(events)
     stable_detection_ids(results)
 
-    examples_dir = PROJECT_ROOT / "examples"
+    examples_dir = PROJECT_ROOT / "backend" / "examples"
     examples_dir.mkdir(exist_ok=True)
-    write_json(examples_dir / "host_behavior_events.json", events)
-    write_json(examples_dir / "host_behavior_detections.json", results)
+    write_json(examples_dir / "member4_host_behavior_events.json", events)
+    write_json(examples_dir / "member4_host_behavior_detections.json", results)
 
     normal_count = sum("normal" in item.tags for item in events)
     attack_count = sum("attack" in item.tags for item in events)
