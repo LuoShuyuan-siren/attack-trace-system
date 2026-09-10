@@ -319,13 +319,21 @@ function App() {
       return;
     }
 
-    const acceptedExtensions = ['.json', '.log', '.evtx', '.pcap', '.pcapng', '.cap'];
+    const acceptedExtensions = [
+      '.txt',
+      '.log',
+      '.json',
+      '.evtx',
+      '.pcap',
+      '.pcapng',
+      '.cap',
+    ];
     const fileExtension = selectedFile.name.slice(selectedFile.name.lastIndexOf('.')).toLowerCase();
     const maxFileSize = 500 * 1024 * 1024;
 
     if (!acceptedExtensions.includes(fileExtension)) {
       setUploadState('error');
-      setUploadMessage('暂不支持该文件格式，请选择 JSON、日志、EVTX 或 PCAP 文件');
+      setUploadMessage('暂不支持该文件格式，请选择 TXT、LOG、JSON、EVTX、PCAP、PCAPNG 或 CAP 文件');
       return;
     }
 
@@ -1675,7 +1683,7 @@ function App() {
                 <input
                   id="data-file"
                   type="file"
-                    accept=".json,.log,.evtx,.pcap,.pcapng,.cap"
+                    accept=".txt,.log,.json,.evtx,.pcap,.pcapng,.cap"
                   onChange={(event) => {
                     setSelectedFile(event.target.files?.[0] ?? null);
                     setUploadState('idle');
