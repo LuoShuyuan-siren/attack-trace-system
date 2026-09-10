@@ -1,0 +1,28 @@
+﻿===== Sysmon Event ID 3 =====
+TimeCreated: 2026-09-10T15:03:56.4703983+08:00
+RecordId: 428980
+ProviderName: Microsoft-Windows-Sysmon
+EventId: 3
+----- Full Message -----
+Network connection detected:
+RuleName: -
+UtcTime: 2026-09-10 07:03:52.194
+ProcessGuid: {ceee364c-5659-6aa2-1f03-000000001200}
+ProcessId: 6584
+Image: C:\WINDOWS\System32\OpenSSH\ssh.exe
+User: Tian\33087
+Protocol: tcp
+Initiated: true
+SourceIsIpv6: false
+SourceIp: 10.10.30.10
+SourceHostname: Tian
+SourcePort: 63912
+SourcePortName: -
+DestinationIsIpv6: false
+DestinationIp: 10.10.10.254
+DestinationHostname: -
+DestinationPort: 22
+DestinationPortName: ssh
+----- Raw XML -----
+<Event xmlns='http://schemas.microsoft.com/win/2004/08/events/event'><System><Provider Name='Microsoft-Windows-Sysmon' Guid='{5770385f-c22a-43e0-bf4c-06f5698ffbd9}'/><EventID>3</EventID><Version>5</Version><Level>4</Level><Task>3</Task><Opcode>0</Opcode><Keywords>0x8000000000000000</Keywords><TimeCreated SystemTime='2026-09-10T07:03:56.4703983Z'/><EventRecordID>428980</EventRecordID><Correlation/><Execution ProcessID='3272' ThreadID='3556'/><Channel>Microsoft-Windows-Sysmon/Operational</Channel><Computer>Tian</Computer><Security UserID='S-1-5-18'/></System><EventData><Data Name='RuleName'>-</Data><Data Name='UtcTime'>2026-09-10 07:03:52.194</Data><Data Name='ProcessGuid'>{ceee364c-5659-6aa2-1f03-000000001200}</Data><Data Name='ProcessId'>6584</Data><Data Name='Image'>C:\WINDOWS\System32\OpenSSH\ssh.exe</Data><Data Name='User'>Tian\33087</Data><Data Name='Protocol'>tcp</Data><Data Name='Initiated'>true</Data><Data Name='SourceIsIpv6'>false</Data><Data Name='SourceIp'>10.10.30.10</Data><Data Name='SourceHostname'>Tian</Data><Data Name='SourcePort'>63912</Data><Data Name='SourcePortName'>-</Data><Data Name='DestinationIsIpv6'>false</Data><Data Name='DestinationIp'>10.10.10.254</Data><Data Name='DestinationHostname'>-</Data><Data Name='DestinationPort'>22</Data><Data Name='DestinationPortName'>ssh</Data></EventData></Event>
+

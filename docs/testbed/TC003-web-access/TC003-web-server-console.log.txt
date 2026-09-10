@@ -1,0 +1,22 @@
+测试编号：TC003-web-access
+日志来源：Ubuntu Server，python3 -m http.server 终端输出
+服务节点：WEB01
+服务地址：10.10.10.254:8080
+攻击端：Kali 10.10.10.10
+辅助访问端：Windows 11 / OFFICE01 10.10.30.10
+时间：2026-09-10
+
+场景说明：
+Kali 对 WEB01 进行基础 Web 页面访问和不存在路径访问；
+Windows 11 额外访问 WEB01 首页，用于触发 Sysmon Event ID 3 网络连接事件。
+
+原始终端访问记录：
+10.10.10.10 - - [10/Sep/2026 04:17:03] "GET / HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:17:03] "GET /admin-test.html HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:17:03] code 404, message File not found
+10.10.10.10 - - [10/Sep/2026 04:17:03] "GET /not-exist HTTP/1.1" 404 -
+10.10.10.10 - - [10/Sep/2026 04:18:18] "GET / HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:18:18] "GET /admin-test.html HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:18:18] code 404, message File not found
+10.10.10.10 - - [10/Sep/2026 04:18:18] "GET /not-exist HTTP/1.1" 404 -
+10.10.30.10 - - [10/Sep/2026 04:19:42] "GET / HTTP/1.1" 200 -

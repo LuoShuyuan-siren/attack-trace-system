@@ -1,0 +1,2 @@
+f93110abeffa69f45f5aef8f3b1e5fa8a4ca1fc43c1def749b842bea1ba44e90  /home/ubuntu-server/attack-trace-tests/TC008-data-exfiltration/export/TC008-data-exfiltration.pcap
+96244e34b2cf3cb0e6e5ca07839313a22cca76d99bf7187f00da26e097a7af71  /home/ubuntu-server/attack-trace-tests/TC008-data-exfiltration/export/received-attack-trace-tc008.zip

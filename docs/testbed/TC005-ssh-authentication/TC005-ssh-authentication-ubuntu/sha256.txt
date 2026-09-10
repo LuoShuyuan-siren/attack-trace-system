@@ -1,0 +1,2 @@
+cef82a45ca44f9a52688f514ea090e22d177d88e3322a676883bdcee61a1e39a  /home/ubuntu-server/attack-trace-tests/TC005-ssh-authentication/auth.log
+c8ace6a580b165aabb2842514864041a3fa0c0f8aaa878e2e1c722eb437fa955  /home/ubuntu-server/attack-trace-tests/TC005-ssh-authentication/ssh-journal.log

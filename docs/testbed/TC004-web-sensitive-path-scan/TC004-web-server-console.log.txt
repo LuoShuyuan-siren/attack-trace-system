@@ -1,0 +1,19 @@
+测试编号：TC004-web-sensitive-path-scan
+日志来源：Ubuntu Server，python3 -m http.server 终端输出
+服务地址：10.10.10.254:8080
+攻击端：Kali 10.10.10.10
+时间：2026-09-10
+
+原始终端访问记录：
+10.10.10.10 - - [10/Sep/2026 04:27:43] "GET / HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:27:43] "GET /admin/ HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:27:43] "GET /config.bak HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET / HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET /admin/ HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET /config.bak HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET /backup.zip HTTP/1.1" 200 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] code 404, message File not found
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET /.env HTTP/1.1" 404 -
+10.10.10.10 - - [10/Sep/2026 04:29:05] code 404, message File not found
+10.10.10.10 - - [10/Sep/2026 04:29:05] "GET /phpmyadmin/ HTTP/1.1" 404 -
+10.10.30.10 - - [10/Sep/2026 04:30:33] "GET /config.bak HTTP/1.1" 200 -

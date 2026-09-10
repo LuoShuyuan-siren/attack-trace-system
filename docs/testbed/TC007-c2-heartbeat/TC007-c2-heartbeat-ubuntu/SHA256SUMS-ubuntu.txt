@@ -1,0 +1,2 @@
+c6d64166d75389c53bb6fcafbfea9d288da1b5829b3614a4ab4b07cd0637d680  /home/ubuntu-server/attack-trace-tests/TC007-c2-heartbeat/TC007-c2-heartbeat.pcap
+9f4d9ac93bd4b523984e939234ecf9b68adcc907d8d94be54403cdcdbdad1000  /home/ubuntu-server/attack-trace-tests/TC007-c2-heartbeat/c2-server.log

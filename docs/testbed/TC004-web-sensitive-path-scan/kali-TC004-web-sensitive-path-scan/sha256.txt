@@ -1,0 +1,9 @@
+ae90595b172e0ca0c5cd6235afe6f4750257108d87c9115923a2f9a978a1d5b4  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-admin.txt
+6b31f867627bad2477294806dc0e825911420cce80cf2bcf174675c8997f2da6  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-backup-zip.txt
+f2a953b47fdd5b4fb0860cc77c8c9637afa32af4c7c45591ff1ec592d18b4ee0  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-config-bak.txt
+70e7819bcdceef5af46a1fdfd276ff833670e2d11bc93c5f538532bb19741d5d  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-env.txt
+5dd19341a02f3ca27d9a91d9f28ff8f233029fb5193d87a3daf209de804cf623  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-index.txt
+70e7819bcdceef5af46a1fdfd276ff833670e2d11bc93c5f538532bb19741d5d  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/curl-phpmyadmin.txt
+34348b4e21984309f166f3301ec714d763691aa81c2b0ef3b740f955374ade0c  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/end-time.txt
+34348b4e21984309f166f3301ec714d763691aa81c2b0ef3b740f955374ade0c  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/start-time.txt
+0dea423c403f300191e86c4ec5c65a1c1ed170c634694e3e86f9413ea8c5ae3b  /home/kali/attack-trace-tests/TC004-web-sensitive-path-scan/TC004-web-sensitive-path-scan.pcap
