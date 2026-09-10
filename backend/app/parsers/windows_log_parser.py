@@ -149,7 +149,7 @@ class WindowsLogParser(BaseParser):
         }
 
         # ---------------- Sysmon 事件 ----------------
-        if event_id in (1, 11, 22):
+        if event_id in (1, 3, 11, 13, 22):
             source = "windows_sysmon"
 
             # Sysmon 1: 进程创建
@@ -180,6 +180,45 @@ class WindowsLogParser(BaseParser):
                     tags=["sysmon", "process"]
                 )
 
+            # Sysmon 3: 网络连接
+            if event_id == 3:
+                return NormalizedEvent(
+                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
+                    timestamp=timestamp,
+                    source_type="host_log",
+                    source=source,
+                    host=host,
+                    event_type="network_connection",
+                    subject={
+                        "type": "process",
+                        "name": clean_str(data.get("Image")),
+                        "pid": safe_int(data.get("ProcessId")),
+                        "user": clean_str(data.get("User")),
+                    },
+                    object=None,
+                    network={
+                        "src_ip": clean_str(data.get("SourceIp")),
+                        "src_port": safe_int(data.get("SourcePort")),
+                        "dst_ip": clean_str(data.get("DestinationIp")),
+                        "dst_port": safe_int(data.get("DestinationPort")),
+                        "protocol": clean_str(data.get("Protocol")),
+                    },
+                    action="connect",
+                    raw_data={
+                        "source_hostname": clean_str(
+                            data.get("SourceHostname")
+                        ),
+                        "destination_hostname": clean_str(
+                            data.get("DestinationHostname")
+                        ),
+                        "initiated": clean_str(
+                            data.get("Initiated")
+                        ),
+                    },
+                    severity="medium",
+                    attack=None,
+                    tags=["sysmon", "network"],
+                )
             # Sysmon 11: 文件创建
             if event_id == 11:
                 return NormalizedEvent(
@@ -207,6 +246,37 @@ class WindowsLogParser(BaseParser):
                     tags=["sysmon", "file"]
                 )
 
+            # Sysmon 13: 注册表值修改
+            if event_id == 13:
+                return NormalizedEvent(
+                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
+                    timestamp=timestamp,
+                    source_type="host_log",
+                    source=source,
+                    host=host,
+                    event_type="registry_modify",
+                    subject={
+                        "type": "process",
+                        "name": clean_str(data.get("Image")),
+                        "pid": safe_int(data.get("ProcessId")),
+                        "user": clean_str(data.get("User")),
+                    },
+                    object={
+                        "type": "registry",
+                        "name": clean_str(data.get("TargetObject")),
+                        "path": clean_str(data.get("TargetObject")),
+                    },
+                    network=None,
+                    action="modify_registry",
+                    raw_data={
+                        "details": clean_str(data.get("Details")),
+                        "event_type": clean_str(data.get("EventType")),
+                    },
+                    severity="medium",
+                    attack=None,
+                    tags=["sysmon", "registry"],
+                )
+
             # Sysmon 22: DNS 查询
             if event_id == 22:
                 return NormalizedEvent(
@@ -220,18 +290,24 @@ class WindowsLogParser(BaseParser):
                         "type": "process",
                         "name": clean_str(data.get("Image")),
                         "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User"))
+                        "user": clean_str(data.get("User")),
                     },
-                    object=None,
+                    object={
+                        "type": "domain",
+                        "name": clean_str(data.get("QueryName")),
+                    },
                     network={
-                        "dst_ip": clean_str(data.get("DestinationIp")),
-                        "query": clean_str(data.get("QueryName"))
+                        "protocol": "dns",
                     },
                     action="dns_query",
-                    raw_data={},
+                    raw_data={
+                        "query": clean_str(data.get("QueryName")),
+                        "query_status": clean_str(data.get("QueryStatus")),
+                        "query_results": clean_str(data.get("QueryResults")),
+                    },
                     severity="medium",
                     attack=None,
-                    tags=["sysmon", "dns"]
+                    tags=["sysmon", "dns"],
                 )
 
         # ---------------- Security 事件 ----------------
@@ -253,7 +329,8 @@ class WindowsLogParser(BaseParser):
                     },
                     object=None,
                     network={
-                        "dst_ip": clean_str(data.get("IpAddress"))
+                        "src_ip": clean_str(data.get("IpAddress")),
+                        "src_port": safe_int(data.get("IpPort")),
                     },
                     action="login",
                     raw_data={},
@@ -319,12 +396,12 @@ class WindowsLogParser(BaseParser):
                 new_pid_int = safe_int(new_process_id)
 
                 # ---- 调试打印（关键！用于验证字段提取） ----
-                print(f"  📌 4688: "
-                      f"ProcessId={process_id} -> {pid_int}, "
-                      f"NewProcessId={new_process_id} -> {new_pid_int}, "
-                      f"NewProcessName={new_process_name[:60] if new_process_name else 'None'}, "
-                      f"SubjectUser={subject_user}, "
-                      f"CommandLine={command_line[:40] if command_line else 'None'}")
+                # print(f"  📌 4688: "
+                #       f"ProcessId={process_id} -> {pid_int}, "
+                #       f"NewProcessId={new_process_id} -> {new_pid_int}, "
+                #       f"NewProcessName={new_process_name[:60] if new_process_name else 'None'}, "
+                #       f"SubjectUser={subject_user}, "
+                #       f"CommandLine={command_line[:40] if command_line else 'None'}")
 
                 # ---- 构造 NormalizedEvent ----
                 return NormalizedEvent(

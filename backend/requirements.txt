@@ -2,6 +2,3 @@ fastapi>=0.116,<1.0
 uvicorn[standard]>=0.35,<1.0
 pydantic>=2.11,<3.0
 python-evtx>=0.8.0
-xmldict>=0.12.0
-echo python-evtx>=0.4.0 >> backend/requirements.txt
-python-evtx>=0.4.0

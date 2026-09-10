@@ -97,9 +97,23 @@ def generate_member4_mock_data() -> List[NormalizedEvent]:
         source="windows_sysmon",
         host={"hostname": "PC01", "os": "windows"},
         event_type="dns_query",
-        subject={"type": "process", "name": "powershell.exe", "pid": 2001, "user": "admin"},
-        network={"dst_ip": "8.8.8.8", "query": "evil-c2.example.com"},
+        subject={
+            "type": "process",
+            "name": "powershell.exe",
+            "pid": 2001,
+            "user": "admin"
+        },
+        object={
+            "type": "domain",
+            "name": "evil-c2.example.com"
+        },
+        network={
+            "protocol": "dns"
+        },
         action="dns_query",
+        raw_data={
+            "query": "evil-c2.example.com"
+        },
         severity="high",
         tags=["attack", "c2", "dns"]
     ))
@@ -140,9 +154,14 @@ def generate_member4_mock_data() -> List[NormalizedEvent]:
             raw = {}
         elif event_type_idx == 3:
             et = "dns_query"
-            obj = None
+            obj = {
+                "type": "domain",
+                "name": f"domain-{i}.example.com"
+            }
             action = "dns_query"
-            raw = {}
+            raw = {
+                "query": f"domain-{i}.example.com"
+            }
         else:
             et = "network_connection"
             obj = None
@@ -164,8 +183,7 @@ def generate_member4_mock_data() -> List[NormalizedEvent]:
             },
             object=obj,
             network={
-                "dst_ip": f"192.168.1.{100 + i}",
-                "query": f"domain-{i}.example.com"
+                "protocol": "dns"
             } if et == "dns_query" else {
                 "dst_ip": f"192.168.1.{100 + i}",
                 "dst_port": 4000 + i,
@@ -192,7 +210,7 @@ def generate_member7_mock_data() -> List[NormalizedEvent]:
         host={"hostname": "PC01", "os": "windows"},
         event_type="user_login",
         subject={"type": "user", "name": "admin"},
-        network={"dst_ip": "192.168.1.10"},
+        network={"src_ip": "192.168.1.10"},
         action="login",
         severity="info",
         tags=["normal", "chain"]
