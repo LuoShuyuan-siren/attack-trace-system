@@ -1,0 +1,401 @@
+[
+  {
+    "detection_id": "det-001",
+    "timestamp": "2026-09-08T10:00:00Z",
+    "analyzer": "exploit_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Web shell upload to public web application",
+    "description": "SQL injection followed by webshell upload",
+    "severity": "critical",
+    "confidence": 0.94,
+    "related_event_ids": [
+      "evt-001"
+    ],
+    "related_entity_ids": [
+      "host:WEB01",
+      "ip:10.0.1.10"
+    ],
+    "evidence": {
+      "signature": "ET WEB_SERVER webshell upload"
+    },
+    "attack_technique_id": "T1190",
+    "tags": [
+      "exploit",
+      "web_shell",
+      "rce",
+      "attack_technique:T1190",
+      "attack_tactic:TA0001",
+      "attack_stage:initial_access"
+    ]
+  },
+  {
+    "detection_id": "det-002",
+    "timestamp": "2026-09-08T10:02:00Z",
+    "analyzer": "process_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "PowerShell encoded command execution",
+    "description": "powershell.exe -enc SQBFAFgA...",
+    "severity": "high",
+    "confidence": 0.91,
+    "related_event_ids": [
+      "evt-002"
+    ],
+    "related_entity_ids": [
+      "host:WEB01",
+      "process:WEB01:4123",
+      "user:WEB01:www-data"
+    ],
+    "evidence": {
+      "command_line": "powershell.exe -enc SQBFAFgA..."
+    },
+    "attack_technique_id": "T1059.001",
+    "tags": [
+      "powershell",
+      "process",
+      "attack_technique:T1059.001",
+      "attack_tactic:TA0002",
+      "attack_stage:execution"
+    ]
+  },
+  {
+    "detection_id": "det-003",
+    "timestamp": "2026-09-08T10:08:00Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Registry Run key persistence",
+    "description": "Malicious executable added to HKLM Run key",
+    "severity": "high",
+    "confidence": 0.88,
+    "related_event_ids": [
+      "evt-003"
+    ],
+    "related_entity_ids": [
+      "host:WEB01",
+      "registry:WEB01:HKLM-Run"
+    ],
+    "evidence": {
+      "key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+    },
+    "attack_technique_id": "T1547",
+    "tags": [
+      "persistence",
+      "registry",
+      "attack_technique:T1547",
+      "attack_tactic:TA0003",
+      "attack_stage:persistence",
+      "attack_tactic:TA0004",
+      "attack_stage:privilege_escalation"
+    ]
+  },
+  {
+    "detection_id": "det-004",
+    "timestamp": "2026-09-08T10:12:00Z",
+    "analyzer": "process_injection_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Suspicious process injection into lsass.exe",
+    "description": "Reflective DLL injection into LSASS process",
+    "severity": "critical",
+    "confidence": 0.93,
+    "related_event_ids": [
+      "evt-004"
+    ],
+    "related_entity_ids": [
+      "host:PC01",
+      "process:PC01:3301",
+      "process:PC01:3302"
+    ],
+    "evidence": {
+      "technique": "reflective_loader"
+    },
+    "attack_technique_id": "T1055",
+    "tags": [
+      "process_injection",
+      "lsass",
+      "attack_technique:T1055",
+      "attack_tactic:TA0004",
+      "attack_stage:privilege_escalation",
+      "attack_tactic:TA0005",
+      "attack_stage:defense_evasion"
+    ]
+  },
+  {
+    "detection_id": "det-005",
+    "timestamp": "2026-09-08T10:16:00Z",
+    "analyzer": "log_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Windows event log cleared",
+    "description": "Security event log was cleared by an attacker",
+    "severity": "high",
+    "confidence": 0.9,
+    "related_event_ids": [
+      "evt-005"
+    ],
+    "related_entity_ids": [
+      "host:PC01"
+    ],
+    "evidence": {
+      "event_id": 1102
+    },
+    "attack_technique_id": "T1070",
+    "tags": [
+      "indicator_removal",
+      "log_cleanup",
+      "attack_technique:T1070",
+      "attack_tactic:TA0005",
+      "attack_stage:defense_evasion"
+    ]
+  },
+  {
+    "detection_id": "det-006",
+    "timestamp": "2026-09-08T10:20:00Z",
+    "analyzer": "credential_access_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Mimikatz credential dump activity",
+    "description": "Access to SAM database and LSASS memory",
+    "severity": "critical",
+    "confidence": 0.95,
+    "related_event_ids": [
+      "evt-006"
+    ],
+    "related_entity_ids": [
+      "host:PC01",
+      "file:PC01:C:\\Windows\\System32\\config\\SAM"
+    ],
+    "evidence": {
+      "accessed_file": "C:\\Windows\\System32\\config\\SAM"
+    },
+    "attack_technique_id": "T1003",
+    "tags": [
+      "credential_access",
+      "mimikatz",
+      "attack_technique:T1003",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-007",
+    "timestamp": "2026-09-08T10:25:00Z",
+    "analyzer": "scan_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Internal port scan",
+    "description": "Horizontal port scan across internal subnet",
+    "severity": "medium",
+    "confidence": 0.86,
+    "related_event_ids": [
+      "evt-007"
+    ],
+    "related_entity_ids": [
+      "host:PC01",
+      "ip:10.0.1.30"
+    ],
+    "evidence": {
+      "ports": [
+        22,
+        445,
+        3389
+      ]
+    },
+    "attack_technique_id": "T1046",
+    "tags": [
+      "scan",
+      "discovery",
+      "attack_technique:T1046",
+      "attack_tactic:TA0007",
+      "attack_stage:discovery"
+    ]
+  },
+  {
+    "detection_id": "det-008",
+    "timestamp": "2026-09-08T10:30:00Z",
+    "analyzer": "lateral_movement_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "SMB lateral movement to database server",
+    "description": "Remote service access using stolen credentials",
+    "severity": "high",
+    "confidence": 0.92,
+    "related_event_ids": [
+      "evt-008"
+    ],
+    "related_entity_ids": [
+      "host:PC01",
+      "host:DB01",
+      "ip:10.0.1.40"
+    ],
+    "evidence": {
+      "protocol": "smb",
+      "user": "dbadmin"
+    },
+    "attack_technique_id": "T1021",
+    "tags": [
+      "lateral_movement",
+      "smb",
+      "attack_technique:T1021",
+      "attack_tactic:TA0008",
+      "attack_stage:lateral_movement"
+    ]
+  },
+  {
+    "detection_id": "det-009",
+    "timestamp": "2026-09-08T10:35:00Z",
+    "analyzer": "file_monitor_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Sensitive database file read",
+    "description": "Unexpected read of customer database files",
+    "severity": "medium",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-009"
+    ],
+    "related_entity_ids": [
+      "host:DB01",
+      "file:DB01:/var/lib/mysql/customer.ibd"
+    ],
+    "evidence": {
+      "path": "/var/lib/mysql/customer.ibd"
+    },
+    "attack_technique_id": "T1005",
+    "tags": [
+      "collection",
+      "sensitive_file",
+      "attack_technique:T1005",
+      "attack_tactic:TA0009",
+      "attack_stage:collection"
+    ]
+  },
+  {
+    "detection_id": "det-010",
+    "timestamp": "2026-09-08T10:42:00Z",
+    "analyzer": "dns_tunnel_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Potential DNS tunnel",
+    "description": "High entropy DNS labels to unusual domain",
+    "severity": "high",
+    "confidence": 0.91,
+    "related_event_ids": [
+      "evt-010"
+    ],
+    "related_entity_ids": [
+      "host:PC01",
+      "domain:evil.example.com",
+      "ip:8.8.8.8"
+    ],
+    "evidence": {
+      "query_count": 328,
+      "avg_domain_length": 57.2
+    },
+    "attack_technique_id": "T1071.004",
+    "tags": [
+      "dns",
+      "tunnel",
+      "attack_technique:T1071.004",
+      "attack_tactic:TA0011",
+      "attack_stage:command_and_control"
+    ]
+  },
+  {
+    "detection_id": "det-011",
+    "timestamp": "2026-09-08T10:50:00Z",
+    "analyzer": "exfil_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Data exfiltration over C2",
+    "description": "Large outbound transfer to known C2",
+    "severity": "critical",
+    "confidence": 0.9,
+    "related_event_ids": [
+      "evt-011"
+    ],
+    "related_entity_ids": [
+      "host:DB01",
+      "ip:198.51.100.20"
+    ],
+    "evidence": {
+      "bytes": 18743296
+    },
+    "attack_technique_id": "T1041",
+    "tags": [
+      "exfiltration",
+      "data_upload",
+      "attack_technique:T1041",
+      "attack_tactic:TA0010",
+      "attack_stage:exfiltration"
+    ]
+  },
+  {
+    "detection_id": "det-012",
+    "timestamp": "2026-09-08T11:00:00Z",
+    "analyzer": "ransomware_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Ransomware encryption activity",
+    "description": "Mass file encryption and ransom note",
+    "severity": "critical",
+    "confidence": 0.97,
+    "related_event_ids": [
+      "evt-012"
+    ],
+    "related_entity_ids": [
+      "host:FS01",
+      "file:FS01:E:\\Shares\\customer.docx"
+    ],
+    "evidence": {
+      "encrypted_files": 1200
+    },
+    "attack_technique_id": "T1486",
+    "tags": [
+      "ransomware",
+      "impact",
+      "encrypt",
+      "attack_technique:T1486",
+      "attack_tactic:TA0040",
+      "attack_stage:impact"
+    ]
+  },
+  {
+    "detection_id": "det-013",
+    "timestamp": "2026-09-08T10:03:00Z",
+    "analyzer": "process_analyzer",
+    "detection_type": "anomaly",
+    "title": "Routine svchost process creation",
+    "description": "Normal service host process started",
+    "severity": "info",
+    "confidence": 0.7,
+    "related_event_ids": [
+      "evt-013"
+    ],
+    "related_entity_ids": [
+      "host:WIN10",
+      "process:WIN10:1800"
+    ],
+    "evidence": {
+      "parent_process": "services.exe"
+    },
+    "attack_technique_id": null,
+    "tags": [
+      "normal"
+    ]
+  },
+  {
+    "detection_id": "det-014",
+    "timestamp": "2026-09-08T10:07:00Z",
+    "analyzer": "dns_analyzer",
+    "detection_type": "anomaly",
+    "title": "Normal DNS resolution",
+    "description": "Routine DNS lookup for update server",
+    "severity": "info",
+    "confidence": 0.6,
+    "related_event_ids": [
+      "evt-014"
+    ],
+    "related_entity_ids": [
+      "host:WIN10",
+      "ip:10.0.1.50"
+    ],
+    "evidence": {
+      "query": "update.internal"
+    },
+    "attack_technique_id": null,
+    "tags": [
+      "normal"
+    ]
+  }
+]

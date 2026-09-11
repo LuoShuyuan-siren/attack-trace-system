@@ -1,0 +1,270 @@
+{
+  "dataset": "ADFA-LD",
+  "normal_samples": 833,
+  "attack_samples": 746,
+  "syscall_vocabulary_size": 150,
+  "normal_score_max": 13.8994,
+  "threshold": 11.1096,
+  "normal_alert_count": 9,
+  "false_positive_rate": 0.0108,
+  "detected_attack_samples": 171,
+  "detection_rate": 0.2292,
+  "by_attack_label": {
+    "Adduser_1": {
+      "samples": 7,
+      "detected": 3
+    },
+    "Adduser_10": {
+      "samples": 6,
+      "detected": 3
+    },
+    "Adduser_2": {
+      "samples": 8,
+      "detected": 4
+    },
+    "Adduser_3": {
+      "samples": 8,
+      "detected": 4
+    },
+    "Adduser_4": {
+      "samples": 7,
+      "detected": 4
+    },
+    "Adduser_5": {
+      "samples": 10,
+      "detected": 4
+    },
+    "Adduser_6": {
+      "samples": 8,
+      "detected": 3
+    },
+    "Adduser_7": {
+      "samples": 8,
+      "detected": 3
+    },
+    "Adduser_8": {
+      "samples": 7,
+      "detected": 3
+    },
+    "Adduser_9": {
+      "samples": 22,
+      "detected": 5
+    },
+    "Hydra_FTP_1": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_FTP_10": {
+      "samples": 13,
+      "detected": 2
+    },
+    "Hydra_FTP_2": {
+      "samples": 17,
+      "detected": 2
+    },
+    "Hydra_FTP_3": {
+      "samples": 20,
+      "detected": 2
+    },
+    "Hydra_FTP_4": {
+      "samples": 14,
+      "detected": 3
+    },
+    "Hydra_FTP_5": {
+      "samples": 18,
+      "detected": 2
+    },
+    "Hydra_FTP_6": {
+      "samples": 20,
+      "detected": 3
+    },
+    "Hydra_FTP_7": {
+      "samples": 14,
+      "detected": 2
+    },
+    "Hydra_FTP_8": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_FTP_9": {
+      "samples": 22,
+      "detected": 2
+    },
+    "Hydra_SSH_1": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Hydra_SSH_10": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_SSH_2": {
+      "samples": 25,
+      "detected": 3
+    },
+    "Hydra_SSH_3": {
+      "samples": 22,
+      "detected": 2
+    },
+    "Hydra_SSH_4": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_SSH_5": {
+      "samples": 20,
+      "detected": 3
+    },
+    "Hydra_SSH_6": {
+      "samples": 19,
+      "detected": 3
+    },
+    "Hydra_SSH_7": {
+      "samples": 11,
+      "detected": 2
+    },
+    "Hydra_SSH_8": {
+      "samples": 19,
+      "detected": 4
+    },
+    "Hydra_SSH_9": {
+      "samples": 28,
+      "detected": 3
+    },
+    "Java_Meterpreter_1": {
+      "samples": 11,
+      "detected": 3
+    },
+    "Java_Meterpreter_10": {
+      "samples": 12,
+      "detected": 4
+    },
+    "Java_Meterpreter_2": {
+      "samples": 11,
+      "detected": 3
+    },
+    "Java_Meterpreter_3": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_4": {
+      "samples": 13,
+      "detected": 4
+    },
+    "Java_Meterpreter_5": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_6": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_7": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Java_Meterpreter_8": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Java_Meterpreter_9": {
+      "samples": 15,
+      "detected": 4
+    },
+    "Meterpreter_1": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Meterpreter_10": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Meterpreter_2": {
+      "samples": 10,
+      "detected": 2
+    },
+    "Meterpreter_3": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Meterpreter_4": {
+      "samples": 6,
+      "detected": 2
+    },
+    "Meterpreter_5": {
+      "samples": 5,
+      "detected": 2
+    },
+    "Meterpreter_6": {
+      "samples": 13,
+      "detected": 2
+    },
+    "Meterpreter_7": {
+      "samples": 6,
+      "detected": 2
+    },
+    "Meterpreter_8": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Meterpreter_9": {
+      "samples": 5,
+      "detected": 2
+    },
+    "Web_Shell_1": {
+      "samples": 14,
+      "detected": 6
+    },
+    "Web_Shell_10": {
+      "samples": 16,
+      "detected": 4
+    },
+    "Web_Shell_2": {
+      "samples": 13,
+      "detected": 5
+    },
+    "Web_Shell_3": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Web_Shell_4": {
+      "samples": 10,
+      "detected": 2
+    },
+    "Web_Shell_5": {
+      "samples": 9,
+      "detected": 3
+    },
+    "Web_Shell_6": {
+      "samples": 11,
+      "detected": 2
+    },
+    "Web_Shell_7": {
+      "samples": 14,
+      "detected": 3
+    },
+    "Web_Shell_8": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Web_Shell_9": {
+      "samples": 11,
+      "detected": 4
+    }
+  },
+  "detection_count": 171,
+  "mapped_detection_count": 171,
+  "attack_techniques": [
+    "T1110.001",
+    "T1110.002",
+    "T1136.001",
+    "T1219",
+    "T1505.003"
+  ],
+  "attack_graph": {
+    "nodes": 291,
+    "edges": 171,
+    "stages": 0,
+    "paths": 0
+  },
+  "note": "ADFA-LD samples are evaluated independently; categories are not combined into one attack chain. ATT&CK mappings use dataset-category context for course reporting and are not detection evidence."
+}

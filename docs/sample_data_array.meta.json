@@ -1,0 +1,87 @@
+{
+  "description": "docs/sample_data.json 的派生文件，顶层为两个独立数组（fixture loader 直接吃）。",
+  "normalized_events_file": "docs/sample_data_array.normalized_events.json",
+  "detection_results_file": "docs/sample_data_array.detection_results.json",
+  "summary": {
+    "total_events_input": 248,
+    "total_events": 73,
+    "total_detections": 25,
+    "scenarios": [
+      {
+        "name": "正常 DNS 解析",
+        "event_count": 3
+      },
+      {
+        "name": "DNS 隧道（攻击）",
+        "event_count": 40
+      },
+      {
+        "name": "NXDOMAIN 风暴（攻击）",
+        "event_count": 10
+      },
+      {
+        "name": "正常 HTTP 浏览",
+        "event_count": 5
+      },
+      {
+        "name": "HTTP Beacon（攻击）",
+        "event_count": 10
+      },
+      {
+        "name": "HTTP 可疑行为（攻击）",
+        "event_count": 2
+      },
+      {
+        "name": "正常 ICMP（ping）",
+        "event_count": 5
+      },
+      {
+        "name": "ICMP 隧道（攻击）",
+        "event_count": 25
+      },
+      {
+        "name": "端口扫描（攻击）",
+        "event_count": 25
+      },
+      {
+        "name": "长连接（攻击）",
+        "event_count": 2
+      },
+      {
+        "name": "SSL/TLS 握手",
+        "event_count": 1
+      },
+      {
+        "name": "非常用端口通信（攻击）",
+        "event_count": 6
+      },
+      {
+        "name": "高频 HTTP（异常）",
+        "event_count": 70
+      },
+      {
+        "name": "高频 ICMP（异常）",
+        "event_count": 25
+      },
+      {
+        "name": "PCAP 真实解析",
+        "event_count": 3
+      },
+      {
+        "name": "Zeek 真实解析",
+        "event_count": 11
+      },
+      {
+        "name": "Suricata 真实解析",
+        "event_count": 5
+      }
+    ],
+    "analyzer_counts": {
+      "dns_analyzer": 4,
+      "http_analyzer": 5,
+      "icmp_analyzer": 3,
+      "connection_analyzer": 13
+    }
+  },
+  "reference_closure": "all detection.related_event_ids 都能在前一文件的 normalized_events 中解析"
+}
