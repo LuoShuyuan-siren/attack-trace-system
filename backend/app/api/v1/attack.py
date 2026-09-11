@@ -1,10 +1,11 @@
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.services.runtime_store import ATTACK_MAPPINGS, DETECTIONS
 from app.services.tracing_service import build_trace_result
 
+from app.services.llm_analysis import analyze_current_attack
 
 router = APIRouter()
 
@@ -44,3 +45,27 @@ def get_attack_chain() -> dict[str, list]:
             })
 
     return {"stages": stages}
+
+@router.get("/ai-analysis")
+def get_ai_analysis() -> dict[str, str]:
+    """使用大模型综合分析当前攻击事件、检测结果和 ATT&CK 映射。"""
+
+    try:
+        analysis = analyze_current_attack()
+    except RuntimeError as exc:
+        message = str(exc)
+
+        if "未配置" in message:
+            raise HTTPException(
+                status_code=503,
+                detail=message,
+            ) from exc
+
+        raise HTTPException(
+            status_code=502,
+            detail=message,
+        ) from exc
+
+    return {
+        "analysis": analysis,
+    }
