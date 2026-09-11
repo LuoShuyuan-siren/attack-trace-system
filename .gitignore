@@ -158,9 +158,6 @@ activemq-data/
 # Environments
 .env
 .envrc
-
-# Local runtime evidence database
-.runtime/
 .venv
 env/
 venv/
@@ -241,3 +238,13 @@ __marimo__/
 
 # Generated Windows parser test output
 backend/tests/fixtures/output/
+# Debug script
+backend/tests/debug_evtx.py
+# Runtime directory
+.runtime/
+
+# Generated Windows parser test output
+backend/tests/fixtures/output/
+
+# Debug script
+backend/tests/debug_evtx.py
