@@ -466,17 +466,26 @@ function App() {
       '.txt',
       '.log',
       '.json',
+      '.jsonl',
+      '.ndjson',
       '.evtx',
+      '.csv.gz',
       '.pcap',
       '.pcapng',
       '.cap',
     ];
-    const fileExtension = selectedFile.name.slice(selectedFile.name.lastIndexOf('.')).toLowerCase();
+
+    const lowerFileName = selectedFile.name.toLowerCase();
+    const fileExtension = lowerFileName.endsWith('.csv.gz')
+      ? '.csv.gz'
+      : lowerFileName.slice(lowerFileName.lastIndexOf('.'));
     const maxFileSize = 500 * 1024 * 1024;
 
     if (!acceptedExtensions.includes(fileExtension)) {
       setUploadState('error');
-      setUploadMessage('暂不支持该文件格式，请选择 TXT、LOG、JSON、EVTX、PCAP、PCAPNG 或 CAP 文件');
+      setUploadMessage(
+        '暂不支持该文件格式，请选择 TXT、LOG、JSON、EVTX、CSV.GZ、PCAP、PCAPNG 或 CAP 文件'
+      );
       return;
     }
 
@@ -2106,7 +2115,7 @@ function App() {
                 <input
                   id="data-file"
                   type="file"
-                    accept=".txt,.log,.json,.jsonl,.ndjson,.evtx,.pcap,.pcapng,.cap"
+                    accept=".txt,.log,.json,.jsonl,.ndjson,.evtx,.csv.gz,.pcap,.pcapng,.cap"
                   onChange={(event) => {
                     setSelectedFile(event.target.files?.[0] ?? null);
                     setUploadState('idle');
