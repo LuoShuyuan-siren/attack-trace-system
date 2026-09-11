@@ -252,6 +252,8 @@ def build_report(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "event_count": len(events),
         "detection_count": len(detections),
+        "events": [event.model_dump(mode="json") for event in events],
+        "detections": [detection.model_dump(mode="json") for detection in detections],
         "timeline": trace["stages"],
         "graph": graph.model_dump(mode="json"),
         "paths": trace["paths"],

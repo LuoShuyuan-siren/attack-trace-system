@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Any
 
 from app.schemas.detection import DetectionResult
@@ -12,7 +13,8 @@ DETECTIONS: list[DetectionResult] = []
 ATTACK_MAPPINGS: list[AttackMappingResult] = []
 
 _persistent_store = None
-db_path = os.getenv("ATTACK_TRACE_DB_PATH")
+default_db_path = Path(__file__).resolve().parents[3] / ".runtime" / "attack-trace.sqlite"
+db_path = os.getenv("ATTACK_TRACE_DB_PATH", str(default_db_path))
 if db_path:
 	_persistent_store = SQLiteRuntimeStore(db_path)
 	loaded = _persistent_store.load()
