@@ -240,3 +240,11 @@ __marimo__/
 backend/tests/fixtures/output/
 # Debug script
 backend/tests/debug_evtx.py
+# Runtime directory
+.runtime/
+
+# Generated Windows parser test output
+backend/tests/fixtures/output/
+
+# Debug script
+backend/tests/debug_evtx.py
