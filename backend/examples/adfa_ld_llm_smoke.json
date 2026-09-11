@@ -1,0 +1,178 @@
+{
+  "dataset": "ADFA-LD",
+  "normal_samples": 5,
+  "attack_samples": 2,
+  "syscall_vocabulary_size": 45,
+  "normal_score_max": 2.0,
+  "threshold": 2.0,
+  "normal_alert_count": 1,
+  "false_positive_rate": 0.2,
+  "detected_attack_samples": 1,
+  "detection_rate": 0.5,
+  "by_attack_label": {
+    "Adduser_1": {
+      "samples": 2,
+      "detected": 1
+    }
+  },
+  "detection_count": 1,
+  "mapped_detection_count": 1,
+  "attack_techniques": [
+    "T1136.001"
+  ],
+  "attack_graph": {
+    "nodes": 3,
+    "edges": 1,
+    "stages": 1,
+    "paths": 0
+  },
+  "agent_status": {
+    "enabled": true,
+    "degraded": true,
+    "errors": [
+      "evidence_agent: LLMAuthenticationError: authentication failed with HTTP 401",
+      "chain_review_agent: LLMAuthenticationError: authentication failed with HTTP 401",
+      "attribution_agent: LLMAuthenticationError: authentication failed with HTTP 401",
+      "report_agent: LLMAuthenticationError: authentication failed with HTTP 401"
+    ]
+  },
+  "agent_analysis": {
+    "evidence": {
+      "stages": [
+        {
+          "stage": "initial_access",
+          "status": "unsupported",
+          "supported": false,
+          "confidence": 0.0,
+          "event_ids": [],
+          "detection_ids": [],
+          "edge_ids": [],
+          "missing_evidence": [
+            "event_or_detection_evidence"
+          ],
+          "explanation": "No sufficient referenced evidence."
+        },
+        {
+          "stage": "privilege_escalation",
+          "status": "unsupported",
+          "supported": false,
+          "confidence": 0.0,
+          "event_ids": [],
+          "detection_ids": [],
+          "edge_ids": [],
+          "missing_evidence": [
+            "event_or_detection_evidence"
+          ],
+          "explanation": "No sufficient referenced evidence."
+        },
+        {
+          "stage": "lateral_movement",
+          "status": "unsupported",
+          "supported": false,
+          "confidence": 0.0,
+          "event_ids": [],
+          "detection_ids": [],
+          "edge_ids": [],
+          "missing_evidence": [
+            "event_or_detection_evidence"
+          ],
+          "explanation": "No sufficient referenced evidence."
+        },
+        {
+          "stage": "command_and_control",
+          "status": "unsupported",
+          "supported": false,
+          "confidence": 0.0,
+          "event_ids": [],
+          "detection_ids": [],
+          "edge_ids": [],
+          "missing_evidence": [
+            "event_or_detection_evidence"
+          ],
+          "explanation": "No sufficient referenced evidence."
+        },
+        {
+          "stage": "data_exfiltration",
+          "status": "unsupported",
+          "supported": false,
+          "confidence": 0.0,
+          "event_ids": [],
+          "detection_ids": [],
+          "edge_ids": [],
+          "missing_evidence": [
+            "event_or_detection_evidence"
+          ],
+          "explanation": "No sufficient referenced evidence."
+        }
+      ],
+      "overall_confidence": 0.0
+    },
+    "chain_review": {
+      "status": "weak",
+      "confidence": 0.0,
+      "supported_stages": [],
+      "weak_stages": [
+        "execution"
+      ],
+      "missing_stages": [
+        "initial_access",
+        "lateral_movement",
+        "command_and_control"
+      ],
+      "suspicious_edges": [
+        "edge-db45f3b3641b442a"
+      ],
+      "evidence_ids": [
+        "adfa-1-0",
+        "det-adfa-Adduser_1-UAD-Adduser-1-1613"
+      ],
+      "summary": "Rule-based review of the highest-ranked grounded path."
+    },
+    "attribution": {
+      "techniques": [
+        "T1136.001"
+      ],
+      "ttp_pattern": [
+        "execution"
+      ],
+      "possible_profile": "Evidence-grounded multi-stage intrusion; actor identity undetermined.",
+      "similarity_reasoning": [
+        "No actor or APT knowledge base was supplied.",
+        "Profile is limited to observed ATT&CK techniques and behavior stages."
+      ],
+      "confidence": 0.1,
+      "evidence_ids": [
+        "det-adfa-Adduser_1-UAD-Adduser-1-1613",
+        "adfa-1-0"
+      ]
+    },
+    "report": {
+      "attack_origin": "unknown",
+      "timeline": [
+        "2026-01-01 00:00:00+00:00: execution host:Adduser_1 -> process:Adduser_1:1000"
+      ],
+      "victim_hosts": [],
+      "lateral_movement_path": [],
+      "privilege_escalation": "not evidenced",
+      "c2_communication": "not evidenced",
+      "data_exfiltration": "not evidenced",
+      "techniques": [
+        "T1136.001"
+      ],
+      "key_evidence_ids": [
+        "adfa-1-0",
+        "det-adfa-Adduser_1-UAD-Adduser-1-1613"
+      ],
+      "overall_confidence": 0.0,
+      "uncertainties": [
+        "initial_access",
+        "lateral_movement",
+        "command_and_control",
+        "privilege_escalation",
+        "data_exfiltration"
+      ],
+      "summary": "Structured trace report generated only from supplied graph evidence."
+    }
+  },
+  "note": "ADFA-LD samples are evaluated independently; categories are not combined into one attack chain. ATT&CK mappings use dataset-category context for course reporting and are not detection evidence."
+}

@@ -1,0 +1,443 @@
+[
+  {
+    "event_id": "evt-001",
+    "timestamp": "2026-09-08T10:00:00Z",
+    "source_type": "network_traffic",
+    "source": "suricata",
+    "host": {
+      "hostname": "WEB01",
+      "ip": "10.0.1.10",
+      "os": null
+    },
+    "event_type": "network_connection",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "203.0.113.10",
+      "src_port": null,
+      "dst_ip": "10.0.1.10",
+      "dst_port": 443,
+      "protocol": null
+    },
+    "action": "exploit",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "critical",
+    "attack": null,
+    "tags": [
+      "exploit",
+      "web_shell",
+      "rce"
+    ]
+  },
+  {
+    "event_id": "evt-002",
+    "timestamp": "2026-09-08T10:02:00Z",
+    "source_type": "host_behavior",
+    "source": "windows_sysmon",
+    "host": {
+      "hostname": "WEB01",
+      "ip": "10.0.1.10",
+      "os": "windows"
+    },
+    "event_type": "process_create",
+    "subject": {
+      "type": "process",
+      "name": "powershell.exe",
+      "pid": 4123,
+      "user": "www-data"
+    },
+    "object": null,
+    "network": null,
+    "action": "create_process",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "high",
+    "attack": null,
+    "tags": [
+      "powershell",
+      "process"
+    ]
+  },
+  {
+    "event_id": "evt-003",
+    "timestamp": "2026-09-08T10:08:00Z",
+    "source_type": "host_behavior",
+    "source": "windows_sysmon",
+    "host": {
+      "hostname": "WEB01",
+      "ip": "10.0.1.10",
+      "os": "windows"
+    },
+    "event_type": "registry_modify",
+    "subject": null,
+    "object": {
+      "type": "registry",
+      "name": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "path": null,
+      "pid": null
+    },
+    "network": null,
+    "action": "modify_registry",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "high",
+    "attack": null,
+    "tags": [
+      "persistence",
+      "registry"
+    ]
+  },
+  {
+    "event_id": "evt-004",
+    "timestamp": "2026-09-08T10:12:00Z",
+    "source_type": "host_behavior",
+    "source": "ebpf",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": "windows"
+    },
+    "event_type": "process_inject",
+    "subject": {
+      "type": "process",
+      "name": "malware.exe",
+      "pid": 3301,
+      "user": null
+    },
+    "object": {
+      "type": "process",
+      "name": "lsass.exe",
+      "path": null,
+      "pid": 3302
+    },
+    "network": null,
+    "action": "inject_code",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "critical",
+    "attack": null,
+    "tags": [
+      "process_injection",
+      "lsass"
+    ]
+  },
+  {
+    "event_id": "evt-005",
+    "timestamp": "2026-09-08T10:16:00Z",
+    "source_type": "host_log",
+    "source": "windows_security",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": "windows"
+    },
+    "event_type": "log_clear",
+    "subject": null,
+    "object": null,
+    "network": null,
+    "action": "clear_log",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "high",
+    "attack": null,
+    "tags": [
+      "indicator_removal",
+      "log_cleanup"
+    ]
+  },
+  {
+    "event_id": "evt-006",
+    "timestamp": "2026-09-08T10:20:00Z",
+    "source_type": "host_behavior",
+    "source": "windows_sysmon",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": "windows"
+    },
+    "event_type": "file_read",
+    "subject": {
+      "type": "process",
+      "name": "mimikatz.exe",
+      "pid": 3410,
+      "user": null
+    },
+    "object": {
+      "type": "file",
+      "name": "C:\\Windows\\System32\\config\\SAM",
+      "path": null,
+      "pid": null
+    },
+    "network": null,
+    "action": "read_file",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "critical",
+    "attack": null,
+    "tags": [
+      "credential_access",
+      "mimikatz"
+    ]
+  },
+  {
+    "event_id": "evt-007",
+    "timestamp": "2026-09-08T10:25:00Z",
+    "source_type": "network_traffic",
+    "source": "zeek",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": null
+    },
+    "event_type": "network_scan",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "10.0.1.30",
+      "src_port": null,
+      "dst_ip": "10.0.1.0/24",
+      "dst_port": 445,
+      "protocol": null
+    },
+    "action": "scan",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "medium",
+    "attack": null,
+    "tags": [
+      "scan",
+      "discovery"
+    ]
+  },
+  {
+    "event_id": "evt-008",
+    "timestamp": "2026-09-08T10:30:00Z",
+    "source_type": "network_traffic",
+    "source": "zeek",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": null
+    },
+    "event_type": "network_connection",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "10.0.1.30",
+      "src_port": null,
+      "dst_ip": "10.0.1.40",
+      "dst_port": 445,
+      "protocol": null
+    },
+    "action": "authenticate",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "high",
+    "attack": null,
+    "tags": [
+      "lateral_movement",
+      "smb"
+    ]
+  },
+  {
+    "event_id": "evt-009",
+    "timestamp": "2026-09-08T10:35:00Z",
+    "source_type": "host_behavior",
+    "source": "linux_auditd",
+    "host": {
+      "hostname": "DB01",
+      "ip": "10.0.1.40",
+      "os": "linux"
+    },
+    "event_type": "file_read",
+    "subject": {
+      "type": "process",
+      "name": "mysql",
+      "pid": 778,
+      "user": null
+    },
+    "object": {
+      "type": "file",
+      "name": "/var/lib/mysql/customer.ibd",
+      "path": null,
+      "pid": null
+    },
+    "network": null,
+    "action": "read_file",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "medium",
+    "attack": null,
+    "tags": [
+      "collection",
+      "sensitive_file"
+    ]
+  },
+  {
+    "event_id": "evt-010",
+    "timestamp": "2026-09-08T10:42:00Z",
+    "source_type": "network_traffic",
+    "source": "zeek",
+    "host": {
+      "hostname": "PC01",
+      "ip": "10.0.1.30",
+      "os": null
+    },
+    "event_type": "dns_query",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "10.0.1.30",
+      "src_port": null,
+      "dst_ip": "8.8.8.8",
+      "dst_port": null,
+      "protocol": "dns"
+    },
+    "action": "resolve",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "high",
+    "attack": null,
+    "tags": [
+      "dns",
+      "tunnel"
+    ]
+  },
+  {
+    "event_id": "evt-011",
+    "timestamp": "2026-09-08T10:50:00Z",
+    "source_type": "network_traffic",
+    "source": "suricata",
+    "host": {
+      "hostname": "DB01",
+      "ip": "10.0.1.40",
+      "os": null
+    },
+    "event_type": "data_upload",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "10.0.1.40",
+      "src_port": null,
+      "dst_ip": "198.51.100.20",
+      "dst_port": null,
+      "protocol": "https"
+    },
+    "action": "upload",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "critical",
+    "attack": null,
+    "tags": [
+      "exfiltration",
+      "data_upload"
+    ]
+  },
+  {
+    "event_id": "evt-012",
+    "timestamp": "2026-09-08T11:00:00Z",
+    "source_type": "host_behavior",
+    "source": "windows_sysmon",
+    "host": {
+      "hostname": "FS01",
+      "ip": "10.0.1.60",
+      "os": "windows"
+    },
+    "event_type": "file_modify",
+    "subject": {
+      "type": "process",
+      "name": "ransom.exe",
+      "pid": 5120,
+      "user": null
+    },
+    "object": {
+      "type": "file",
+      "name": "E:\\Shares\\customer.docx",
+      "path": null,
+      "pid": null
+    },
+    "network": null,
+    "action": "encrypt_file",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "critical",
+    "attack": null,
+    "tags": [
+      "ransomware",
+      "impact",
+      "encrypt"
+    ]
+  },
+  {
+    "event_id": "evt-013",
+    "timestamp": "2026-09-08T10:03:00Z",
+    "source_type": "host_behavior",
+    "source": "windows_sysmon",
+    "host": {
+      "hostname": "WIN10",
+      "ip": "10.0.1.50",
+      "os": "windows"
+    },
+    "event_type": "process_create",
+    "subject": {
+      "type": "process",
+      "name": "svchost.exe",
+      "pid": 1800,
+      "user": null
+    },
+    "object": null,
+    "network": null,
+    "action": "create_process",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": [
+      "normal"
+    ]
+  },
+  {
+    "event_id": "evt-014",
+    "timestamp": "2026-09-08T10:07:00Z",
+    "source_type": "network_traffic",
+    "source": "zeek",
+    "host": {
+      "hostname": "WIN10",
+      "ip": "10.0.1.50",
+      "os": null
+    },
+    "event_type": "dns_query",
+    "subject": null,
+    "object": null,
+    "network": {
+      "src_ip": "10.0.1.50",
+      "src_port": null,
+      "dst_ip": "10.0.1.2",
+      "dst_port": null,
+      "protocol": "dns"
+    },
+    "action": "resolve",
+    "raw_data": {
+      "sample": true
+    },
+    "severity": "info",
+    "attack": null,
+    "tags": [
+      "normal"
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "total_events": 20,
+  "event_types": {
+    "credential_read": 15,
+    "process_create": 1,
+    "system_session_start": 1,
+    "privilege_assigned": 1,
+    "group_enumeration": 1,
+    "user_login": 1
+  },
+  "sources": {
+    "windows_security": 20
+  },
+  "hosts": {
+    "pulin": 20
+  },
+  "severities": {
+    "info": 20
+  },
+  "start_time": "2026-08-23T15:08:00.340145+00:00",
+  "end_time": "2026-09-06T23:37:26.354504+00:00",
+  "schema_valid": true,
+  "source_type": "host_log",
+  "ready_for_member7": true
+}

@@ -1,0 +1,443 @@
+{
+  "dataset": "ADFA-LD",
+  "normal_samples": 833,
+  "attack_samples": 746,
+  "syscall_vocabulary_size": 150,
+  "normal_score_max": 13.8994,
+  "threshold": 11.1096,
+  "normal_alert_count": 9,
+  "false_positive_rate": 0.0108,
+  "detected_attack_samples": 171,
+  "detection_rate": 0.2292,
+  "by_attack_label": {
+    "Adduser_1": {
+      "samples": 7,
+      "detected": 3
+    },
+    "Adduser_10": {
+      "samples": 6,
+      "detected": 3
+    },
+    "Adduser_2": {
+      "samples": 8,
+      "detected": 4
+    },
+    "Adduser_3": {
+      "samples": 8,
+      "detected": 4
+    },
+    "Adduser_4": {
+      "samples": 7,
+      "detected": 4
+    },
+    "Adduser_5": {
+      "samples": 10,
+      "detected": 4
+    },
+    "Adduser_6": {
+      "samples": 8,
+      "detected": 3
+    },
+    "Adduser_7": {
+      "samples": 8,
+      "detected": 3
+    },
+    "Adduser_8": {
+      "samples": 7,
+      "detected": 3
+    },
+    "Adduser_9": {
+      "samples": 22,
+      "detected": 5
+    },
+    "Hydra_FTP_1": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_FTP_10": {
+      "samples": 13,
+      "detected": 2
+    },
+    "Hydra_FTP_2": {
+      "samples": 17,
+      "detected": 2
+    },
+    "Hydra_FTP_3": {
+      "samples": 20,
+      "detected": 2
+    },
+    "Hydra_FTP_4": {
+      "samples": 14,
+      "detected": 3
+    },
+    "Hydra_FTP_5": {
+      "samples": 18,
+      "detected": 2
+    },
+    "Hydra_FTP_6": {
+      "samples": 20,
+      "detected": 3
+    },
+    "Hydra_FTP_7": {
+      "samples": 14,
+      "detected": 2
+    },
+    "Hydra_FTP_8": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_FTP_9": {
+      "samples": 22,
+      "detected": 2
+    },
+    "Hydra_SSH_1": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Hydra_SSH_10": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_SSH_2": {
+      "samples": 25,
+      "detected": 3
+    },
+    "Hydra_SSH_3": {
+      "samples": 22,
+      "detected": 2
+    },
+    "Hydra_SSH_4": {
+      "samples": 12,
+      "detected": 2
+    },
+    "Hydra_SSH_5": {
+      "samples": 20,
+      "detected": 3
+    },
+    "Hydra_SSH_6": {
+      "samples": 19,
+      "detected": 3
+    },
+    "Hydra_SSH_7": {
+      "samples": 11,
+      "detected": 2
+    },
+    "Hydra_SSH_8": {
+      "samples": 19,
+      "detected": 4
+    },
+    "Hydra_SSH_9": {
+      "samples": 28,
+      "detected": 3
+    },
+    "Java_Meterpreter_1": {
+      "samples": 11,
+      "detected": 3
+    },
+    "Java_Meterpreter_10": {
+      "samples": 12,
+      "detected": 4
+    },
+    "Java_Meterpreter_2": {
+      "samples": 11,
+      "detected": 3
+    },
+    "Java_Meterpreter_3": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_4": {
+      "samples": 13,
+      "detected": 4
+    },
+    "Java_Meterpreter_5": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_6": {
+      "samples": 12,
+      "detected": 3
+    },
+    "Java_Meterpreter_7": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Java_Meterpreter_8": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Java_Meterpreter_9": {
+      "samples": 15,
+      "detected": 4
+    },
+    "Meterpreter_1": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Meterpreter_10": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Meterpreter_2": {
+      "samples": 10,
+      "detected": 2
+    },
+    "Meterpreter_3": {
+      "samples": 8,
+      "detected": 2
+    },
+    "Meterpreter_4": {
+      "samples": 6,
+      "detected": 2
+    },
+    "Meterpreter_5": {
+      "samples": 5,
+      "detected": 2
+    },
+    "Meterpreter_6": {
+      "samples": 13,
+      "detected": 2
+    },
+    "Meterpreter_7": {
+      "samples": 6,
+      "detected": 2
+    },
+    "Meterpreter_8": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Meterpreter_9": {
+      "samples": 5,
+      "detected": 2
+    },
+    "Web_Shell_1": {
+      "samples": 14,
+      "detected": 6
+    },
+    "Web_Shell_10": {
+      "samples": 16,
+      "detected": 4
+    },
+    "Web_Shell_2": {
+      "samples": 13,
+      "detected": 5
+    },
+    "Web_Shell_3": {
+      "samples": 7,
+      "detected": 2
+    },
+    "Web_Shell_4": {
+      "samples": 10,
+      "detected": 2
+    },
+    "Web_Shell_5": {
+      "samples": 9,
+      "detected": 3
+    },
+    "Web_Shell_6": {
+      "samples": 11,
+      "detected": 2
+    },
+    "Web_Shell_7": {
+      "samples": 14,
+      "detected": 3
+    },
+    "Web_Shell_8": {
+      "samples": 13,
+      "detected": 3
+    },
+    "Web_Shell_9": {
+      "samples": 11,
+      "detected": 4
+    }
+  },
+  "detection_count": 171,
+  "mapped_detection_count": 171,
+  "attack_techniques": [
+    "T1110.001",
+    "T1110.002",
+    "T1136.001",
+    "T1219",
+    "T1505.003"
+  ],
+  "attack_graph": {
+    "nodes": 291,
+    "edges": 171,
+    "stages": 60,
+    "paths": 0
+  },
+  "agent_status": {
+    "enabled": true,
+    "degraded": false,
+    "errors": []
+  },
+  "agent_analysis": {
+    "evidence": {
+      "stages": [
+        {
+          "stage": "execution",
+          "status": "supported",
+          "supported": true,
+          "confidence": 0.99,
+          "event_ids": [
+            "adfa-22-0",
+            "adfa-35-0",
+            "adfa-68-0"
+          ],
+          "detection_ids": [
+            "det-adfa-Adduser_3-UAD-Adduser-3-1613",
+            "det-adfa-Adduser_4-UAD-Adduser-4-=1",
+            "det-adfa-Adduser_8-UAD-Adduser-8-=1"
+          ],
+          "edge_ids": [],
+          "missing_evidence": [],
+          "explanation": "Supporting evidence from edges: edge-09a145fe6e855463, edge-0ae9264775cbba10, edge-106f93fe2fc60cab."
+        },
+        {
+          "stage": "command_and_control",
+          "status": "supported",
+          "supported": true,
+          "confidence": 0.99,
+          "event_ids": [
+            "adfa-583-0",
+            "adfa-482-0",
+            "adfa-595-0",
+            "adfa-624-0",
+            "adfa-476-0"
+          ],
+          "detection_ids": [
+            "det-adfa-Meterpreter_3-UAD-Meterpreter-3-2311",
+            "det-adfa-Java_Meterpreter_4-UAD-Java-Meterpreter-4-2311",
+            "det-adfa-Meterpreter_5-UAD-Meterpreter-5-2311",
+            "det-adfa-Meterpreter_9-UAD-Meterpreter-9-1613",
+            "det-adfa-Java_Meterpreter_4-UAD-Java-Meterpreter-4-1613"
+          ],
+          "edge_ids": [],
+          "missing_evidence": [],
+          "explanation": "Supporting evidence from edges: edge-0c37a1be0835f46a, edge-1a7d121776cca440, edge-1cd2fccbf229032d, edge-2cb4258e140281e4, edge-25d7e057e42e5398."
+        },
+        {
+          "stage": "command_and_control",
+          "status": "supported",
+          "supported": true,
+          "confidence": 0.99,
+          "event_ids": [
+            "adfa-583-0",
+            "adfa-482-0",
+            "adfa-595-0",
+            "adfa-624-0",
+            "adfa-476-0"
+          ],
+          "detection_ids": [
+            "det-adfa-Meterpreter_3-UAD-Meterpreter-3-2311",
+            "det-adfa-Java_Meterpreter_4-UAD-Java-Meterpreter-4-2311",
+            "det-adfa-Meterpreter_5-UAD-Meterpreter-5-2311",
+            "det-adfa-Meterpreter_9-UAD-Meterpreter-9-1613",
+            "det-adfa-Java_Meterpreter_4-UAD-Java-Meterpreter-4-1613"
+          ],
+          "edge_ids": [],
+          "missing_evidence": [],
+          "explanation": "Supporting evidence from edges: edge-0c37a1be0835f46a, edge-1a7d121776cca440, edge-1cd2fccbf229032d, edge-2cb4258e140281e4, edge-25d7e057e42e5398."
+        },
+        {
+          "stage": "initial_access",
+          "status": "supported",
+          "supported": true,
+          "confidence": 0.99,
+          "event_ids": [
+            "adfa-698-0",
+            "adfa-645-0"
+          ],
+          "detection_ids": [
+            "det-adfa-Web_Shell_6-UAD-WS6-1613",
+            "det-adfa-Web_Shell_10-UAD-WS10-1613"
+          ],
+          "edge_ids": [],
+          "missing_evidence": [],
+          "explanation": "Supporting evidence from edges: edge-1a1baa00863a9201, edge-1f28d83e12fd0d2e."
+        }
+      ],
+      "overall_confidence": 0.99
+    },
+    "chain_review": {
+      "status": "supported",
+      "confidence": 0.95,
+      "supported_stages": [],
+      "weak_stages": [
+        "command_and_control",
+        "initial_access",
+        "execution"
+      ],
+      "missing_stages": [],
+      "suspicious_edges": [
+        "edge-043b99cfe4517584",
+        "edge-09a145fe6e855463",
+        "edge-0c37a1be0835f46a"
+      ],
+      "evidence_ids": [],
+      "summary": "Graph shows incomplete attack chain reconstruction with truncation."
+    },
+    "attribution": {
+      "techniques": [
+        "T1110.001",
+        "T1136.001",
+        "T1219",
+        "T1505.003",
+        "T1110.002"
+      ],
+      "ttp_pattern": [
+        "T1110.001 (Brute Force): Hydra_SSH_6, Hydra_SSH_7, Hydra_SSH_8, Hydra_SSH_9, Hydra_SSH_10, Hydra_SSH_3, Hydra_SSH_4, Hydra_SSH_5, Hydra_SSH_2, Hydra_SSH_1",
+        "T1136.001 (Command Execution): Adduser_1, Adduser_2, Adduser_3, Adduser_4, Adduser_5, Adduser_6, Adduser_7, Adduser_8, Adduser_9, Adduser_10",
+        "T1219 (Structured to Unstructured Protocol/Command and Control): Meterpreter_1, Meterpreter_2, Meterpreter_3, Meterpreter_4, Meterpreter_5, Meterpreter_6, Meterpreter_7, Meterpreter_8, Meterpreter_9, Meterpreter_10, Java_Meterpreter_1, Java_Meterpreter_2, Java_Meterpreter_3, Java_Meterpreter_4, Java_Meterpreter_6, Java_Meterpreter_7, Java_Meterpreter_8, Java_Meterpreter_9, Java_Meterpreter_10",
+        "T1505.003 (Web Shell): Web_Shell_1, Web_Shell_2, Web_Shell_3, Web_Shell_4, Web_Shell_5, Web_Shell_6, Web_Shell_7, Web_Shell_8, Web_Shell_9, Web_Shell_10",
+        "T1110.002 (Brute Force): Hydra_FTP_1, Hydra_FTP_2, Hydra_FTP_3, Hydra_FTP_4, Hydra_FTP_5, Hydra_FTP_6, Hydra_FTP_7, Hydra_FTP_8, Hydra_FTP_9, Hydra_FTP_10"
+      ],
+      "possible_profile": "ADFA-LD Evaluated Host Behavior",
+      "similarity_reasoning": [],
+      "confidence": 0.99,
+      "evidence_ids": [
+        "adfa-355-0",
+        "adfa-22-0",
+        "adfa-35-0",
+        "adfa-583-0",
+        "adfa-68-0",
+        "adfa-698-0",
+        "adfa-482-0",
+        "adfa-595-0",
+        "adfa-645-0",
+        "adfa-2-0",
+        "adfa-476-0",
+        "adfa-6-0",
+        "adfa-624-0",
+        "adfa-94-0",
+        "adfa-225-0",
+        "adfa-16-0",
+        "adfa-374-0",
+        "adfa-90-0",
+        "adfa-61-0",
+        "adfa-539-0"
+      ]
+    },
+    "report": {
+      "attack_origin": "graph_summary",
+      "timeline": [],
+      "victim_hosts": [],
+      "lateral_movement_path": [],
+      "privilege_escalation": "/",
+      "c2_communication": ":[",
+      "data_exfiltration": ", ",
+      "techniques": [
+        "T1110.001",
+        "T1136.001",
+        "T1219",
+        "T1505.003",
+        "T1110.002"
+      ],
+      "key_evidence_ids": [],
+      "overall_confidence": 0.99,
+      "uncertainties": [],
+      "summary": "Graph indicates critical severity ADFA-LD evaluation with support evidence across initial access, execution stages, command and control communication patterns using T1110.001 (Brute Force), T1136.001 (Adduser), T1219 (C2), T1505.003 (Web Shell), T1110.002 (FTP). Hosts compromised include Adduser, Hydra, Java Meterpreter, Meterpreter, and Web Shell variants. All edges have 0.99 confidence, accepted events 171."
+    }
+  },
+  "note": "ADFA-LD samples are evaluated independently; categories are not combined into one attack chain. ATT&CK mappings use dataset-category context for course reporting and are not detection evidence."
+}
