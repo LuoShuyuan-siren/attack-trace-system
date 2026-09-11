@@ -14,15 +14,21 @@ def get_parser(source_type: str, source: Path) -> BaseParser:
     filename = source.name.lower()
 
     if source_type == "host_log":
+        # ① 原有 EVTX 解析
         if suffix == ".evtx":
             return WindowsLogParser()
+            
+        # ② 新增支持 BOTS 导出的 .csv.gz 及普通 .gz 文件
+        if suffix == ".gz" or filename.endswith(".csv.gz"):
+            return WindowsLogParser()
 
+        # ③ 原有 Linux 日志解析
         if suffix in {".txt", ".log"}:
             return LinuxLogParser(hostname="uploaded-host")
 
         raise ValueError(
             f"host_log 不支持文件格式: {suffix}，"
-            "请上传 .txt、.log 或 .evtx"
+            "请上传 .txt、.log、.evtx 或 .csv.gz"
         )
 
     if source_type == "network_traffic":

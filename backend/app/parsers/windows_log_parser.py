@@ -6,9 +6,15 @@ import uuid
 from pathlib import Path
 from datetime import datetime, timezone
 
-# ⑤ 修复导入规范，严格遵循项目规范
+# ⑤ 修复导入规范
 from app.core.parser import BaseParser
 from app.schemas.event import NormalizedEvent
+
+# ① 引入 EVTX 解析库 (如果尚未安装，请执行 pip install python-evtx)
+try:
+    from Evtx.Evtx import Evtx
+except ImportError:
+    Evtx = None
 
 class WindowsLogParser(BaseParser):
     name = "windows_log_parser"
@@ -16,7 +22,7 @@ class WindowsLogParser(BaseParser):
 
     def __init__(self):
         super().__init__()
-        # ④ 恢复所有的 Sysmon 和 Security 事件映射，严禁能力回退
+        # ④ 恢复完整事件映射
         self.event_code_map = {
             "1": "process_create", "10": "process_access", "4688": "process_create",
             "3": "network_connection", "22": "dns_query",
@@ -27,9 +33,7 @@ class WindowsLogParser(BaseParser):
         self.debug_count = 0
 
     def _parse_time(self, raw_time: str) -> str:
-        """时间标准化：兼容多种格式，忽略 MDT/UTC 等后缀"""
-        if not raw_time:
-            return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        if not raw_time: return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
         try:
             match = re.search(r'(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(\.\d+)?)', raw_time)
             if match:
@@ -40,31 +44,22 @@ class WindowsLogParser(BaseParser):
             return raw_time
 
     def _extract_from_raw(self, raw_text: str) -> dict:
-        """① 兼容 XML (Sysmon EVTX) 和 纯文本 Key=Value (Security CSV)"""
         extracted = {}
-        if not raw_text:
-            return extracted
-
+        if not raw_text: return extracted
         raw_text = raw_text.replace('\r\n', '\n').strip()
-        try:
-            return json.loads(raw_text)
-        except:
-            pass
-
-        # 按 XML 解析
+        try: return json.loads(raw_text)
+        except: pass
+        
         if raw_text.startswith("<"):
             event_id_match = re.search(r'<EventID>\s*(\d+)\s*</EventID>', raw_text)
-            if event_id_match:
-                extracted['EventCode'] = event_id_match.group(1)
+            if event_id_match: extracted['EventCode'] = event_id_match.group(1)
             data_matches = re.finditer(r'<Data Name=[\'"]([^\'"]+)[\'"]>(.*?)</Data>', raw_text, re.DOTALL)
             for match in data_matches:
                 extracted[match.group(1)] = match.group(2).strip()
             return extracted
-
-        # 按纯文本 Key=Value 解析
+            
         match = re.search(r'(?:EventCode|EventID|Event_Id)[=:\s]+(\d+)', raw_text, re.IGNORECASE)
-        if match:
-            extracted['EventCode'] = match.group(1)
+        if match: extracted['EventCode'] = match.group(1)
         for line in raw_text.splitlines():
             line = line.strip()
             if "=" in line:
@@ -76,15 +71,13 @@ class WindowsLogParser(BaseParser):
         return extracted
 
     def _process_row(self, row_dict: dict, source_name: str, file_path: Path) -> NormalizedEvent:
-        """统一数据处理逻辑，兼容 CSV 行和 EVTX 事件"""
         raw_text = row_dict.get("_raw") or row_dict.get("EventData") or ""
         raw_dict = self._extract_from_raw(raw_text)
         
         raw_event_id = raw_dict.get("EventCode") or raw_dict.get("EventID")
         event_code = str(raw_event_id) if raw_event_id else ""
         event_type = self.event_code_map.get(event_code, "unknown_event")
-        if event_type == "unknown_event":
-            return None
+        if event_type == "unknown_event": return None
             
         raw_time = row_dict.get("_time") or row_dict.get("timestamp") or raw_dict.get("UtcTime")
         timestamp = self._parse_time(raw_time)
@@ -100,7 +93,24 @@ class WindowsLogParser(BaseParser):
         file_path_val = raw_dict.get("TargetFilename") or raw_dict.get("ObjectName")
         registry_key = raw_dict.get("TargetObject")
 
-        # ③ 修复：将关键字段同时平铺到 raw_data 顶层，确保成员4能直接读取
+        # ③ 填充 Network 字段 (恢复 Sysmon Event 3)
+        network_data = None
+        if event_type == "network_connection":
+            src_ip = raw_dict.get("SourceIp")
+            src_port = raw_dict.get("SourcePort")
+            dst_ip = raw_dict.get("DestinationIp")
+            dst_port = raw_dict.get("DestinationPort")
+            protocol = raw_dict.get("Protocol")
+            if src_ip or dst_ip:
+                network_data = {
+                    "src_ip": src_ip,
+                    "src_port": int(src_port) if src_port and str(src_port).isdigit() else None,
+                    "dst_ip": dst_ip,
+                    "dst_port": int(dst_port) if dst_port and str(dst_port).isdigit() else None,
+                    "protocol": protocol
+                }
+
+        # ③ 平铺到 raw_data 顶层
         enhanced_raw_data = dict(row_dict)
         enhanced_raw_data["real_event_id"] = real_event_id
         enhanced_raw_data["parent_pid"] = parent_pid
@@ -109,12 +119,9 @@ class WindowsLogParser(BaseParser):
         enhanced_raw_data["file_path"] = file_path_val
         enhanced_raw_data["registry_key"] = registry_key
         enhanced_raw_data["extracted_attributes"] = {
-            "real_event_id": real_event_id,
-            "parent_pid": parent_pid,
-            "parent_process_name": parent_process_name,
-            "command_line": command_line,
-            "file_path": file_path_val,
-            "registry_key": registry_key
+            "real_event_id": real_event_id, "parent_pid": parent_pid,
+            "parent_process_name": parent_process_name, "command_line": command_line,
+            "file_path": file_path_val, "registry_key": registry_key
         }
 
         subject_data = {
@@ -139,7 +146,7 @@ class WindowsLogParser(BaseParser):
             event_type=event_type,
             subject=subject_data,
             object=object_data,
-            network=None,
+            network=network_data, # ③ 传入 network 数据
             action=event_type.split('_')[0] if "_" in event_type else None,
             raw_data=enhanced_raw_data,
             severity="low",
@@ -152,26 +159,34 @@ class WindowsLogParser(BaseParser):
         files_to_process = [source] if source.is_file() else list(source.rglob("*.*"))
 
         for file_path in files_to_process:
-            if max_events and len(events) >= max_events:
-                break
+            if max_events and len(events) >= max_events: break
 
-            # ① & ② 严格保留原 EVTX 逻辑入口，同时新增 CSV.GZ 的支持
-            if file_path.suffix == ".gz":
+            # ① 真正恢复 EVTX 解析逻辑
+            if file_path.suffix == ".evtx":
+                if Evtx is None:
+                    print("[Error] 未安装 python-evtx 库，请执行 pip install python-evtx")
+                    continue
+                try:
+                    with Evtx(file_path) as log:
+                        for record in log.records():
+                            if max_events and len(events) >= max_events: break
+                            xml_str = record.xml()
+                            row_dict = {"_raw": xml_str}
+                            event = self._process_row(row_dict, "windows_sysmon" if "sysmon" in file_path.name.lower() else "windows_security", file_path)
+                            if event: events.append(event)
+                except Exception as e:
+                    print(f"[Error] 解析 EVTX 文件 {file_path} 失败: {e}")
+
+            # ② CSV.GZ 格式支持
+            elif file_path.suffix == ".gz":
                 try:
                     with gzip.open(file_path, mode='rt', encoding='utf-8', errors='ignore') as f:
                         reader = csv.DictReader(f)
                         for row in reader:
-                            if max_events and len(events) >= max_events:
-                                break
+                            if max_events and len(events) >= max_events: break
                             event = self._process_row(row, "windows_sysmon" if "sysmon" in file_path.name.lower() else "windows_security", file_path)
-                            if event:
-                                events.append(event)
+                            if event: events.append(event)
                 except Exception as e:
                     print(f"[Error] 读取 CSV.GZ 文件 {file_path} 失败: {e}")
-            elif file_path.suffix == ".evtx":
-                # 【保留原有EVTX入口】原有系统需要通过解析二进制或者转换为XML后调用此方法
-                # 如果项目之前有 EVTX 解析器，请在此处调用原有逻辑。
-                # 此处我们保留该入口，为了兼容，暂时不做覆盖。
-                pass
 
         return events
