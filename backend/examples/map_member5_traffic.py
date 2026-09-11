@@ -112,12 +112,14 @@ def map_detection(item: dict[str, Any]) -> DetectionResult:
 
 def resolve_technique_id(item: dict[str, Any]) -> str:
     existing = item.get("attack_technique_id")
+    if existing == "T1571.004":
+        return "T1095"
     if existing:
         return existing
 
     tags = set(item.get("tags", []))
     if "uncommon_port" in tags:
-        return "T1046"
+        return "T1571"
     if "dns" in tags:
         return "T1071.004"
     if "icmp" in tags:

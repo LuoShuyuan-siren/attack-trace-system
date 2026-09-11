@@ -133,8 +133,8 @@
       "detection_id": "det-c0874d81-3da4-4d98-b76f-56f118608549",
       "analyzer": "icmp_analyzer",
       "title": "疑似 ICMP 隧道通信 (192.168.1.10 <-> 8.8.8.8)",
-      "technique_id": "T1571.004",
-      "technique_name": "ICMP",
+      "technique_id": "T1095",
+      "technique_name": "Non-Application Layer Protocol",
       "tactics": [
         {
           "tactic_id": "TA0011",
@@ -147,8 +147,8 @@
       "detection_id": "det-becdc4a2-0d65-42fa-bb49-88bae23aa2b5",
       "analyzer": "icmp_analyzer",
       "title": "疑似 ICMP 隧道通信 (192.168.1.100 <-> 192.168.1.100)",
-      "technique_id": "T1571.004",
-      "technique_name": "ICMP",
+      "technique_id": "T1095",
+      "technique_name": "Non-Application Layer Protocol",
       "tactics": [
         {
           "tactic_id": "TA0011",
@@ -161,8 +161,8 @@
       "detection_id": "det-95d1beb3-b005-415c-92ab-913a2f46d0c3",
       "analyzer": "icmp_analyzer",
       "title": "疑似 ICMP 隧道通信 (192.168.1.40 <-> 8.8.8.8)",
-      "technique_id": "T1571.004",
-      "technique_name": "ICMP",
+      "technique_id": "T1095",
+      "technique_name": "Non-Application Layer Protocol",
       "tactics": [
         {
           "tactic_id": "TA0011",
@@ -259,13 +259,13 @@
       "detection_id": "det-513442fa-e6ac-45ff-8738-b02cd3a34331",
       "analyzer": "connection_analyzer",
       "title": "非常用端口通信 (源: 192.168.1.66)",
-      "technique_id": "T1046",
-      "technique_name": "Network Service Discovery",
+      "technique_id": "T1571",
+      "technique_name": "Non-Standard Port",
       "tactics": [
         {
-          "tactic_id": "TA0007",
-          "tactic_name": "Discovery",
-          "stage": "discovery"
+          "tactic_id": "TA0011",
+          "tactic_name": "Command and Control",
+          "stage": "command_and_control"
         }
       ]
     },

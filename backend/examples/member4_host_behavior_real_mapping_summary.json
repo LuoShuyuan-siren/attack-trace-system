@@ -1,0 +1,168 @@
+{
+  "det-dc4e405e-f152-5e2a-9882-f00ba85bb775": {
+    "rule_id": "HB-PROC-005",
+    "title": "Credential database referenced by command",
+    "technique_id": "T1003.008",
+    "technique_name": "/etc/passwd and /etc/shadow",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-dd4149df-f86d-5381-ad7a-36e2c2ac2abe": {
+    "rule_id": "HB-PROC-005",
+    "title": "Credential database referenced by command",
+    "technique_id": "T1003.008",
+    "technique_name": "/etc/passwd and /etc/shadow",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-c571d083-391a-5e43-a6cf-3ddc99a897b3": {
+    "rule_id": "HB-PROC-006",
+    "title": "Credential material search command",
+    "technique_id": "T1552.004",
+    "technique_name": "Private Keys",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-2b8e9df4-02b5-5277-931c-93efb0046502": {
+    "rule_id": "HB-PROC-005",
+    "title": "Credential database referenced by command",
+    "technique_id": "T1003.008",
+    "technique_name": "/etc/passwd and /etc/shadow",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-df16411c-48f4-5bf1-a328-6d4604b57dce": {
+    "rule_id": "HB-PROC-006",
+    "title": "Credential material search command",
+    "technique_id": "T1552.004",
+    "technique_name": "Private Keys",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-e7f122a2-a525-5ccf-bdf8-32e5b6f897a5": {
+    "rule_id": "HB-PROC-006",
+    "title": "Credential material search command",
+    "technique_id": "T1552.004",
+    "technique_name": "Private Keys",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-556300d3-e4a8-5419-ac42-2db01b7e4e2c": {
+    "rule_id": "HB-PROC-006",
+    "title": "Credential material search command",
+    "technique_id": "T1552.004",
+    "technique_name": "Private Keys",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-8efec72c-8d40-52d8-84ee-6ea1e558db48": {
+    "rule_id": "HB-PROC-005",
+    "title": "Credential database referenced by command",
+    "technique_id": "T1003.008",
+    "technique_name": "/etc/passwd and /etc/shadow",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-c0d046cd-0787-5612-95eb-119cd1706294": {
+    "rule_id": "HB-PROC-006",
+    "title": "Credential material search command",
+    "technique_id": "T1552.004",
+    "technique_name": "Private Keys",
+    "tactics": [
+      {
+        "tactic_id": "TA0006",
+        "tactic_name": "Credential Access",
+        "stage": "credential_access"
+      }
+    ]
+  },
+  "det-38755e07-8327-5be5-ae99-1b6f39404743": {
+    "rule_id": "HB-SYSCALL-003",
+    "title": "Successful privileged process execution",
+    "technique_id": "T1548.003",
+    "technique_name": "Sudo and Sudo Caching",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      },
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-aae1fa77-85cf-5d29-b713-7897f201d51d": {
+    "rule_id": "HB-SYSCALL-003",
+    "title": "Successful privileged process execution",
+    "technique_id": "T1548.003",
+    "technique_name": "Sudo and Sudo Caching",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      },
+      {
+        "tactic_id": "TA0005",
+        "tactic_name": "Defense Evasion",
+        "stage": "defense_evasion"
+      }
+    ]
+  },
+  "det-df459b57-a34a-50fc-bd7a-45a0825eea7a": {
+    "rule_id": "HB-SYSCALL-003",
+    "title": "Successful privileged process execution",
+    "technique_id": "T1068",
+    "technique_name": "Exploitation for Privilege Escalation",
+    "tactics": [
+      {
+        "tactic_id": "TA0004",
+        "tactic_name": "Privilege Escalation",
+        "stage": "privilege_escalation"
+      }
+    ]
+  }
+}

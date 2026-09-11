@@ -36,6 +36,7 @@ TACTICS: dict[str, tuple[str, str]] = {
 # Technique ID -> (name, tactic IDs)
 TECHNIQUES: dict[str, tuple[str, tuple[str, ...]]] = {
     "T1003": ("OS Credential Dumping", ("TA0006",)),
+    "T1003.008": ("/etc/passwd and /etc/shadow", ("TA0006",)),
     "T1005": ("Data from Local System", ("TA0009",)),
     "T1018": ("Remote System Discovery", ("TA0007",)),
     "T1021": ("Remote Services", ("TA0008",)),
@@ -79,6 +80,9 @@ TECHNIQUES: dict[str, tuple[str, tuple[str, ...]]] = {
     "T1505.003": ("Server Software Component: Web Shell", ("TA0002", "TA0003")),
     "T1547": ("Boot or Logon Autostart Execution", ("TA0003", "TA0004")),
     "T1548": ("Abuse Elevation Control Mechanism", ("TA0004", "TA0005")),
+    "T1548.003": ("Sudo and Sudo Caching", ("TA0004", "TA0005")),
+    "T1552": ("Unsecured Credentials", ("TA0006",)),
+    "T1552.004": ("Private Keys", ("TA0006",)),
     "T1550": ("Use Alternate Authentication Material", ("TA0008", "TA0005")),
     "T1555": ("Credentials from Password Stores", ("TA0006",)),
     "T1560": ("Archive Collected Data", ("TA0009",)),
@@ -87,7 +91,6 @@ TECHNIQUES: dict[str, tuple[str, tuple[str, ...]]] = {
     "T1570": ("Lateral Tool Transfer", ("TA0008",)),
     "T1572": ("Protocol Tunneling", ("TA0011",)),
     "T1571": ("Non-Standard Port", ("TA0011",)),
-    "T1571.004": ("ICMP", ("TA0011",)),
     "T1620": ("Reflective Code Loading", ("TA0005",)),
 }
 

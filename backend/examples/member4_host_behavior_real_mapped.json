@@ -1,0 +1,580 @@
+[
+  {
+    "detection_id": "det-dc4e405e-f152-5e2a-9882-f00ba85bb775",
+    "timestamp": "2025-02-20T13:06:23.624000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential database referenced by command",
+    "description": "A process command line referenced a local password or credential database that can support credential theft.",
+    "severity": "medium",
+    "confidence": 0.72,
+    "related_event_ids": [
+      "evt-af305687-f889-4329-b994-f9fde46c9ec3"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:/etc/passwd"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-005",
+      "pid": null,
+      "ppid": null,
+      "process_name": "cat",
+      "process_image": "cat",
+      "parent_process": null,
+      "command_line": "cat /etc/passwd",
+      "file_path": "/etc/passwd",
+      "target_paths": [
+        "/etc/passwd"
+      ],
+      "operation": "command_reference",
+      "matched_conditions": [
+        "credential_database_path"
+      ]
+    },
+    "attack_technique_id": "T1003.008",
+    "tags": [
+      "HB-PROC-005",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "password_store",
+      "attack_technique:T1003.008",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-dd4149df-f86d-5381-ad7a-36e2c2ac2abe",
+    "timestamp": "2025-02-20T13:06:23.629000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential database referenced by command",
+    "description": "A process command line referenced a local password or credential database that can support credential theft.",
+    "severity": "medium",
+    "confidence": 0.72,
+    "related_event_ids": [
+      "evt-a7d758fa-f253-4bd3-8961-4263a3a2f291"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:/etc/passwd"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-005",
+      "pid": null,
+      "ppid": null,
+      "process_name": "sudo",
+      "process_image": "sudo",
+      "parent_process": null,
+      "command_line": "sudo cat /etc/passwd",
+      "file_path": "/etc/passwd",
+      "target_paths": [
+        "/etc/passwd"
+      ],
+      "operation": "command_reference",
+      "matched_conditions": [
+        "credential_database_path"
+      ]
+    },
+    "attack_technique_id": "T1003.008",
+    "tags": [
+      "HB-PROC-005",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "password_store",
+      "attack_technique:T1003.008",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-c571d083-391a-5e43-a6cf-3ddc99a897b3",
+    "timestamp": "2025-02-20T13:07:04.048000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential material search command",
+    "description": "A search command looked for SSH keys or other credential material on the host.",
+    "severity": "high",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-b405f249-caa9-414b-83e2-375c486560cf"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:*/master.key"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-006",
+      "pid": null,
+      "ppid": null,
+      "process_name": "grep",
+      "process_image": "grep",
+      "parent_process": null,
+      "command_line": "grep -E master\\.key$",
+      "file_path": "*/master.key",
+      "target_patterns": [
+        "*/master.key",
+        "*.key"
+      ],
+      "inferred_target": true,
+      "operation": "credential_search",
+      "matched_conditions": [
+        "search_utility",
+        "credential_artifact_pattern"
+      ]
+    },
+    "attack_technique_id": "T1552.004",
+    "tags": [
+      "HB-PROC-006",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "ssh_private_keys",
+      "file_discovery",
+      "attack_technique:T1552.004",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-2b8e9df4-02b5-5277-931c-93efb0046502",
+    "timestamp": "2025-02-20T13:07:05.497000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential database referenced by command",
+    "description": "A process command line referenced a local password or credential database that can support credential theft.",
+    "severity": "high",
+    "confidence": 0.86,
+    "related_event_ids": [
+      "evt-5dd6621c-e275-49ba-a420-b86af17e9f0e"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:/opt/splunkforwarder/etc/passwd"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-005",
+      "pid": null,
+      "ppid": null,
+      "process_name": "cat",
+      "process_image": "cat",
+      "parent_process": null,
+      "command_line": "cat /opt/splunkforwarder/etc/passwd",
+      "file_path": "/opt/splunkforwarder/etc/passwd",
+      "target_paths": [
+        "/opt/splunkforwarder/etc/passwd",
+        "/etc/passwd"
+      ],
+      "operation": "command_reference",
+      "matched_conditions": [
+        "credential_database_path"
+      ]
+    },
+    "attack_technique_id": "T1003.008",
+    "tags": [
+      "HB-PROC-005",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "password_store",
+      "attack_technique:T1003.008",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-df16411c-48f4-5bf1-a328-6d4604b57dce",
+    "timestamp": "2025-02-20T13:07:05.704000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential material search command",
+    "description": "A search command looked for SSH keys or other credential material on the host.",
+    "severity": "high",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-fd773166-f464-4cad-b4d0-eedd0e5f3f25"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:~/.ssh/id_dsa"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-006",
+      "pid": null,
+      "ppid": null,
+      "process_name": "grep",
+      "process_image": "grep",
+      "parent_process": null,
+      "command_line": "grep -E id_dsa.*$",
+      "file_path": "~/.ssh/id_dsa",
+      "target_patterns": [
+        "~/.ssh/id_dsa"
+      ],
+      "inferred_target": true,
+      "operation": "credential_search",
+      "matched_conditions": [
+        "search_utility",
+        "credential_artifact_pattern"
+      ]
+    },
+    "attack_technique_id": "T1552.004",
+    "tags": [
+      "HB-PROC-006",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "ssh_private_keys",
+      "file_discovery",
+      "attack_technique:T1552.004",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-e7f122a2-a525-5ccf-bdf8-32e5b6f897a5",
+    "timestamp": "2025-02-20T13:07:05.711000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential material search command",
+    "description": "A search command looked for SSH keys or other credential material on the host.",
+    "severity": "high",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-5a51ab3a-84fc-429b-a133-475a67eebfe1"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:~/.ssh/id_rsa"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-006",
+      "pid": null,
+      "ppid": null,
+      "process_name": "grep",
+      "process_image": "grep",
+      "parent_process": null,
+      "command_line": "grep -E id_rsa.*$",
+      "file_path": "~/.ssh/id_rsa",
+      "target_patterns": [
+        "~/.ssh/id_rsa"
+      ],
+      "inferred_target": true,
+      "operation": "credential_search",
+      "matched_conditions": [
+        "search_utility",
+        "credential_artifact_pattern"
+      ]
+    },
+    "attack_technique_id": "T1552.004",
+    "tags": [
+      "HB-PROC-006",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "ssh_private_keys",
+      "file_discovery",
+      "attack_technique:T1552.004",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-556300d3-e4a8-5419-ac42-2db01b7e4e2c",
+    "timestamp": "2025-02-20T13:07:05.734000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential material search command",
+    "description": "A search command looked for SSH keys or other credential material on the host.",
+    "severity": "high",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-6b664abf-fb13-4ab6-af5a-d6d80ae40282"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:~/.ssh/authorized_keys"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-006",
+      "pid": null,
+      "ppid": null,
+      "process_name": "grep",
+      "process_image": "grep",
+      "parent_process": null,
+      "command_line": "grep -E authorized_keys$",
+      "file_path": "~/.ssh/authorized_keys",
+      "target_patterns": [
+        "~/.ssh/authorized_keys"
+      ],
+      "inferred_target": true,
+      "operation": "credential_search",
+      "matched_conditions": [
+        "search_utility",
+        "credential_artifact_pattern"
+      ]
+    },
+    "attack_technique_id": "T1552.004",
+    "tags": [
+      "HB-PROC-006",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "ssh_private_keys",
+      "file_discovery",
+      "attack_technique:T1552.004",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-8efec72c-8d40-52d8-84ee-6ea1e558db48",
+    "timestamp": "2025-02-20T13:07:46.504000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential database referenced by command",
+    "description": "A process command line referenced a local password or credential database that can support credential theft.",
+    "severity": "high",
+    "confidence": 0.86,
+    "related_event_ids": [
+      "evt-993af398-26db-4ec4-806c-865773705ed7"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:/etc/shadow"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-005",
+      "pid": null,
+      "ppid": null,
+      "process_name": "cat",
+      "process_image": "cat",
+      "parent_process": null,
+      "command_line": "cat /etc/shadow /etc/shadow- /etc/shadow~ /etc/gshadow /etc/gshadow- /etc/master.passwd /etc/spwd.db",
+      "file_path": "/etc/shadow",
+      "target_paths": [
+        "/etc/shadow",
+        "/etc/gshadow",
+        "/etc/master.passwd",
+        "/etc/spwd.db"
+      ],
+      "operation": "command_reference",
+      "matched_conditions": [
+        "credential_database_path"
+      ]
+    },
+    "attack_technique_id": "T1003.008",
+    "tags": [
+      "HB-PROC-005",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "password_store",
+      "attack_technique:T1003.008",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-c0d046cd-0787-5612-95eb-119cd1706294",
+    "timestamp": "2025-02-20T13:08:23.630000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "suspicious_behavior",
+    "title": "Credential material search command",
+    "description": "A search command looked for SSH keys or other credential material on the host.",
+    "severity": "high",
+    "confidence": 0.84,
+    "related_event_ids": [
+      "evt-926b1a6e-7fac-4f67-a4f8-994d30d4513c"
+    ],
+    "related_entity_ids": [
+      "host:TC-LINUX",
+      "file:TC-LINUX:~/.git-credentials"
+    ],
+    "evidence": {
+      "rule_id": "HB-PROC-006",
+      "pid": null,
+      "ppid": null,
+      "process_name": "grep",
+      "process_image": "grep",
+      "parent_process": null,
+      "command_line": "grep -Ev .Xauthority|.bashrc|.bluemix|.boto|.cer|.cloudflared|.credentials.json|.crt|.csr|.db|.der|.docker|.env|.erlang.cookie|.flyrc|.ftpconfig|.git|.git-credentials|.gitconfig|.github|.gnupg|.google_authenticator|.gpg|.htpasswd|.irssi|.jks|.k5login|.kdbx|.key|.keyring|.keystore|.keytab|.kube|.ldaprc|.lesshst|.mozilla|.msmtprc|.ovpn|.p12|.password-store|.pem|.pfx|.pgp|.plan|.profile|.psk|.pub|.pypirc|.rdg|.recently-used.xbel|.rhosts|.roadtools_auth|.secrets.mkey|.service|.socket|.sqlite|.sqlite3|.sudo_as_admin_successful|.svn|.swp|.tf|.tfstate|.timer|.vault-token|.vhd|.vhdx|.viminfo|.vmdk|.vnc|.wgetrc",
+      "file_path": "~/.git-credentials",
+      "target_patterns": [
+        "~/.git-credentials",
+        "~/.credentials.json",
+        "~/.vault-token",
+        "~/.gnupg",
+        "*.pem",
+        "*.key"
+      ],
+      "inferred_target": true,
+      "operation": "credential_search",
+      "matched_conditions": [
+        "search_utility",
+        "credential_artifact_pattern"
+      ]
+    },
+    "attack_technique_id": "T1552.004",
+    "tags": [
+      "HB-PROC-006",
+      "host_behavior",
+      "process",
+      "command_line",
+      "credential_access",
+      "ssh_private_keys",
+      "file_discovery",
+      "attack_technique:T1552.004",
+      "attack_tactic:TA0006",
+      "attack_stage:credential_access"
+    ]
+  },
+  {
+    "detection_id": "det-38755e07-8327-5be5-ae99-1b6f39404743",
+    "timestamp": "2025-04-16T08:05:30.938000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Successful privileged process execution",
+    "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+    "severity": "high",
+    "confidence": 0.9,
+    "related_event_ids": [
+      "evt-eb351765-5ee0-4481-9662-7480994eb354"
+    ],
+    "related_entity_ids": [
+      "process:TC-LINUX:1962",
+      "user:TC-LINUX:root"
+    ],
+    "evidence": {
+      "rule_id": "HB-SYSCALL-003",
+      "pid": 1962,
+      "process_name": "doas",
+      "syscall": "execve",
+      "uid": "ubuntu",
+      "euid": "root",
+      "auid": "ubuntu",
+      "exe": "/usr/bin/doas",
+      "success": "yes",
+      "operation": "privileged_execution",
+      "matched_conditions": [
+        "successful_exec",
+        "real_effective_uid_changed",
+        "effective_uid_root"
+      ]
+    },
+    "attack_technique_id": "T1548.003",
+    "tags": [
+      "HB-SYSCALL-003",
+      "host_behavior",
+      "syscall",
+      "privilege_escalation",
+      "elevated_execution",
+      "attack_technique:T1548.003",
+      "attack_tactic:TA0004",
+      "attack_stage:privilege_escalation",
+      "attack_tactic:TA0005",
+      "attack_stage:defense_evasion"
+    ]
+  },
+  {
+    "detection_id": "det-aae1fa77-85cf-5d29-b713-7897f201d51d",
+    "timestamp": "2025-04-16T08:19:51.193000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Successful privileged process execution",
+    "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+    "severity": "high",
+    "confidence": 0.9,
+    "related_event_ids": [
+      "evt-ffbb450a-3c0b-4b55-9cae-e244e5ab46a9"
+    ],
+    "related_entity_ids": [
+      "process:TC-LINUX:5110",
+      "user:TC-LINUX:root"
+    ],
+    "evidence": {
+      "rule_id": "HB-SYSCALL-003",
+      "pid": 5110,
+      "process_name": "doas",
+      "syscall": "execve",
+      "uid": "ubuntu",
+      "euid": "root",
+      "auid": "ubuntu",
+      "exe": "/usr/bin/doas",
+      "success": "yes",
+      "operation": "privileged_execution",
+      "matched_conditions": [
+        "successful_exec",
+        "real_effective_uid_changed",
+        "effective_uid_root"
+      ]
+    },
+    "attack_technique_id": "T1548.003",
+    "tags": [
+      "HB-SYSCALL-003",
+      "host_behavior",
+      "syscall",
+      "privilege_escalation",
+      "elevated_execution",
+      "attack_technique:T1548.003",
+      "attack_tactic:TA0004",
+      "attack_stage:privilege_escalation",
+      "attack_tactic:TA0005",
+      "attack_stage:defense_evasion"
+    ]
+  },
+  {
+    "detection_id": "det-df459b57-a34a-50fc-bd7a-45a0825eea7a",
+    "timestamp": "2026-05-04T13:28:26.991000Z",
+    "analyzer": "host_behavior_analyzer",
+    "detection_type": "malicious_behavior",
+    "title": "Successful privileged process execution",
+    "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+    "severity": "high",
+    "confidence": 0.9,
+    "related_event_ids": [
+      "evt-6605d1c7-ec33-4ce9-8b0d-a3a19349f8aa"
+    ],
+    "related_entity_ids": [
+      "process:TC-LINUX:2675",
+      "user:TC-LINUX:root"
+    ],
+    "evidence": {
+      "rule_id": "HB-SYSCALL-003",
+      "pid": 2675,
+      "process_name": "su",
+      "syscall": "execve",
+      "uid": "1000",
+      "euid": "0",
+      "auid": "1000",
+      "exe": "/usr/bin/su",
+      "success": "yes",
+      "operation": "privileged_execution",
+      "matched_conditions": [
+        "successful_exec",
+        "real_effective_uid_changed",
+        "effective_uid_root"
+      ]
+    },
+    "attack_technique_id": "T1068",
+    "tags": [
+      "HB-SYSCALL-003",
+      "host_behavior",
+      "syscall",
+      "privilege_escalation",
+      "elevated_execution",
+      "attack_technique:T1068",
+      "attack_tactic:TA0004",
+      "attack_stage:privilege_escalation"
+    ]
+  }
+]

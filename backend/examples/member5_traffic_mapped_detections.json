@@ -524,12 +524,12 @@
       ],
       "score": 3
     },
-    "attack_technique_id": "T1571.004",
+    "attack_technique_id": "T1095",
     "tags": [
       "icmp",
       "icmp_tunnel",
       "covert_channel",
-      "attack_technique:T1571.004",
+      "attack_technique:T1095",
       "attack_tactic:TA0011",
       "attack_stage:command_and_control"
     ]
@@ -592,12 +592,12 @@
       ],
       "score": 7
     },
-    "attack_technique_id": "T1571.004",
+    "attack_technique_id": "T1095",
     "tags": [
       "icmp",
       "icmp_tunnel",
       "covert_channel",
-      "attack_technique:T1571.004",
+      "attack_technique:T1095",
       "attack_tactic:TA0011",
       "attack_stage:command_and_control"
     ]
@@ -660,12 +660,12 @@
       ],
       "score": 3
     },
-    "attack_technique_id": "T1571.004",
+    "attack_technique_id": "T1095",
     "tags": [
       "icmp",
       "icmp_tunnel",
       "covert_channel",
-      "attack_technique:T1571.004",
+      "attack_technique:T1095",
       "attack_tactic:TA0011",
       "attack_stage:command_and_control"
     ]
@@ -1086,13 +1086,13 @@
         42
       ]
     },
-    "attack_technique_id": "T1046",
+    "attack_technique_id": "T1571",
     "tags": [
       "connection",
       "uncommon_port",
-      "attack_technique:T1046",
-      "attack_tactic:TA0007",
-      "attack_stage:discovery"
+      "attack_technique:T1571",
+      "attack_tactic:TA0011",
+      "attack_stage:command_and_control"
     ]
   },
   {
