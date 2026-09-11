@@ -1,0 +1,75 @@
+{
+  "dataset_kind": "real_parser_output_subset",
+  "schema_validation": "passed",
+  "source_event_count": 41,
+  "selected_event_count": 20,
+  "detection_count": 12,
+  "selected_counts_by_source_technique": {
+    "T1003.008": 4,
+    "T1068": 7,
+    "T1548.003": 4,
+    "T1552.004": 5
+  },
+  "detection_counts_by_rule": {
+    "HB-PROC-005": 4,
+    "HB-PROC-006": 5,
+    "HB-SYSCALL-003": 3
+  },
+  "source_files": {
+    "T1003.008": "T1003.008(1).json",
+    "T1068": "T1068(1).json",
+    "T1548.003": "T1548.003(1).json",
+    "T1552.004": "T1552.004(1).json"
+  },
+  "integrity": {
+    "unique_event_ids": true,
+    "all_related_event_ids_resolved": true,
+    "entity_direction_convention": "source_then_target"
+  },
+  "attack_mapping": {
+    "status": "pending_member6",
+    "source_labels": [
+      "T1003.008",
+      "T1068",
+      "T1548.003",
+      "T1552.004"
+    ],
+    "source_technique_by_event_id": {
+      "evt-993af398-26db-4ec4-806c-865773705ed7": "T1003.008",
+      "evt-5dd6621c-e275-49ba-a420-b86af17e9f0e": "T1003.008",
+      "evt-a7d758fa-f253-4bd3-8961-4263a3a2f291": "T1003.008",
+      "evt-af305687-f889-4329-b994-f9fde46c9ec3": "T1003.008",
+      "evt-6605d1c7-ec33-4ce9-8b0d-a3a19349f8aa": "T1068",
+      "evt-5193678e-407b-4368-9ff2-9c9113958fc0": "T1068",
+      "evt-ccd9f4e9-fc60-46bc-a796-872220b34099": "T1068",
+      "evt-af01deef-9d5d-496e-b753-0c154c22452e": "T1068",
+      "evt-f11b0211-51e9-41af-8c89-d30aeaf3a386": "T1068",
+      "evt-44266819-462c-4a77-82cb-69dcdef3b73a": "T1068",
+      "evt-0171bc13-67d0-4d9a-88b4-19ff1f1b162d": "T1068",
+      "evt-ffbb450a-3c0b-4b55-9cae-e244e5ab46a9": "T1548.003",
+      "evt-eb351765-5ee0-4481-9662-7480994eb354": "T1548.003",
+      "evt-d2f4dcd0-bea1-4a04-a852-0747f0929ea5": "T1548.003",
+      "evt-9c680d96-43a3-4413-8592-6e1835f71183": "T1548.003",
+      "evt-926b1a6e-7fac-4f67-a4f8-994d30d4513c": "T1552.004",
+      "evt-6b664abf-fb13-4ab6-af5a-d6d80ae40282": "T1552.004",
+      "evt-5a51ab3a-84fc-429b-a133-475a67eebfe1": "T1552.004",
+      "evt-fd773166-f464-4cad-b4d0-eedd0e5f3f25": "T1552.004",
+      "evt-b405f249-caa9-414b-83e2-375c486560cf": "T1552.004"
+    },
+    "expected_technique_by_detection_id": {
+      "det-dc4e405e-f152-5e2a-9882-f00ba85bb775": "T1003.008",
+      "det-dd4149df-f86d-5381-ad7a-36e2c2ac2abe": "T1003.008",
+      "det-c571d083-391a-5e43-a6cf-3ddc99a897b3": "T1552.004",
+      "det-2b8e9df4-02b5-5277-931c-93efb0046502": "T1003.008",
+      "det-df16411c-48f4-5bf1-a328-6d4604b57dce": "T1552.004",
+      "det-e7f122a2-a525-5ccf-bdf8-32e5b6f897a5": "T1552.004",
+      "det-556300d3-e4a8-5419-ac42-2db01b7e4e2c": "T1552.004",
+      "det-8efec72c-8d40-52d8-84ee-6ea1e558db48": "T1003.008",
+      "det-c0d046cd-0787-5612-95eb-119cd1706294": "T1552.004",
+      "det-38755e07-8327-5be5-ae99-1b6f39404743": "T1548.003",
+      "det-aae1fa77-85cf-5d29-b713-7897f201d51d": "T1548.003",
+      "det-df459b57-a34a-50fc-bd7a-45a0825eea7a": "T1068"
+    },
+    "note": "attack_technique_id remains null in member-4 output; member 6 performs the unified ATT&CK mapping."
+  }
+}
