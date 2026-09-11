@@ -246,3 +246,5 @@ backend/tests/fixtures/output/
 /开发规范文档.md
 /数据集使用指南
 /设计要求
+
+/test-datasets/
