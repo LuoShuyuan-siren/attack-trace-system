@@ -1,597 +1,169 @@
-"""
-Windows 日志统一解析器
-支持 Security.evtx 和 Sysmon.evtx
-"""
-
+import gzip
+import csv
+import json
+import re
+import uuid
 from pathlib import Path
-from typing import List, Optional, Dict, Any
-from xml.etree import ElementTree as ET
+from datetime import datetime, timezone
 
-try:
-    from Evtx.Evtx import Evtx
-except ImportError:  # python-evtx is optional for structured event ingestion
-    Evtx = None
-
-from ..core.parser import BaseParser
-from ..schemas.event import NormalizedEvent
-
-
-def clean_str(value: Optional[str]) -> Optional[str]:
-    """清理字符串，移除无效 Unicode 替换字符，去除首尾空格"""
-    if not value:
-        return None
-    value = str(value).replace('\ufffd', '').strip()
-    return value if value else None
-
-
-def safe_int(value) -> int:
-    """
-    安全转换为整数，支持：
-    - 十六进制字符串（如 '0x1234' 或 '0x00000000000001b4'）
-    - 十进制字符串（如 '1234'）
-    - None 或空字符串返回 0
-    """
-    if value is None:
-        return 0
-    if isinstance(value, int):
-        return value
-    value = str(value).strip()
-    if not value:
-        return 0
-    try:
-        if value.lower().startswith('0x'):
-            return int(value, 16)
-        else:
-            return int(value, 10)
-    except (ValueError, TypeError):
-        try:
-            return int(value, 16)
-        except:
-            return 0
-
-
-def get_nested_value(data: Dict[str, Any], *keys) -> Optional[str]:
-    """从字典中按优先级顺序获取第一个存在的值"""
-    for key in keys:
-        if key in data:
-            val = data.get(key)
-            if val is not None and str(val).strip():
-                return val
-    return None
-
+from backend.app.core.parser import BaseParser
+from backend.app.schemas.event import NormalizedEvent
 
 class WindowsLogParser(BaseParser):
-    """Windows 日志解析器（兼容 Security 和 Sysmon）"""
+    name = "windows_log_parser"
+    source_type = "host_log"
 
-    @property
-    def name(self) -> str:
-        return "windows_log_parser"
-
-    @property
-    def source_type(self) -> str:
-        return "host_log"
-
-    def parse(self, source: Path) -> List[NormalizedEvent]:
-        """解析单个 .evtx 文件，返回 NormalizedEvent 列表"""
-        # 只处理 Security 和 Sysmon 日志，跳过 Application 和 System
-        if "Security" not in source.name and "Sysmon" not in source.name:
-            print(f"⏭️ 跳过非 Security/Sysmon 文件: {source.name}")
-            return []
-
-        print(f"🔍 正在解析: {source.name}")
-        events = []
-
-        if not source.exists():
-            print(f"⚠️ 文件不存在: {source}")
-            return events
-
-        if Evtx is None:
-            print("⚠️ 未安装 python-evtx，跳过 EVTX 文件解析")
-            return events
-
-        try:
-            with Evtx(str(source)) as log:
-                for record in log.records():
-                    try:
-                        xml_str = record.xml()
-                        root = ET.fromstring(xml_str)
-
-                        # ----- 提取 EventData 中的所有键值对 -----
-                        event_data = {}
-                        for data in root.iter():
-                            if data.tag.endswith('Data'):
-                                name = data.attrib.get('Name')
-                                if name:
-                                    event_data[name] = clean_str(data.text)
-
-                        # 如果上面的方法没取到，尝试通过 XPath 直接取
-                        if not event_data:
-                            for data in root.findall('.//{*}Data'):
-                                name = data.attrib.get('Name')
-                                if name:
-                                    event_data[name] = clean_str(data.text)
-
-                        # ----- 提取事件 ID -----
-                        event_id_node = root.find('.//{*}EventID')
-                        if event_id_node is None:
-                            event_id_node = root.find('.//EventID')
-                        event_id = int(event_id_node.text) if event_id_node is not None else 0
-
-                        # ----- 提取时间戳 -----
-                        time_created = root.find('.//{*}TimeCreated')
-                        if time_created is None:
-                            time_created = root.find('.//TimeCreated')
-                        timestamp = time_created.attrib.get('SystemTime') if time_created is not None else None
-
-                        # ----- 提取主机名 -----
-                        computer = root.find('.//{*}Computer')
-                        if computer is None:
-                            computer = root.find('.//Computer')
-                        hostname = computer.text if computer is not None else "Unknown"
-
-                        # 根据事件 ID 构造 NormalizedEvent
-                        parsed = self._parse_event(event_id, event_data, timestamp, hostname)
-                        if parsed:
-                            events.append(parsed)
-
-                    except Exception as e:
-                        # 单条事件解析失败，继续下一条
-                        continue
-
-        except Exception as e:
-            print(f"解析 {source.name} 时出错: {e}")
-            import traceback
-            traceback.print_exc()
-
-        return events
-
-    def _parse_event(self, event_id: int, data: Dict[str, Any], timestamp: str, hostname: str):
-        """根据事件 ID 构造具体的 NormalizedEvent"""
-        
-        # 公共 host 信息
-        host = {
-            "hostname": hostname,
-            "ip": None,
-            "os": "windows"
+    def __init__(self):
+        super().__init__()
+        # 包含常见的 Security 和 Sysmon 事件ID
+        self.event_code_map = {
+            "1": "process_create", "10": "process_access", "4688": "process_create",
+            "11": "file_create", "23": "file_delete", "4663": "file_modify",
+            "12": "registry_create", "13": "registry_set", "14": "registry_rename",
+            "4624": "user_login", "4625": "user_login_failed",
         }
+        self.debug_count = 0
 
-        # ---------------- Sysmon 事件 ----------------
-        if event_id in (1, 3, 7, 8, 10, 11, 12, 13, 14, 22, 23, 25, 26):
-            source = "windows_sysmon"
+    def _parse_time(self, raw_time: str) -> str:
+        if not raw_time: return datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        try:
+            match = re.search(r'(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(\.\d+)?)', raw_time)
+            if match:
+                clean_time = match.group(1).replace(' ', 'T')
+                return datetime.strptime(clean_time.split('.')[0], "%Y-%m-%dT%H:%M:%S").strftime('%Y-%m-%dT%H:%M:%SZ')
+            return raw_time
+        except ValueError:
+            return raw_time
 
-            # Sysmon 1: 进程创建
-            if event_id == 1:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="process_create",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User"))
-                    },
-                    object={
-                        "type": "process",
-                        "name": clean_str(data.get("ParentImage")),
-                        "pid": safe_int(data.get("ParentProcessId"))
-                    },
-                    network=None,
-                    action="create_process",
-                    raw_data={"command_line": clean_str(data.get("CommandLine"))},
-                    severity="medium",
-                    attack=None,
-                    tags=["sysmon", "process"]
-                )
+    def _extract_from_raw(self, raw_text: str) -> dict:
+        extracted = {}
+        if not raw_text: return extracted
+        
+        raw_text = raw_text.replace('\r\n', '\n').strip()
+        
+        # 1. 尝试按 JSON 解析
+        try: return json.loads(raw_text)
+        except: pass
+        
+        # 2. 尝试按 XML 解析 (Sysmon)
+        if raw_text.startswith("<"):
+            event_id_match = re.search(r'<EventID>\s*(\d+)\s*</EventID>', raw_text)
+            if event_id_match: extracted['EventCode'] = event_id_match.group(1)
+            data_matches = re.finditer(r'<Data Name=[\'"]([^\'"]+)[\'"]>(.*?)</Data>', raw_text, re.DOTALL)
+            for match in data_matches:
+                extracted[match.group(1)] = match.group(2).strip()
+            return extracted
+            
+        # 3. 纯文本 Key=Value 或 Key: Value 解析 (Security 日志)
+        # 提取 EventCode
+        match = re.search(r'(?:EventCode|EventID|Event_Id)[=:\s]+(\d+)', raw_text, re.IGNORECASE)
+        if match: extracted['EventCode'] = match.group(1)
+            
+        # 逐行提取键值对，兼容 "Key=Value" 和 "Key: Value" 两种格式
+        for line in raw_text.splitlines():
+            line = line.strip()
+            if "=" in line:
+                parts = line.split("=", 1)
+                extracted[parts[0].strip()] = parts[1].strip()
+            elif ":" in line:
+                parts = line.split(":", 1)
+                extracted[parts[0].strip()] = parts[1].strip()
+                
+        return extracted
 
-            # Sysmon 3: 网络连接
-            if event_id == 3:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="network_connection",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User")),
-                    },
-                    object=None,
-                    network={
-                        "src_ip": clean_str(data.get("SourceIp")),
-                        "src_port": safe_int(data.get("SourcePort")),
-                        "dst_ip": clean_str(data.get("DestinationIp")),
-                        "dst_port": safe_int(data.get("DestinationPort")),
-                        "protocol": clean_str(data.get("Protocol")),
-                    },
-                    action="connect",
-                    raw_data={
-                        "source_hostname": clean_str(
-                            data.get("SourceHostname")
-                        ),
-                        "destination_hostname": clean_str(
-                            data.get("DestinationHostname")
-                        ),
-                        "initiated": clean_str(
-                            data.get("Initiated")
-                        ),
-                    },
-                    severity="medium",
-                    attack=None,
-                    tags=["sysmon", "network"],
-                )
+    def parse(self, source: Path, max_events: int = None) -> list[NormalizedEvent]:
+        events = []
+        files_to_process = [source] if source.is_file() else list(source.rglob("*.csv.gz"))
+        
+        for file_path in files_to_process:
+            if max_events and len(events) >= max_events: break
+            try:
+                with gzip.open(file_path, mode='rt', encoding='utf-8') as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        if max_events and len(events) >= max_events: break
+                        try:
+                            raw_dict = self._extract_from_raw(row.get("_raw", ""))
+                            raw_event_id = raw_dict.get("EventCode") or raw_dict.get("EventID")
+                            event_code = str(raw_event_id) if raw_event_id else ""
+                            event_type = self.event_code_map.get(event_code, "unknown_event")
+                            if event_type == "unknown_event": continue
+                            
+                            raw_time = row.get("_time") or row.get("timestamp")
+                            timestamp = self._parse_time(raw_time)
+                            source_name = "windows_sysmon" if "sysmon" in file_path.name.lower() else "windows_security"
+                            hostname = row.get("host") or "unknown_host"
+                            
+                            # 字段提取，兼容 Sysmon (Image) 和 Security (Process Name)
+                            user = raw_dict.get("User") or raw_dict.get("user") or raw_dict.get("Account Name") or "unknown"
+                            process_name = raw_dict.get("Image") or raw_dict.get("process_name") or raw_dict.get("NewProcessName") or raw_dict.get("Process Name")
+                            pid = raw_dict.get("ProcessId") or raw_dict.get("pid") or raw_dict.get("NewProcessId") or raw_dict.get("Process ID")
+                            real_event_id = raw_dict.get("EventRecordID") or raw_dict.get("RecordID") or raw_dict.get("RecordNumber") or event_code
+                            parent_pid = raw_dict.get("ParentProcessId") or raw_dict.get("Parent Process ID")
+                            parent_process_name = raw_dict.get("ParentImage") or raw_dict.get("Parent Process Name")
+                            command_line = raw_dict.get("CommandLine") or raw_dict.get("Command Line")
+                            file_path_val = raw_dict.get("TargetFilename") or raw_dict.get("ObjectName") or raw_dict.get("Object Name")
+                            registry_key = raw_dict.get("TargetObject")
+                            
+                            # 如果有 Object Name，检查它是否为注册表
+                            if file_path_val and "\\REGISTRY\\" in file_path_val.upper():
+                                registry_key = file_path_val
+                                file_path_val = None
 
-            # Sysmon 7: image/DLL load
-            if event_id == 7:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('ProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="image_load",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User")),
-                    },
-                    object={
-                        "type": "image",
-                        "name": clean_str(data.get("ImageLoaded")),
-                        "path": clean_str(data.get("ImageLoaded")),
-                    },
-                    action="load_image",
-                    raw_data={"signed": clean_str(data.get("Signed")), "signature": clean_str(data.get("Signature")), "signature_status": clean_str(data.get("SignatureStatus"))},
-                    severity="medium",
-                    tags=["sysmon", "memory", "image_load"],
-                )
+                            # 处理十六进制 PID 转换
+                            if pid and isinstance(pid, str) and pid.startswith('0x'):
+                                try: pid = int(pid, 16)
+                                except: pass
+                            if parent_pid and isinstance(parent_pid, str) and parent_pid.startswith('0x'):
+                                try: parent_pid = int(parent_pid, 16)
+                                except: pass
 
-            # Sysmon 8: remote thread creation
-            if event_id == 8:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('SourceProcessId'))}-{safe_int(data.get('TargetProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="remote_thread_create",
-                    subject={"type": "process", "name": clean_str(data.get("SourceImage")), "pid": safe_int(data.get("SourceProcessId"))},
-                    object={"type": "process", "name": clean_str(data.get("TargetImage")), "pid": safe_int(data.get("TargetProcessId"))},
-                    action="create_remote_thread",
-                    raw_data={"start_address": clean_str(data.get("StartAddress")), "start_function": clean_str(data.get("StartFunction")), "source": "sysmon"},
-                    severity="critical",
-                    tags=["sysmon", "memory", "process_injection"],
-                )
+                            subject_data = {
+                                "type": "process" if process_name else "user",
+                                "name": process_name,
+                                "pid": int(pid) if pid and str(pid).isdigit() else None,
+                                "user": user
+                            }
+                            
+                            enhanced_raw_data = dict(row)
+                            enhanced_raw_data["extracted_attributes"] = {
+                                "real_event_id": real_event_id,
+                                "parent_pid": parent_pid,
+                                "parent_process_name": parent_process_name,
+                                "command_line": command_line,
+                                "file_path": file_path_val,
+                                "registry_key": registry_key
+                            }
+                            
+                            object_data = None
+                            if file_path_val:
+                                object_data = {"type": "file", "name": Path(file_path_val).name, "path": file_path_val}
+                            elif registry_key:
+                                object_data = {"type": "registry", "name": registry_key.split("\\")[-1] if "\\" in registry_key else registry_key, "path": registry_key}
 
-            # Sysmon 10: process access, often preceding memory injection
-            if event_id == 10:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('SourceProcessId'))}-{safe_int(data.get('TargetProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="process_access",
-                    subject={"type": "process", "name": clean_str(data.get("SourceImage")), "pid": safe_int(data.get("SourceProcessId"))},
-                    object={"type": "process", "name": clean_str(data.get("TargetImage")), "pid": safe_int(data.get("TargetProcessId"))},
-                    action="open_process",
-                    raw_data={"granted_access": clean_str(data.get("GrantedAccess")), "call_trace": clean_str(data.get("CallTrace"))},
-                    severity="high",
-                    tags=["sysmon", "memory", "process_access"],
-                )
-            # Sysmon 11: 文件创建
-            if event_id == 11:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="file_create",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User"))
-                    },
-                    object={
-                        "type": "file",
-                        "path": clean_str(data.get("TargetFilename"))
-                    },
-                    network=None,
-                    action="create_file",
-                    raw_data={},
-                    severity="low",
-                    attack=None,
-                    tags=["sysmon", "file"]
-                )
-
-            # Sysmon 12/13/14: registry create/delete/value/rename
-            if event_id in (12, 13, 14):
-                operation = {
-                    12: "create_registry",
-                    13: "modify_registry",
-                    14: "rename_registry",
-                }[event_id]
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('ProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="registry_modify",
-                    subject={"type": "process", "name": clean_str(data.get("Image")), "pid": safe_int(data.get("ProcessId")), "user": clean_str(data.get("User"))},
-                    object={"type": "registry", "name": clean_str(data.get("TargetObject")), "path": clean_str(data.get("TargetObject"))},
-                    action=operation,
-                    raw_data={"details": clean_str(data.get("Details")), "event_type": clean_str(data.get("EventType")), "new_name": clean_str(data.get("NewName"))},
-                    severity="medium",
-                    tags=["sysmon", "registry", operation],
-                )
-
-            # Sysmon 13: 注册表值修改
-            if event_id == 13:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="registry_modify",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User")),
-                    },
-                    object={
-                        "type": "registry",
-                        "name": clean_str(data.get("TargetObject")),
-                        "path": clean_str(data.get("TargetObject")),
-                    },
-                    network=None,
-                    action="modify_registry",
-                    raw_data={
-                        "details": clean_str(data.get("Details")),
-                        "event_type": clean_str(data.get("EventType")),
-                    },
-                    severity="medium",
-                    attack=None,
-                    tags=["sysmon", "registry"],
-                )
-
-            # Sysmon 22: DNS 查询
-            if event_id == 22:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="dns_query",
-                    subject={
-                        "type": "process",
-                        "name": clean_str(data.get("Image")),
-                        "pid": safe_int(data.get("ProcessId")),
-                        "user": clean_str(data.get("User")),
-                    },
-                    object={
-                        "type": "domain",
-                        "name": clean_str(data.get("QueryName")),
-                    },
-                    network={
-                        "protocol": "dns",
-                    },
-                    action="dns_query",
-                    raw_data={
-                        "query": clean_str(data.get("QueryName")),
-                        "query_status": clean_str(data.get("QueryStatus")),
-                        "query_results": clean_str(data.get("QueryResults")),
-                    },
-                    severity="medium",
-                    attack=None,
-                    tags=["sysmon", "dns"],
-                )
-
-            # Sysmon 23/26: file deletion
-            if event_id in (23, 26):
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('ProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="file_delete",
-                    subject={"type": "process", "name": clean_str(data.get("Image")), "pid": safe_int(data.get("ProcessId")), "user": clean_str(data.get("User"))},
-                    object={"type": "file", "name": clean_str(data.get("TargetFilename")), "path": clean_str(data.get("TargetFilename"))},
-                    action="delete_file",
-                    raw_data={"hashes": clean_str(data.get("Hashes")), "archived": event_id == 23},
-                    severity="medium",
-                    tags=["sysmon", "file", "delete"],
-                )
-
-            # Sysmon 25: process tampering (hollowing/herpaderping)
-            if event_id == 25:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}-{safe_int(data.get('ProcessId'))}",
-                    timestamp=timestamp,
-                    source_type="host_behavior",
-                    source=source,
-                    host=host,
-                    event_type="process_tamper",
-                    subject={"type": "process", "name": clean_str(data.get("Image")), "pid": safe_int(data.get("ProcessId")), "user": clean_str(data.get("User"))},
-                    action="tamper_process",
-                    raw_data={"type": clean_str(data.get("Type"))},
-                    severity="critical",
-                    tags=["sysmon", "memory", "process_tamper"],
-                )
-
-        # ---------------- Security 事件 ----------------
-        elif event_id in (4624, 4634, 4647, 4688):
-            source = "windows_security"
-
-            # Security 4624: 登录
-            if event_id == 4624:
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="user_login",
-                    subject={
-                        "type": "user",
-                        "name": clean_str(data.get("TargetUserName")),
-                        "user": clean_str(data.get("TargetUserName")),
-                    },
-                    object=None,
-                    network={
-                        "src_ip": clean_str(data.get("IpAddress")),
-                        "src_port": safe_int(data.get("IpPort")),
-                    },
-                    action="login",
-                    raw_data={
-                        "logon_id": clean_str(data.get("TargetLogonId")),
-                        "logon_type": clean_str(data.get("LogonType")),
-                    },
-                    severity="info",
-                    attack=None,
-                    tags=["security", "login"]
-                )
-
-            # Security 4634/4647: session termination
-            if event_id in (4634, 4647):
-                username = get_nested_value(
-                    data,
-                    "TargetUserName",
-                    "SubjectUserName",
-                    "User",
-                )
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="user_logout",
-                    subject={
-                        "type": "user",
-                        "name": clean_str(username),
-                        "user": clean_str(username),
-                    },
-                    object=None,
-                    network=None,
-                    action="logout",
-                    raw_data={
-                        "logon_id": clean_str(
-                            data.get("TargetLogonId") or data.get("SubjectLogonId")
-                        ),
-                        "logoff_reason": clean_str(data.get("LogonType")),
-                    },
-                    severity="info",
-                    attack=None,
-                    tags=["security", "logout"],
-                )
-
-            # Security 4688: 进程创建
-            # 字段含义（重要！）：
-            # - ProcessId = 父进程 PID (subject.pid)
-            # - NewProcessId = 新进程 PID (object.pid)  
-            # - NewProcessName = 新进程路径 (object.name/path)
-            # - SubjectUserName = 执行用户 (subject.user)
-            if event_id == 4688:
-                # ---- 提取原始字段（兼容多种字段名） ----
-                # 父进程 PID
-                process_id = get_nested_value(
-                    data,
-                    "ProcessId",
-                    "Process ID",
-                    "SubjectProcessId"
-                )
-                # 新进程 PID
-                new_process_id = get_nested_value(
-                    data,
-                    "NewProcessId",
-                    "New Process ID",
-                    "TargetProcessId"
-                )
-                # 新进程名称（这是最重要的字段！）
-                new_process_name = get_nested_value(
-                    data,
-                    "NewProcessName",
-                    "New Process Name",
-                    "TargetProcessName",
-                    "ProcessName"
-                )
-                # 命令行（可能为 None，取决于系统配置）
-                command_line = get_nested_value(
-                    data,
-                    "CommandLine",
-                    "Command Line",
-                    "ProcessCommandLine"
-                )
-                # 执行用户
-                subject_user = get_nested_value(
-                    data,
-                    "SubjectUserName",
-                    "Subject User Name",
-                    "User"
-                )
-                # 登录会话 ID
-                logon_id = get_nested_value(
-                    data,
-                    "SubjectLogonId",
-                    "Subject Logon ID",
-                    "LogonId"
-                )
-
-                # ---- 转换 PID ----
-                pid_int = safe_int(process_id)
-                new_pid_int = safe_int(new_process_id)
-
-                # ---- 调试打印（关键！用于验证字段提取） ----
-                # print(f"  📌 4688: "
-                #       f"ProcessId={process_id} -> {pid_int}, "
-                #       f"NewProcessId={new_process_id} -> {new_pid_int}, "
-                #       f"NewProcessName={new_process_name[:60] if new_process_name else 'None'}, "
-                #       f"SubjectUser={subject_user}, "
-                #       f"CommandLine={command_line[:40] if command_line else 'None'}")
-
-                # ---- 构造 NormalizedEvent ----
-                return NormalizedEvent(
-                    event_id=f"evt-{hostname}-{timestamp}-{event_id}",
-                    timestamp=timestamp,
-                    source_type="host_log",
-                    source=source,
-                    host=host,
-                    event_type="process_create",
-                    subject={
-                        "type": "process",
-                        "name": None,  # Security 4688 不提供父进程路径
-                        "pid": pid_int,           # 父进程 PID
-                        "user": clean_str(subject_user)
-                    },
-                    object={
-                        "type": "process",
-                        "name": clean_str(new_process_name),
-                        "path": clean_str(new_process_name),
-                        "pid": new_pid_int         # 新进程 PID
-                    },
-                    network=None,
-                    action="create_process",
-                    raw_data={
-                        "command_line": clean_str(command_line),
-                        "logon_id": clean_str(logon_id),
-                    },
-                    severity="low",
-                    attack=None,
-                    tags=["security", "process"]
-                )
-
-        return None
+                            event = NormalizedEvent(
+                                event_id=f"evt-{uuid.uuid4()}",
+                                timestamp=timestamp,
+                                source_type="host_log",
+                                source=source_name,
+                                host={"hostname": hostname, "ip": None, "os": "windows"},
+                                event_type=event_type,
+                                subject=subject_data,
+                                object=object_data,
+                                network=None,
+                                action=event_type.split('_')[0] if "_" in event_type else None,
+                                raw_data=enhanced_raw_data,
+                                severity="low",
+                                attack=None,
+                                tags=["windows", source_name, event_type]
+                            )
+                            events.append(event)
+                        except Exception as e:
+                            if self.debug_count < 5:
+                                print(f"[Debug] 单行解析失败: {e}")
+                                self.debug_count += 1
+                            continue
+            except Exception as e:
+                print(f"[Error] 读取文件 {file_path} 失败: {e}")
+                continue
+        return events
