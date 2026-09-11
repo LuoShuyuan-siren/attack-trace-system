@@ -91,7 +91,6 @@ TECHNIQUES: dict[str, tuple[str, tuple[str, ...]]] = {
     "T1570": ("Lateral Tool Transfer", ("TA0008",)),
     "T1572": ("Protocol Tunneling", ("TA0011",)),
     "T1571": ("Non-Standard Port", ("TA0011",)),
-    "T1571.004": ("ICMP", ("TA0011",)),
     "T1620": ("Reflective Code Loading", ("TA0005",)),
 }
 

@@ -97,7 +97,7 @@ def build_default_rules() -> tuple[MappingRule, ...]:
         MappingRule(
             rule_id="explicit-icmp-c2",
             name="ICMP tunnel C2",
-            technique_id="T1571.004",
+            technique_id="T1095",
             priority=90,
             tactic_ids=("TA0011",),
             analyzers=frozenset({"icmp_tunnel_analyzer"}),
@@ -106,7 +106,7 @@ def build_default_rules() -> tuple[MappingRule, ...]:
         MappingRule(
             rule_id="tag-icmp-c2",
             name="ICMP tunnel tag",
-            technique_id="T1571.004",
+            technique_id="T1095",
             priority=86,
             tactic_ids=("TA0011",),
             tags=frozenset({"icmp_tunnel", "icmp-tunnel"}),
@@ -133,11 +133,11 @@ def build_default_rules() -> tuple[MappingRule, ...]:
         MappingRule(
             rule_id="tag-uncommon-port",
             name="Uncommon port communication",
-            technique_id="T1046",
+            technique_id="T1571",
             priority=74,
-            tactic_ids=("TA0007",),
+            tactic_ids=("TA0011",),
             tags=frozenset({"uncommon_port"}),
-            ttp_tags=("discovery", "scanning"),
+            ttp_tags=("c2_communication", "non_standard_port"),
         ),
         MappingRule(
             rule_id="protocol-tunneling",

@@ -116,3 +116,29 @@ def test_member4_rule_ids_are_mapped_by_attack_mapper():
 
     assert first.technique_id == "T1003.008"
     assert second.technique_id == "T1552.004"
+
+
+def test_icmp_tunnel_and_uncommon_port_mapping():
+    mapper = AttackMapper()
+    icmp = DetectionResult(
+        detection_id="det-icmp",
+        timestamp=datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
+        analyzer="icmp_analyzer",
+        detection_type="suspicious_behavior",
+        title="ICMP tunnel",
+        confidence=0.8,
+        attack_technique_id="T1571.004",
+        tags=["icmp", "icmp_tunnel", "covert_channel"],
+    )
+    uncommon = DetectionResult(
+        detection_id="det-uncommon",
+        timestamp=datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
+        analyzer="connection_analyzer",
+        detection_type="anomaly",
+        title="Uncommon port communication",
+        confidence=0.5,
+        tags=["connection", "uncommon_port"],
+    )
+
+    assert mapper.map_one(icmp).technique_id == "T1095"
+    assert mapper.map_one(uncommon).technique_id == "T1571"
