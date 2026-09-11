@@ -6,11 +6,9 @@ import uuid
 from pathlib import Path
 from datetime import datetime, timezone
 
-# ⑤ 修复导入规范
 from app.core.parser import BaseParser
 from app.schemas.event import NormalizedEvent
 
-# ① 引入 EVTX 解析库 (如果尚未安装，请执行 pip install python-evtx)
 try:
     from Evtx.Evtx import Evtx
 except ImportError:
@@ -22,7 +20,6 @@ class WindowsLogParser(BaseParser):
 
     def __init__(self):
         super().__init__()
-        # ④ 恢复完整事件映射
         self.event_code_map = {
             "1": "process_create", "10": "process_access", "4688": "process_create",
             "3": "network_connection", "22": "dns_query",
@@ -51,8 +48,19 @@ class WindowsLogParser(BaseParser):
         except: pass
         
         if raw_text.startswith("<"):
+            # ① 提取 EventID
             event_id_match = re.search(r'<EventID>\s*(\d+)\s*</EventID>', raw_text)
             if event_id_match: extracted['EventCode'] = event_id_match.group(1)
+            
+            # ② 关键修复：提取 System 节点中的 TimeCreated SystemTime
+            time_match = re.search(r'<TimeCreated\s+SystemTime=[\'"]([^\'"]+)[\'"]', raw_text)
+            if time_match: extracted['SystemTime'] = time_match.group(1)
+            
+            # ③ 关键修复：提取 System 节点中的 Computer
+            computer_match = re.search(r'<Computer>([^<]+)</Computer>', raw_text)
+            if computer_match: extracted['Computer'] = computer_match.group(1)
+            
+            # ④ 提取 EventData 下的所有 Data 字段
             data_matches = re.finditer(r'<Data Name=[\'"]([^\'"]+)[\'"]>(.*?)</Data>', raw_text, re.DOTALL)
             for match in data_matches:
                 extracted[match.group(1)] = match.group(2).strip()
@@ -79,8 +87,11 @@ class WindowsLogParser(BaseParser):
         event_type = self.event_code_map.get(event_code, "unknown_event")
         if event_type == "unknown_event": return None
             
-        raw_time = row_dict.get("_time") or row_dict.get("timestamp") or raw_dict.get("UtcTime")
+        # ④ 修复时间取值优先级：优先取 EVTX 的 SystemTime
+        raw_time = row_dict.get("_time") or row_dict.get("timestamp") or raw_dict.get("SystemTime") or raw_dict.get("UtcTime")
         timestamp = self._parse_time(raw_time)
+        
+        # ⑤ 修复主机名取值：优先取 EVTX 的 Computer
         hostname = row_dict.get("host") or raw_dict.get("Computer") or "unknown_host"
         
         user = raw_dict.get("User") or raw_dict.get("Account Name") or "unknown"
@@ -93,7 +104,6 @@ class WindowsLogParser(BaseParser):
         file_path_val = raw_dict.get("TargetFilename") or raw_dict.get("ObjectName")
         registry_key = raw_dict.get("TargetObject")
 
-        # ③ 填充 Network 字段 (恢复 Sysmon Event 3)
         network_data = None
         if event_type == "network_connection":
             src_ip = raw_dict.get("SourceIp")
@@ -110,7 +120,6 @@ class WindowsLogParser(BaseParser):
                     "protocol": protocol
                 }
 
-        # ③ 平铺到 raw_data 顶层
         enhanced_raw_data = dict(row_dict)
         enhanced_raw_data["real_event_id"] = real_event_id
         enhanced_raw_data["parent_pid"] = parent_pid
@@ -146,7 +155,7 @@ class WindowsLogParser(BaseParser):
             event_type=event_type,
             subject=subject_data,
             object=object_data,
-            network=network_data, # ③ 传入 network 数据
+            network=network_data,
             action=event_type.split('_')[0] if "_" in event_type else None,
             raw_data=enhanced_raw_data,
             severity="low",
@@ -161,7 +170,6 @@ class WindowsLogParser(BaseParser):
         for file_path in files_to_process:
             if max_events and len(events) >= max_events: break
 
-            # ① 真正恢复 EVTX 解析逻辑
             if file_path.suffix == ".evtx":
                 if Evtx is None:
                     print("[Error] 未安装 python-evtx 库，请执行 pip install python-evtx")
@@ -177,8 +185,7 @@ class WindowsLogParser(BaseParser):
                 except Exception as e:
                     print(f"[Error] 解析 EVTX 文件 {file_path} 失败: {e}")
 
-            # ② CSV.GZ 格式支持
-            elif file_path.suffix == ".gz":
+            elif file_path.suffix == ".gz" or file_path.name.endswith(".csv.gz"):
                 try:
                     with gzip.open(file_path, mode='rt', encoding='utf-8', errors='ignore') as f:
                         reader = csv.DictReader(f)
