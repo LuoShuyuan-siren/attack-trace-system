@@ -35,6 +35,7 @@ SEMANTIC_RELATIONS = {
 TECHNIQUE_RELATIONS = {
     "T1110": "initial_access",
     "T1021": "lateral_movement",
+    "T1046": "discovery",
     "T1078": "authenticate",
     "T1133": "initial_access",
     "T1136": "execute",

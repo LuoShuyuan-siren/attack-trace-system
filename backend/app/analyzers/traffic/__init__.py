@@ -11,10 +11,12 @@ from app.analyzers.traffic.dns_analyzer import DnsAnalyzer
 from app.analyzers.traffic.http_analyzer import HttpAnalyzer
 from app.analyzers.traffic.icmp_analyzer import IcmpAnalyzer
 from app.analyzers.traffic.connection_analyzer import ConnectionAnalyzer
+from app.analyzers.traffic.suricata_alert_analyzer import SuricataAlertAnalyzer
 
 __all__ = [
     "DnsAnalyzer",
     "HttpAnalyzer",
     "IcmpAnalyzer",
     "ConnectionAnalyzer",
+    "SuricataAlertAnalyzer",
 ]

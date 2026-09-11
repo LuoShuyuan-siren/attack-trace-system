@@ -4,6 +4,7 @@ from app.analyzers.traffic import (
     DnsAnalyzer,
     HttpAnalyzer,
     IcmpAnalyzer,
+    SuricataAlertAnalyzer,
 )
 from app.schemas.detection import DetectionResult
 from app.schemas.event import NormalizedEvent
@@ -27,10 +28,29 @@ def analyze_events(
             DnsAnalyzer(),
             HttpAnalyzer(),
             IcmpAnalyzer(),
+            SuricataAlertAnalyzer(),
         ]
-
         for analyzer in analyzers:
             detections.extend(analyzer.analyze(events))
+
+        event_by_id = {event.event_id: event for event in events}
+
+        for detection in detections:
+            # SuricataAlertAnalyzer 已自行使用攻击活动首次出现时间，
+            # 不再覆盖，否则会破坏攻击链时间顺序。
+            if detection.analyzer == "suricata_alert_analyzer":
+                continue
+
+            related_events = [
+                event_by_id[event_id]
+                for event_id in detection.related_event_ids
+                if event_id in event_by_id
+            ]
+
+            if related_events:
+                detection.timestamp = max(
+                    event.timestamp for event in related_events
+                )
 
         return detections
 
