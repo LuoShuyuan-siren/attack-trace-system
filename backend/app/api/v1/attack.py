@@ -44,6 +44,7 @@ def get_attack_chain() -> dict[str, list]:
                 "related_detection_ids": [mapping.detection_id],
             })
 
+    stages.sort(key=lambda item: item["timestamp"])
     return {"stages": stages}
 
 @router.get("/ai-analysis")
