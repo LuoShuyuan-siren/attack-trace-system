@@ -27,9 +27,10 @@ System call events should use event_type system_call and provide
 raw_data.syscall, raw_data.arguments and raw_data.result.
 
 The adapter currently accepts common aliases such as ParentProcessId,
-ParentImage, CommandLine, ppid and syscall_name. Once Windows and Linux parser
-owners finalize their output, aliases can be adjusted in adapters.py without
-rewriting detection rules.
+ParentImage, CommandLine, ppid and syscall_name. It also reads the member-2
+Windows handoff convention under raw_data.extracted_attributes. Once Windows
+and Linux parser owners finalize their output, aliases can be adjusted in
+adapters.py without rewriting detection rules.
 
 When a process event contains parent_pid but no parent process name, the
 analyzer resolves the name from earlier events on the same host. Events are

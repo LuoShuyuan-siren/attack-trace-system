@@ -14,7 +14,13 @@ from typing import Any
 from app.schemas.event import NormalizedEvent
 
 
-_NESTED_RAW_DATA_KEYS = ("event_data", "EventData", "data", "details")
+_NESTED_RAW_DATA_KEYS = (
+    "event_data",
+    "EventData",
+    "data",
+    "details",
+    "extracted_attributes",
+)
 
 
 def raw_value(event: NormalizedEvent, *keys: str) -> Any | None:

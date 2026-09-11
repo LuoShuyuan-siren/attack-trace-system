@@ -158,6 +158,43 @@ class HostBehaviorAnalyzerTests(unittest.TestCase):
 
         self.assertEqual(HostBehaviorAnalyzer().analyze([event]), [])
 
+    def test_member2_extracted_attributes_are_supported(self) -> None:
+        event = make_event(
+            event_id="evt-member2-nested-fields",
+            event_type="process_create",
+            action="process",
+            source="windows_sysmon",
+            hostname="WINDOWS-PC01",
+            process_name="powershell.exe",
+            pid=3152,
+            raw_data={
+                "extracted_attributes": {
+                    "parent_pid": "2200",
+                    "parent_process_name": "WINWORD.EXE",
+                    "command_line": (
+                        "powershell.exe -EncodedCommand SQBFAFgA"
+                    ),
+                }
+            },
+        )
+
+        results = HostBehaviorAnalyzer().analyze([event])
+
+        self.assertIn("HB-PROC-001", rule_ids(results))
+        self.assertIn("HB-PROC-003", rule_ids(results))
+        match = next(
+            item
+            for item in results
+            if item.evidence["rule_id"] == "HB-PROC-001"
+        )
+        self.assertEqual(
+            match.related_entity_ids,
+            [
+                "process:WINDOWS-PC01:2200",
+                "process:WINDOWS-PC01:3152",
+            ],
+        )
+
     def test_password_database_command_without_pid_is_detected(self) -> None:
         event = make_event(
             event_id="evt-shadow-command",
