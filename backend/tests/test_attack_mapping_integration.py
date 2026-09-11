@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 
+from app.analyzers.attack_mapping import AttackMapper
 from app.schemas.detection import DetectionResult
 from app.services.attack_trace_pipeline import (
     build_pipeline_result,
@@ -12,10 +13,12 @@ def detection(
     analyzer: str,
     related_event_ids: list[str],
     attack_technique_id: str | None = None,
+    timestamp: datetime | None = None,
 ) -> DetectionResult:
     return DetectionResult(
         detection_id=detection_id,
-        timestamp=datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
+        timestamp=timestamp
+        or datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
         analyzer=analyzer,
         detection_type="suspicious_behavior",
         title="sample detection",
@@ -59,3 +62,57 @@ def test_build_pipeline_result_maps_and_orders_stages():
         "command_and_control",
     ]
     assert result.ttp_profile.tactic_ids == ("TA0001", "TA0011")
+
+
+def test_time_window_deduplication_keeps_different_buckets():
+    first_time = datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc)
+    second_time = datetime(2026, 9, 10, 10, 10, tzinfo=timezone.utc)
+    first = detection(
+        "det-1",
+        "dns_analyzer",
+        ["evt-1", "evt-2"],
+        timestamp=first_time,
+    )
+    later = detection(
+        "det-2",
+        "dns_analyzer",
+        ["evt-1", "evt-2"],
+        timestamp=second_time,
+    )
+
+    result = deduplicate_detections(
+        [first, later],
+        time_window_seconds=60,
+    )
+
+    assert [item.detection_id for item in result] == ["det-1", "det-2"]
+
+
+def test_member4_rule_ids_are_mapped_by_attack_mapper():
+    mapper = AttackMapper()
+    credential_database = DetectionResult(
+        detection_id="det-cred-db",
+        timestamp=datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
+        analyzer="host_behavior_analyzer",
+        detection_type="suspicious_behavior",
+        title="Credential database referenced by command",
+        confidence=0.8,
+        evidence={"rule_id": "HB-PROC-005"},
+        tags=["HB-PROC-005"],
+    )
+    credential_search = DetectionResult(
+        detection_id="det-cred-search",
+        timestamp=datetime(2026, 9, 10, 10, 0, tzinfo=timezone.utc),
+        analyzer="host_behavior_analyzer",
+        detection_type="suspicious_behavior",
+        title="Credential material search command",
+        confidence=0.8,
+        evidence={"rule_id": "HB-PROC-006"},
+        tags=["HB-PROC-006"],
+    )
+
+    first = mapper.map_one(credential_database)
+    second = mapper.map_one(credential_search)
+
+    assert first.technique_id == "T1003.008"
+    assert second.technique_id == "T1552.004"

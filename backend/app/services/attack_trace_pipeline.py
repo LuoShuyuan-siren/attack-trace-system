@@ -106,6 +106,8 @@ def build_pipeline_result(
 
 def deduplicate_detections(
     detections: Iterable[DetectionResult],
+    *,
+    time_window_seconds: int = 0,
 ) -> list[DetectionResult]:
     seen: set[tuple[object, ...]] = set()
     result: list[DetectionResult] = []
@@ -113,7 +115,7 @@ def deduplicate_detections(
         detections,
         key=lambda item: (item.timestamp, item.detection_id),
     ):
-        key = _dedupe_key(detection)
+        key = _dedupe_key(detection, time_window_seconds)
         if key in seen:
             continue
         seen.add(key)
@@ -121,13 +123,20 @@ def deduplicate_detections(
     return result
 
 
-def _dedupe_key(detection: DetectionResult) -> tuple[object, ...]:
+def _dedupe_key(
+    detection: DetectionResult,
+    time_window_seconds: int,
+) -> tuple[object, ...]:
     evidence = detection.evidence or {}
     event_ids = tuple(sorted(detection.related_event_ids[:20]))
+    time_bucket = 0
+    if time_window_seconds > 0:
+        time_bucket = int(detection.timestamp.timestamp() // time_window_seconds)
     return (
         detection.analyzer,
         detection.detection_type,
         evidence.get("src_ip"),
         evidence.get("dst_ip"),
         event_ids,
+        time_bucket,
     )
