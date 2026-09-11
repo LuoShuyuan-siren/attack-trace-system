@@ -238,3 +238,5 @@ __marimo__/
 
 # Generated Windows parser test output
 backend/tests/fixtures/output/
+# Debug script
+backend/tests/debug_evtx.py
