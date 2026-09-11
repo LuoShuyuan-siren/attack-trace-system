@@ -10,5 +10,11 @@ export function getAttackGraph(): Promise<AttackGraph> {
 }
 
 export function getAttackChain(): Promise<AttackChain> {
-  return requestJson<AttackChain>('/api/v1/attack/chain');
+  return requestJson<AttackChain>('/api/v1/attack/chain').then((data) => ({
+    ...data,
+    stages: data.stages ?? [],
+    paths: data.paths ?? [],
+    candidate_path_count: data.candidate_path_count ?? data.paths?.length ?? 0,
+    top_path_score: data.top_path_score ?? data.paths?.[0]?.score ?? null,
+  }));
 }

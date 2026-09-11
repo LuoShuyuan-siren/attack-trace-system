@@ -899,6 +899,12 @@ select {
   background: rgba(15, 23, 42, 0.46);
 }
 
+.graph-view-summary {
+  margin: 10px 0 0;
+  color: #9fb4d2;
+  font-size: 0.82rem;
+}
+
 .layout-mode-btn,
 .reset-layout-btn {
   border: 1px solid rgba(148, 163, 184, 0.3);
@@ -2110,6 +2116,36 @@ button.chain-card.selected-chain-card {
   gap: 18px;
 }
 
+.chain-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.chain-summary-item {
+  padding: 14px 16px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.chain-summary-item span,
+.chain-summary-item strong {
+  display: block;
+}
+
+.chain-summary-item span {
+  color: #9fb4d2;
+  font-size: 0.78rem;
+}
+
+.chain-summary-item strong {
+  margin-top: 6px;
+  color: #f8fafc;
+  font-size: 1.2rem;
+}
+
 .chain-card {
   border: 1px solid rgba(148, 163, 184, 0.12);
   border-radius: 14px;
@@ -2152,6 +2188,47 @@ button.chain-card.selected-chain-card {
   margin-top: 8px;
   color: #8ec5ff;
   font-size: 0.7rem;
+}
+
+.chain-paths {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.chain-path-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(96, 165, 250, 0.22);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.chain-path-card strong,
+.chain-path-card span {
+  display: block;
+}
+
+.chain-path-card span {
+  margin-top: 5px;
+  color: #9fb4d2;
+  font-size: 0.8rem;
+}
+
+.chain-path-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 16px;
+}
+
+.chain-path-metrics span {
+  margin: 0;
+  color: #dbeafe;
 }
 
 @media (max-width: 980px) {

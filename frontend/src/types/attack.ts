@@ -33,8 +33,10 @@ export interface AttackGraph {
 
 export interface AttackStage {
   stage: string;
-  host: string;
-  technique_id: string;
+  source?: string;
+  target?: string;
+  host?: string;
+  technique_id?: string | null;
   tactic_id?: string;
   tactic_name?: string;
   timestamp?: string;
@@ -45,4 +47,20 @@ export interface AttackStage {
 
 export interface AttackChain {
   stages: AttackStage[];
+  paths: AttackPath[];
+  candidate_path_count?: number;
+  top_path_score?: number | null;
+}
+
+export interface AttackPath {
+  nodes: string[];
+  edges: string[];
+  relations: string[];
+  start_time?: string | null;
+  end_time?: string | null;
+  confidence: number;
+  score: number;
+  score_breakdown?: Record<string, number>;
+  related_event_ids: string[];
+  related_detection_ids: string[];
 }

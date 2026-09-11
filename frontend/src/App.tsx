@@ -89,6 +89,7 @@ const formatStageName = (stage: string) => {
 };
 
 type GraphLayoutMode = 'tree' | 'ring' | 'free';
+type GraphViewMode = 'core' | 'full';
 
 const DEFAULT_NODE_POSITIONS: Record<string, { left: string; top: string }> = {};
 
@@ -138,6 +139,9 @@ const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph): Record<s
   const nodeIds = graph.nodes.map((node) => node.node_id);
 
   if (mode === 'ring') {
+    if (nodeIds.length === 0) {
+      return {};
+    }
     return nodeIds.reduce<Record<string, { left: string; top: string }>>((result, nodeId, index) => {
       const angle = (index / nodeIds.length) * Math.PI * 2 - Math.PI / 2;
       const radius = 28;
@@ -154,14 +158,53 @@ const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph): Record<s
   }
 
   if (mode === 'tree') {
-    const columns = Math.min(18, Math.max(1, Math.ceil(Math.sqrt(nodeIds.length))));
-    const rows = Math.max(1, Math.ceil(nodeIds.length / columns));
-    return nodeIds.reduce<Record<string, { left: string; top: string }>>((result, nodeId, index) => {
-      const column = index % columns;
-      const row = Math.floor(index / columns);
+    const incoming = new Map(nodeIds.map((nodeId) => [nodeId, 0]));
+    const adjacency = new Map<string, string[]>();
+    graph.edges.forEach((edge) => {
+      if (!incoming.has(edge.source) || !incoming.has(edge.target)) {
+        return;
+      }
+      adjacency.set(edge.source, [...(adjacency.get(edge.source) ?? []), edge.target]);
+      incoming.set(edge.target, (incoming.get(edge.target) ?? 0) + 1);
+    });
+
+    const depth = new Map<string, number>();
+    const queue = nodeIds.filter((nodeId) => incoming.get(nodeId) === 0);
+    const visited = new Set<string>();
+    queue.forEach((nodeId) => depth.set(nodeId, 0));
+    for (let index = 0; index < queue.length; index += 1) {
+      const nodeId = queue[index];
+      if (visited.has(nodeId)) {
+        continue;
+      }
+      visited.add(nodeId);
+      (adjacency.get(nodeId) ?? []).forEach((target) => {
+        if (!visited.has(target)) {
+          const nextDepth = Math.max(depth.get(target) ?? 0, (depth.get(nodeId) ?? 0) + 1);
+          depth.set(target, nextDepth);
+          queue.push(target);
+        }
+      });
+    }
+    nodeIds.forEach((nodeId) => {
+      if (!depth.has(nodeId)) {
+        depth.set(nodeId, 0);
+      }
+    });
+
+    const levels = new Map<number, string[]>();
+    nodeIds.forEach((nodeId) => {
+      const level = depth.get(nodeId) ?? 0;
+      levels.set(level, [...(levels.get(level) ?? []), nodeId]);
+    });
+    const maxLevel = Math.max(...levels.keys(), 0);
+    return nodeIds.reduce<Record<string, { left: string; top: string }>>((result, nodeId) => {
+      const level = depth.get(nodeId) ?? 0;
+      const levelNodes = levels.get(level) ?? [nodeId];
+      const column = levelNodes.indexOf(nodeId);
       result[nodeId] = {
-        left: `${columns === 1 ? 50 : 8 + (column / (columns - 1)) * 84}%`,
-        top: `${rows === 1 ? 50 : 8 + (row / (rows - 1)) * 84}%`,
+        left: `${levelNodes.length === 1 ? 50 : 8 + (column / (levelNodes.length - 1)) * 84}%`,
+        top: `${maxLevel === 0 ? 50 : 8 + (level / maxLevel) * 84}%`,
       };
       return result;
     }, {});
@@ -174,7 +217,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabName>('仪表盘');
   const [events, setEvents] = useState<EventItem[]>([]);
   const [attackGraph, setAttackGraph] = useState<AttackGraph>({ nodes: [], edges: [] });
-  const [attackChain, setAttackChain] = useState<AttackChain>({ stages: [] });
+  const [attackChain, setAttackChain] = useState<AttackChain>({ stages: [], paths: [] });
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [detections, setDetections] = useState<DetectionItem[]>([]);
   const [forensicsReport, setForensicsReport] = useState<Awaited<ReturnType<typeof getForensicsReport>> | null>(null);
@@ -206,6 +249,7 @@ function App() {
   const [selectedGraphNodeId, setSelectedGraphNodeId] = useState('');
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
   const [graphLayoutMode, setGraphLayoutMode] = useState<GraphLayoutMode>('tree');
+  const [graphViewMode, setGraphViewMode] = useState<GraphViewMode>('core');
   const [graphSearch, setGraphSearch] = useState('');
   const [graphNodeTypeFilter, setGraphNodeTypeFilter] = useState('all');
   const [graphSeverityFilter, setGraphSeverityFilter] = useState('all');
@@ -229,6 +273,32 @@ function App() {
       return {};
     }
   });
+
+  const displayGraph = useMemo<AttackGraph>(() => {
+    const topPath = attackChain.paths?.[0];
+    const coreNodeIds = new Set(topPath?.nodes ?? []);
+    const coreEdgeIds = new Set(topPath?.edges ?? []);
+    const scopedNodes = graphViewMode === 'core' && topPath
+      ? attackGraph.nodes.filter((node) => coreNodeIds.has(node.node_id))
+      : attackGraph.nodes;
+    const scopedNodeIds = new Set(scopedNodes.map((node) => node.node_id));
+    const scopedEdges = attackGraph.edges.filter((edge) => (
+      graphViewMode === 'core' && topPath
+        ? coreEdgeIds.has(edge.edge_id)
+        : scopedNodeIds.has(edge.source) && scopedNodeIds.has(edge.target)
+    ));
+    const filteredNodes = scopedNodes
+      .filter((node) => graphNodeTypeFilter === 'all' || node.node_type === graphNodeTypeFilter)
+      .filter((node) => graphSeverityFilter === 'all' || node.severity === graphSeverityFilter)
+      .filter((node) => !graphSearch.trim() || `${node.name} ${node.node_id} ${node.tags.join(' ')}`.toLowerCase().includes(graphSearch.trim().toLowerCase()));
+    const filteredNodeIds = new Set(filteredNodes.map((node) => node.node_id));
+
+    return {
+      ...attackGraph,
+      nodes: filteredNodes,
+      edges: scopedEdges.filter((edge) => filteredNodeIds.has(edge.source) && filteredNodeIds.has(edge.target)),
+    };
+  }, [attackChain.paths, attackGraph, graphNodeTypeFilter, graphSearch, graphSeverityFilter, graphViewMode]);
 
   const loadData = (isActive: () => boolean = () => true) => {
     setIsRefreshing(true);
@@ -300,9 +370,9 @@ function App() {
 
   useEffect(() => {
     if (graphLayoutMode !== 'free') {
-      setNodePositions(getLayoutPositions(graphLayoutMode, attackGraph));
+      setNodePositions(getLayoutPositions(graphLayoutMode, displayGraph));
     }
-  }, [graphLayoutMode, attackGraph]);
+  }, [displayGraph, graphLayoutMode]);
 
   useEffect(() => {
     localStorage.setItem(GRAPH_LAYOUT_STORAGE_KEY, JSON.stringify(nodePositions));
@@ -354,7 +424,7 @@ function App() {
   };
 
   const resetGraphLayout = () => {
-    setNodePositions(getLayoutPositions(graphLayoutMode === 'free' ? 'tree' : graphLayoutMode, attackGraph));
+    setNodePositions(getLayoutPositions(graphLayoutMode === 'free' ? 'tree' : graphLayoutMode, displayGraph));
   };
 
   const scrollWorkflow = (direction: 'left' | 'right') => {
@@ -544,14 +614,6 @@ function App() {
   const sourceSummary = [...new Set(events.map((event) => event.source))].join('、') || '暂无';
 
   const graphNodeTypes = [...new Set(attackGraph.nodes.map((node) => node.node_type))].sort();
-  const visibleGraphNodeIds = new Set(
-    attackGraph.nodes
-      .filter((node) => graphNodeTypeFilter === 'all' || node.node_type === graphNodeTypeFilter)
-      .filter((node) => graphSeverityFilter === 'all' || node.severity === graphSeverityFilter)
-      .filter((node) => !graphSearch.trim() || `${node.name} ${node.node_id} ${node.tags.join(' ')}`.toLowerCase().includes(graphSearch.trim().toLowerCase()))
-      .map((node) => node.node_id),
-  );
-
   const exportGraph = () => {
     const graphExport = JSON.stringify({ graph: attackGraph, exported_at: new Date().toISOString() }, null, 2);
     const blob = new Blob([graphExport], { type: 'application/json;charset=utf-8' });
@@ -691,6 +753,9 @@ function App() {
   const attackTechniqueRows = useMemo(() => {
     const tacticByTechnique = new Map<string, string[]>();
     attackChain.stages.forEach((stage) => {
+      if (!stage.technique_id) {
+        return;
+      }
       const tactic = stage.tactic_name ?? formatStageName(stage.stage);
       const tactics = tacticByTechnique.get(stage.technique_id) ?? [];
       if (!tactics.includes(tactic)) {
@@ -743,12 +808,15 @@ function App() {
     });
 
     attackChain.stages.forEach((stage) => {
+      if (!stage.technique_id) {
+        return;
+      }
       if (!rows.has(stage.technique_id)) {
         rows.set(stage.technique_id, {
           id: stage.technique_id,
           name: stage.stage,
           tactic: formatStageName(stage.stage),
-          hosts: stage.host,
+          hosts: stage.host ?? '未知',
           confidence: null,
           evidence: '攻击链结果',
         });
@@ -767,9 +835,9 @@ function App() {
     filteredEvents.find((event) => event.event_id === selectedEventId) ?? filteredEvents[0];
 
   const selectedGraphNode =
-    attackGraph.nodes.find((node) => node.node_id === selectedGraphNodeId) ?? attackGraph.nodes[0];
+    displayGraph.nodes.find((node) => node.node_id === selectedGraphNodeId) ?? displayGraph.nodes[0];
 
-  const relatedGraphEdges = attackGraph.edges.filter(
+  const relatedGraphEdges = displayGraph.edges.filter(
     (edge) => selectedGraphNode && (edge.source === selectedGraphNode.node_id || edge.target === selectedGraphNode.node_id),
   );
 
@@ -779,7 +847,7 @@ function App() {
 
   const graphRelationContext = relatedGraphEdges.map((edge) => {
     const neighborId = edge.source === selectedGraphNode?.node_id ? edge.target : edge.source;
-    const neighbor = attackGraph.nodes.find((node) => node.node_id === neighborId);
+    const neighbor = displayGraph.nodes.find((node) => node.node_id === neighborId);
 
     return {
       ...edge,
@@ -789,7 +857,7 @@ function App() {
     };
   });
 
-  const visibleGraphEdges = attackGraph.edges.filter((edge) => visibleGraphNodeIds.has(edge.source) && visibleGraphNodeIds.has(edge.target));
+  const visibleGraphEdges = displayGraph.edges;
 
   const graphEdgePaths = visibleGraphEdges.map((edge) => {
     const sourcePosition = nodePositions[edge.source] ?? DEFAULT_NODE_POSITIONS[edge.source] ?? { left: '50%', top: '50%' };
@@ -1608,6 +1676,20 @@ function App() {
                 </select>
                 <button
                   type="button"
+                  className={`layout-mode-btn ${graphViewMode === 'core' ? 'active' : ''}`}
+                  onClick={() => setGraphViewMode('core')}
+                >
+                  核心路径
+                </button>
+                <button
+                  type="button"
+                  className={`layout-mode-btn ${graphViewMode === 'full' ? 'active' : ''}`}
+                  onClick={() => setGraphViewMode('full')}
+                >
+                  全量图谱
+                </button>
+                <button
+                  type="button"
                   className={`layout-mode-btn ${graphLayoutMode === 'tree' ? 'active' : ''}`}
                   onClick={() => setGraphLayoutMode('tree')}
                 >
@@ -1678,7 +1760,7 @@ function App() {
                   </g>
                 ))}
               </svg>
-              {attackGraph.nodes.map((node) => {
+              {displayGraph.nodes.map((node) => {
                 const pos = nodePositions[node.node_id] ?? DEFAULT_NODE_POSITIONS[node.node_id] ?? { left: '18%', top: '25%' };
                 const isSelected = selectedGraphNodeId === node.node_id;
                 const isConnected = relatedGraphNodeIds.has(node.node_id) && !isSelected;
@@ -1687,7 +1769,7 @@ function App() {
                   <button
                     key={node.node_id}
                     type="button"
-                    className={`node ${node.severity} ${visibleGraphNodeIds.has(node.node_id) ? '' : 'filtered-out'} ${isSelected ? 'selected' : ''} ${isConnected ? 'connected' : ''} ${draggingNodeId === node.node_id ? 'dragging' : ''}`}
+                    className={`node ${node.severity} ${isSelected ? 'selected' : ''} ${isConnected ? 'connected' : ''} ${draggingNodeId === node.node_id ? 'dragging' : ''}`}
                     style={{ left: pos.left, top: pos.top }}
                     onClick={() => setSelectedGraphNodeId(node.node_id)}
                     onPointerDown={(event) => handleNodePointerDown(event, node.node_id)}
@@ -1718,6 +1800,10 @@ function App() {
                 </span>
               ))}
               <span className="graph-legend-note">箭头表示攻击方向 · 点击节点查看上下文</span>
+            </div>
+            <div className="graph-view-summary">
+              当前展示 {displayGraph.nodes.length} 个节点、{displayGraph.edges.length} 条边
+              {graphViewMode === 'core' && attackChain.paths[0] ? ` · Top 1 路径评分 ${attackChain.paths[0].score.toFixed(4)}` : ' · 已按筛选条件重新布局'}
             </div>
 
             <div className="graph-detail-card">
@@ -1773,6 +1859,20 @@ function App() {
             <div className="panel-header">
               <h2>攻击链重建</h2>
             </div>
+            <div className="chain-summary-grid">
+              <div className="chain-summary-item">
+                <span>候选路径</span>
+                <strong>{attackChain.candidate_path_count ?? attackChain.paths.length}</strong>
+              </div>
+              <div className="chain-summary-item">
+                <span>Top 1 路径评分</span>
+                <strong>{attackChain.top_path_score == null ? '暂无' : attackChain.top_path_score.toFixed(4)}</strong>
+              </div>
+              <div className="chain-summary-item">
+                <span>重建阶段</span>
+                <strong>{attackChain.stages.length}</strong>
+              </div>
+            </div>
             <div className="chain-grid">
               {attackChain.stages.length > 0 ? attackChain.stages.map((stage, index) => (
                 <button
@@ -1785,22 +1885,39 @@ function App() {
                   <h3>
                     {formatStageName(stage.stage)}
                   </h3>
-                  <p>主机：{stage.host}</p>
-                  <p>技术：{stage.technique_id}</p>
+                  <p>主机：{stage.host ?? '未知'}</p>
+                  <p>技术：{stage.technique_id ?? '未映射'}</p>
                   <div className="chain-evidence">阶段：{stage.stage}</div>
                   <small className="chain-source">来源：攻击链关联结果</small>
                   {selectedStageIndex === index && (
                     <div className="chain-detail-expanded">
                       <span>关联事件</span>
-                      <strong>{stage.related_event_ids?.length ?? events.filter((event) => event.host.hostname === stage.host).length} 条</strong>
+                      <strong>{stage.related_event_ids?.length ?? 0} 条</strong>
                       <span>相关检测</span>
-                      <strong>{stage.related_detection_ids?.length ?? detections.filter((detection) => detection.related_event_ids?.some((eventId) => events.find((event) => event.event_id === eventId)?.host.hostname === stage.host)).length} 条</strong>
+                      <strong>{stage.related_detection_ids?.length ?? 0} 条</strong>
                       <span>置信度</span>
                       <strong>{stage.confidence === undefined ? '暂无' : `${Math.round(stage.confidence * 100)}%`}</strong>
                     </div>
                   )}
                 </button>
               )) : <div className="empty-state">暂无攻击链阶段。</div>}
+            </div>
+            <div className="chain-paths">
+              <div className="panel-header"><h2>候选路径</h2></div>
+              {attackChain.paths.length > 0 ? attackChain.paths.map((path, index) => (
+                <div className="chain-path-card" key={`${path.edges.join('-')}-${index}`}>
+                  <div>
+                    <strong>路径 {index + 1}</strong>
+                    <span>{path.nodes.length} 个节点 · {path.edges.length} 条边</span>
+                  </div>
+                  <div className="chain-path-metrics">
+                    <span>评分 {path.score.toFixed(4)}</span>
+                    <span>置信度 {Math.round(path.confidence * 100)}%</span>
+                    <span>事件 {path.related_event_ids.length}</span>
+                    <span>检测 {path.related_detection_ids.length}</span>
+                  </div>
+                </div>
+              )) : <div className="empty-state">暂无候选路径。</div>}
             </div>
           </section>
         )}
