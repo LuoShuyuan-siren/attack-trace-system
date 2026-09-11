@@ -2,7 +2,6 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
-from app.services.runtime_store import ATTACK_MAPPINGS, DETECTIONS
 from app.services.tracing_service import build_trace_result
 
 from app.services.llm_analysis import analyze_current_attack
@@ -19,33 +18,18 @@ def get_attack_graph():
 
 
 @router.get("/chain")
-def get_attack_chain() -> dict[str, list]:
-    """根据 ATT&CK 映射生成真实攻击链。"""
+def get_attack_chain() -> dict[str, Any]:
+    """返回完整攻击链重建与候选路径结果。"""
 
-    stages = []
+    result = build_trace_result()
+    paths = result["paths"]
 
-    for mapping in ATTACK_MAPPINGS:
-        host = mapping.hosts[0] if mapping.hosts else "unknown"
-        detection = next(
-            (item for item in DETECTIONS if item.detection_id == mapping.detection_id),
-            None,
-        )
-
-        for tactic in mapping.tactics:
-            stages.append({
-                "stage": tactic.stage,
-                "host": host,
-                "technique_id": mapping.technique_id,
-                "tactic_id": tactic.tactic_id,
-                "tactic_name": tactic.tactic_name,
-                "timestamp": mapping.timestamp,
-                "confidence": mapping.confidence,
-                "related_event_ids": detection.related_event_ids if detection else [],
-                "related_detection_ids": [mapping.detection_id],
-            })
-
-    stages.sort(key=lambda item: item["timestamp"])
-    return {"stages": stages}
+    return {
+        "stages": result["stages"],
+        "paths": paths,
+        "candidate_path_count": len(paths),
+        "top_path_score": paths[0]["score"] if paths else None,
+    }
 
 @router.get("/ai-analysis")
 def get_ai_analysis() -> dict[str, str]:

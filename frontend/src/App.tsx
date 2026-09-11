@@ -1894,7 +1894,8 @@ function App() {
                   <h3>
                     {formatStageName(stage.stage)}
                   </h3>
-                  <p>主机：{stage.host ?? '未知'}</p>
+                  <p>来源：{stage.source ?? stage.host ?? '未知'}</p>
+                  <p>目标：{stage.target ?? '未知'}</p>
                   <p>技术：{stage.technique_id ?? '未映射'}</p>
                   <div className="chain-evidence">阶段：{stage.stage}</div>
                   <small className="chain-source">来源：攻击链关联结果</small>
