@@ -51,11 +51,19 @@ class LinuxLogParser(BaseParser):
             if match and self._audit_kind(match) == "SYSCALL":
                 syscall_context[self._audit_key(match)] = self._fields(match.group("body"))
         events: list[NormalizedEvent] = []
+        process_event_keys: set[str] = set()
         for line in lines:
             match = self._audit.match(line)
             context = syscall_context.get(self._audit_key(match)) if match else None
             event = self._parse_line(line, context)
             if event:
+                # auditd emits one logical process execution as SYSCALL + EXECVE +
+                # PROCTITLE records. Keep the first process_create for a serial.
+                if event.event_type == "process_create" and match:
+                    key = self._audit_key(match)
+                    if key in process_event_keys:
+                        continue
+                    process_event_keys.add(key)
                 events.append(event)
         return events
 
@@ -69,6 +77,12 @@ class LinuxLogParser(BaseParser):
     @staticmethod
     def _fields(body: str) -> dict[str, str]:
         return {k: v.strip('"') for k, v in re.findall(r'(\w+)=("[^"]*"|\S+)', body)}
+
+    @staticmethod
+    def _audit_args(fields: dict[str, str]) -> list[str]:
+        """Return EXECVE arguments in numeric aN order (a10 follows a9)."""
+        keys = sorted((key for key in fields if re.fullmatch(r"a\d+", key)), key=lambda key: int(key[1:]))
+        return [fields[key] for key in keys]
 
     def _base(self, timestamp: datetime, source: str, event_type: str, action: str, severity: str = "info", **kwargs: object) -> NormalizedEvent:
         return NormalizedEvent(timestamp=timestamp, source_type="host_log", source=source, host=HostInfo(hostname=self.hostname, ip=self.ip, os="linux"), event_type=event_type, action=action, severity=severity, **kwargs)
@@ -121,7 +135,7 @@ class LinuxLogParser(BaseParser):
             if kind == "EXECVE" and syscall_context:
                 raw = dict(syscall_context)
                 raw.update(clean)
-                args = [value for key, value in sorted(clean.items()) if re.fullmatch(r"a\d+", key)]
+                args = self._audit_args(clean)
                 if args:
                     raw["command_line"] = " ".join(args)
                 raw["parent_pid"] = raw.pop("ppid", None)
@@ -133,7 +147,7 @@ class LinuxLogParser(BaseParser):
             if kind in {"EXECVE", "SYSCALL"}:
                 pid = int(clean["pid"]) if clean.get("pid", "").isdigit() else None
                 raw = dict(clean)
-                args = [value for key, value in sorted(clean.items()) if re.fullmatch(r"a\d+", key)]
+                args = self._audit_args(clean)
                 name = clean.get("comm") or clean.get("exe", "").rsplit("/", 1)[-1] or (args[0] if args else None)
                 if kind == "EXECVE" and args:
                     raw["command_line"] = " ".join(args)

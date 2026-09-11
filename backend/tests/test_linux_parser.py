@@ -102,6 +102,20 @@ def test_linux_plain_proctitle_and_standalone_execve_arguments(tmp_path: Path) -
     assert events[1].subject.name == "grep"
 
 
+def test_linux_audit_serial_deduplicates_process_records_and_numeric_args(tmp_path: Path) -> None:
+    log = tmp_path / "audit.log"
+    log.write_text(
+        "type=SYSCALL msg=audit(1788861602.000:99): pid=42 ppid=10 uid=0 comm=sh exe=/bin/sh syscall=59\n"
+        "type=EXECVE msg=audit(1788861602.000:99): argc=11 a0=sh a1=one a2=two a3=three a4=four a5=five a6=six a7=seven a8=eight a9=nine a10=ten\n"
+        "type=PROCTITLE msg=audit(1788861602.000:99): proctitle=7368006F6E650074776F\n",
+        encoding="utf-8",
+    )
+    events = LinuxLogParser("ubuntu", year=2026).parse(log)
+    process_events = [event for event in events if event.event_type == "process_create"]
+    assert len(process_events) == 1
+    assert process_events[0].raw_data["command_line"] == "sh one two three four five six seven eight nine ten"
+
+
 def test_linux_embedded_kernel_audit_and_su_login(tmp_path: Path) -> None:
     log = tmp_path / "linux.log"
     log.write_text(
