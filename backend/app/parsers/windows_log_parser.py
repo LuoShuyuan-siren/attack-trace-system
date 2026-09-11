@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 from app.core.parser import BaseParser
-from app.schemas.event import NormalizedEvent
+from app.schemas.event import NormalizedEvent, ObjectInfo, NetworkInfo
 
 try:
     from Evtx.Evtx import Evtx
@@ -162,6 +162,68 @@ class WindowsLogParser(BaseParser):
             attack=None,
             tags=["windows", source_name, event_type]
         )
+
+    def _parse_event(
+        self,
+        event_id: int,
+        data: dict,
+        timestamp: str,
+        hostname: str,
+    ) -> NormalizedEvent | None:
+        row_dict = {
+            "_raw": json.dumps({
+                "EventCode": str(event_id),
+                **data,
+            }),
+            "_time": timestamp,
+            "host": hostname,
+        }
+
+        event = self._process_row(
+            row_dict,
+            "windows_sysmon" if event_id < 1000 else "windows_security",
+            Path("compat"),
+        )
+
+        if event is None:
+            return None
+
+        # 兼容原有 Sysmon 注册表事件语义
+        if event_id in (12, 13):
+            event.event_type = "registry_modify"
+
+            if event_id == 12 and data.get("EventType") == "CreateKey":
+                event.action = "create_registry"
+            else:
+                event.action = "modify_registry"
+
+        # 兼容 Sysmon 22：DNS 查询
+        if event_id == 22:
+            query_name = data.get("QueryName")
+
+            event.object = ObjectInfo(
+                type="domain",
+                name=query_name,
+            )
+
+            event.network = NetworkInfo(
+                protocol="dns",
+            )
+
+            event.raw_data["query"] = query_name
+            event.raw_data["query_status"] = data.get("QueryStatus")
+            event.raw_data["query_results"] = data.get("QueryResults")
+
+        # 兼容 Security 4624：登录来源 IP
+        if event_id == 4624:
+            src_port = data.get("IpPort")
+
+            event.network = NetworkInfo(
+                src_ip=data.get("IpAddress"),
+                src_port=int(src_port) if src_port and str(src_port).isdigit() else None,
+            )
+
+        return event
 
     def parse(self, source: Path, max_events: int = None) -> list[NormalizedEvent]:
         events = []
