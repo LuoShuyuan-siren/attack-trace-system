@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { getEvents } from './api/events';
 import { getDetections } from './api/detections';
 import { getAttackChain, getAttackGraph } from './api/attack';
-import { cancelTask, getTask, getTasks, retryTask } from './api/tasks';
+import { cancelTask, getTask, getTasks, removeTask, retryTask } from './api/tasks';
 import { uploadDataFile } from './api/upload';
 import { downloadMarkdownReport, getAgentAnalysis, getCovertChannels, getForensicsReport } from './api/forensics';
 import { getLoginSessions, getNetworkSessions } from './api/sessions';
@@ -20,7 +20,7 @@ type AlertRecord = {
   id: string;
   title: string;
   severity: string;
-  status: 'new';
+  status: 'new' | 'prioritized' | 'correlated';
   host: string;
   source: string;
   evidence: string;
@@ -95,12 +95,28 @@ const DEFAULT_NODE_POSITIONS: Record<string, { left: string; top: string }> = {}
 const GRAPH_LAYOUT_STORAGE_KEY = 'attack-trace-graph-layout';
 
 const relationLabels: Record<string, string> = {
+  anomaly: '异常行为',
+  initial_access: '初始访问',
+  execute: '执行',
+  connect: '网络连接',
+  resolve: 'DNS 解析',
+  spawn: '进程创建',
+  authenticate: '认证',
+  login: '登录',
   lateral_movement: '横向移动',
   privilege_escalation: '权限提升',
   c2_communication: 'C2 通信',
 };
 
 const relationColors: Record<string, string> = {
+  anomaly: '#fb7185',
+  initial_access: '#f97316',
+  execute: '#34d399',
+  connect: '#38bdf8',
+  resolve: '#a78bfa',
+  spawn: '#34d399',
+  authenticate: '#f97316',
+  login: '#22d3ee',
   lateral_movement: '#60a5fa',
   privilege_escalation: '#fbbf24',
   c2_communication: '#f87171',
@@ -108,6 +124,15 @@ const relationColors: Record<string, string> = {
 
 const alertStatusLabels: Record<string, string> = {
   new: '待研判',
+  prioritized: '重点关注',
+  correlated: '已关联',
+};
+
+const getDetectionAlertStatus = (severity: string, confidence: number): AlertRecord['status'] => {
+  if (severity === 'critical' || (severity === 'high' && confidence >= 0.8)) {
+    return 'prioritized';
+  }
+  return 'new';
 };
 const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph): Record<string, { left: string; top: string }> => {
   const nodeIds = graph.nodes.map((node) => node.node_id);
@@ -129,9 +154,15 @@ const getLayoutPositions = (mode: GraphLayoutMode, graph: AttackGraph): Record<s
   }
 
   if (mode === 'tree') {
+    const columns = Math.min(18, Math.max(1, Math.ceil(Math.sqrt(nodeIds.length))));
+    const rows = Math.max(1, Math.ceil(nodeIds.length / columns));
     return nodeIds.reduce<Record<string, { left: string; top: string }>>((result, nodeId, index) => {
-      const progress = nodeIds.length > 1 ? index / (nodeIds.length - 1) : 0.5;
-      result[nodeId] = { left: `${22 + progress * 56}%`, top: `${30 + progress * 38}%` };
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      result[nodeId] = {
+        left: `${columns === 1 ? 50 : 8 + (column / (columns - 1)) * 84}%`,
+        top: `${rows === 1 ? 50 : 8 + (row / (rows - 1)) * 84}%`,
+      };
       return result;
     }, {});
   }
@@ -427,6 +458,19 @@ function App() {
     }
   };
 
+  const handleRemoveTask = async (task: TaskItem) => {
+    setTaskActionMessage('正在撤销任务并移除工作区数据...');
+    try {
+      await removeTask(task.task_id);
+      setTasks((current) => current.filter((item) => item.task_id !== task.task_id));
+      setSelectedTask(null);
+      setTaskActionMessage('任务及其产生的数据已从工作区移除');
+      await loadData();
+    } catch (error) {
+      setTaskActionMessage(error instanceof Error ? error.message : '撤销任务失败，请稍后重试');
+    }
+  };
+
   const waitForTask = async (taskId: string) => {
     for (let attempt = 0; attempt < 20; attempt += 1) {
       await new Promise((resolve) => window.setTimeout(resolve, 1000));
@@ -608,7 +652,7 @@ function App() {
       id: edge.edge_id,
       title: relationLabels[edge.relation] ?? edge.relation,
       severity: relatedEvent?.severity ?? targetNode?.severity ?? 'medium',
-      status: 'new',
+      status: 'correlated',
       host,
       source: relatedEvent?.source ?? '攻击图谱',
       evidence: relatedEvent?.event_type ?? edge.related_event_ids?.join(', ') ?? '攻击边',
@@ -628,7 +672,7 @@ function App() {
         id: detection.detection_id,
         title: detection.title,
         severity: detection.severity,
-        status: 'new',
+        status: getDetectionAlertStatus(detection.severity, detection.confidence),
         host: relatedEvent?.host.hostname ?? detection.related_entity_ids?.[0] ?? '关联实体',
         source: relatedEvent?.source ?? detection.analyzer,
         evidence: detection.description ?? detection.tags?.join(', ') ?? '检测结果',
@@ -645,6 +689,15 @@ function App() {
   }, [detections, events, graphAlertRecords]);
 
   const attackTechniqueRows = useMemo(() => {
+    const tacticByTechnique = new Map<string, string[]>();
+    attackChain.stages.forEach((stage) => {
+      const tactic = stage.tactic_name ?? formatStageName(stage.stage);
+      const tactics = tacticByTechnique.get(stage.technique_id) ?? [];
+      if (!tactics.includes(tactic)) {
+        tactics.push(tactic);
+      }
+      tacticByTechnique.set(stage.technique_id, tactics);
+    });
     const rows = new Map<string, {
       id: string;
       name: string;
@@ -664,7 +717,9 @@ function App() {
       rows.set(edge.attack_technique_id, {
         id: edge.attack_technique_id,
         name: relationLabels[edge.relation] ?? edge.relation,
-        tactic: relationLabels[edge.relation] ?? edge.relation,
+        tactic: tacticByTechnique.get(edge.attack_technique_id)?.join('、')
+          ?? relationLabels[edge.relation]
+          ?? edge.relation,
         hosts: `${source} → ${target}`,
         confidence: edge.confidence ?? null,
         evidence: edge.related_event_ids?.join(', ') ?? '攻击图谱',
@@ -680,7 +735,7 @@ function App() {
       rows.set(detection.attack_technique_id, {
         id: detection.attack_technique_id,
         name: detection.title,
-        tactic: detection.detection_type,
+        tactic: tacticByTechnique.get(detection.attack_technique_id)?.join('、') ?? '未映射',
         hosts: relatedEvent?.host.hostname ?? detection.related_entity_ids?.join(', ') ?? '关联实体',
         confidence: detection.confidence,
         evidence: detection.description ?? detection.tags?.join(', ') ?? detection.analyzer,
@@ -1399,6 +1454,8 @@ function App() {
                   <select value={alertStatusFilter} onChange={(event) => setAlertStatusFilter(event.target.value)}>
                     <option value="all">全部状态</option>
                     <option value="new">待研判</option>
+                    <option value="prioritized">重点关注</option>
+                    <option value="correlated">已关联</option>
                   </select>
                   <select value={alertSeverityFilter} onChange={(event) => setAlertSeverityFilter(event.target.value)}>
                     <option value="all">全部级别</option>
@@ -1973,6 +2030,7 @@ function App() {
                         <span className={`task-status ${task.status}`}>{statusLabel}</span>
                         {task.status === 'running' && <button type="button" className="task-action-button" onClick={() => runTaskAction(task, 'cancel')}>取消</button>}
                         {task.status === 'failed' && <button type="button" className="task-action-button" onClick={() => runTaskAction(task, 'retry')}>重试</button>}
+                        {task.status === 'success' && <button type="button" className="task-action-button" onClick={() => handleRemoveTask(task)}>撤销出工作区</button>}
                       </div>
                     </div>
                     <div className="progress-bar">

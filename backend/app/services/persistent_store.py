@@ -65,6 +65,9 @@ class SQLiteRuntimeStore:
         mappings: list[AttackMappingResult],
     ) -> None:
         with self._connect() as connection:
+            connection.execute("DELETE FROM events")
+            connection.execute("DELETE FROM detections")
+            connection.execute("DELETE FROM attack_mappings")
             connection.executemany(
                 "INSERT OR REPLACE INTO events(event_id, payload) VALUES (?, ?)",
                 [(event.event_id, event.model_dump_json()) for event in events],

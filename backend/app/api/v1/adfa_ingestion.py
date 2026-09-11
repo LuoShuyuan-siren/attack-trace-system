@@ -27,17 +27,31 @@ def ingest_adfa_ld() -> dict[str, object]:
         repo_root / "ADFA-LD"
     )
     existing_event_ids = {event.event_id for event in EVENTS}
+    event_by_id = {event.event_id: event for event in events}
+    EVENTS[:] = [
+        event_by_id.get(event.event_id, event)
+        for event in EVENTS
+    ]
+    EVENTS.extend(event for event in events if event.event_id not in existing_event_ids)
     new_events = [event for event in events if event.event_id not in existing_event_ids]
     existing_detection_ids = {detection.detection_id for detection in DETECTIONS}
+    detection_by_id = {detection.detection_id: detection for detection in detections}
+    DETECTIONS[:] = [
+        detection_by_id.get(detection.detection_id, detection)
+        for detection in DETECTIONS
+    ]
+    DETECTIONS.extend(
+        detection for detection in detections
+        if detection.detection_id not in existing_detection_ids
+    )
     new_detections = [
-        detection for detection in detections if detection.detection_id not in existing_detection_ids
+        detection for detection in detections
+        if detection.detection_id not in existing_detection_ids
     ]
     mappings = map_detections(new_detections)
     for detection, mapping in zip(new_detections, mappings):
         if mapping.technique_id != "unknown":
             detection.attack_technique_id = mapping.technique_id
-    EVENTS.extend(new_events)
-    DETECTIONS.extend(new_detections)
     ATTACK_MAPPINGS.extend(mappings)
     persist_runtime_state()
     task_id = "task-adfa-ld"
@@ -49,6 +63,9 @@ def ingest_adfa_ld() -> dict[str, object]:
         "event_count": len(new_events),
         "detection_count": len(new_detections),
         "attack_mapping_count": len(mappings),
+        "event_ids": [event.event_id for event in events],
+        "detection_ids": [detection.detection_id for detection in detections],
+        "mapping_ids": [mapping.detection_id for mapping in mappings],
     }
     return {
         "task_id": task_id,

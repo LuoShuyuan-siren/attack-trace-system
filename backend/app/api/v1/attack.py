@@ -35,6 +35,8 @@ def get_attack_chain() -> dict[str, list]:
                 "stage": tactic.stage,
                 "host": host,
                 "technique_id": mapping.technique_id,
+                "tactic_id": tactic.tactic_id,
+                "tactic_name": tactic.tactic_name,
                 "timestamp": mapping.timestamp,
                 "confidence": mapping.confidence,
                 "related_event_ids": detection.related_event_ids if detection else [],

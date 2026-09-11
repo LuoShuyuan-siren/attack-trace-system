@@ -67,6 +67,18 @@ def anomaly_score(sample: AdfaSample, baseline: AdfaBaseline, vocabulary: tuple[
     return sum(sorted(z_scores, reverse=True)[:5]) / min(5, len(z_scores))
 
 
+def severity_for_score(score: float, threshold: float) -> str:
+    """Convert a threshold-relative anomaly score into the shared severity levels."""
+    ratio = score / max(threshold, 0.001)
+    if ratio >= 2.0:
+        return "critical"
+    if ratio >= 1.5:
+        return "high"
+    if ratio >= 1.2:
+        return "medium"
+    return "low"
+
+
 def build_detection(
     sample: AdfaSample,
     score: float,
@@ -83,7 +95,7 @@ def build_detection(
             f"The syscall sequence differs from the normal ADFA-LD baseline "
             f"(score={score:.3f}, threshold={threshold:.3f})."
         ),
-        severity="high" if score >= threshold * 1.5 else "medium",
+        severity=severity_for_score(score, threshold),
         confidence=min(0.99, max(0.5, score / max(threshold * 2, 1.0))),
         related_event_ids=event_ids,
         related_entity_ids=[

@@ -35,6 +35,8 @@ export interface AttackStage {
   stage: string;
   host: string;
   technique_id: string;
+  tactic_id?: string;
+  tactic_name?: string;
   timestamp?: string;
   confidence?: number;
   related_event_ids?: string[];

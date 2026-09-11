@@ -17,3 +17,7 @@ export function cancelTask(taskId: string): Promise<TaskItem> {
 export function retryTask(taskId: string): Promise<TaskItem> {
   return requestMethod<TaskItem>(`/api/v1/tasks/${encodeURIComponent(taskId)}/retry`, 'POST');
 }
+
+export function removeTask(taskId: string): Promise<TaskItem> {
+  return requestMethod<TaskItem>(`/api/v1/tasks/${encodeURIComponent(taskId)}/remove`, 'POST');
+}

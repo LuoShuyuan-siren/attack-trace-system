@@ -110,6 +110,9 @@ def upload_data(
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "session_count": session_summary["session_count"],
             "suspicious_processes": session_summary["suspicious_processes"],
+            "event_ids": [event.event_id for event in events],
+            "detection_ids": [detection.detection_id for detection in detections],
+            "mapping_ids": [mapping.detection_id for mapping in attack_mappings],
         })
 
     except ValueError as exc:
