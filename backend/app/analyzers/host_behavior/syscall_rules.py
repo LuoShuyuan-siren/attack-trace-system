@@ -11,6 +11,7 @@ from .adapters import (
     compact_entities,
     host_entity_id,
     host_name,
+    process_name,
     process_entity_id,
     process_pid,
     raw_value,
@@ -33,8 +34,22 @@ def evaluate_syscall_event(event: NormalizedEvent) -> list[RuleMatch]:
         return []
 
     syscall = syscall_name(event)
-    if syscall not in _HIGH_RISK_SYSCALLS:
-        return []
+    matches: list[RuleMatch] = []
+
+    if syscall in _HIGH_RISK_SYSCALLS:
+        matches.append(_high_risk_syscall_match(event, syscall))
+
+    privileged_execution = _privileged_execution_match(event, syscall)
+    if privileged_execution is not None:
+        matches.append(privileged_execution)
+
+    return matches
+
+
+def _high_risk_syscall_match(
+    event: NormalizedEvent,
+    syscall: str,
+) -> RuleMatch:
 
     title, severity, confidence = _HIGH_RISK_SYSCALLS[syscall]
     arguments = raw_value(event, "arguments", "args")
@@ -51,35 +66,114 @@ def evaluate_syscall_event(event: NormalizedEvent) -> list[RuleMatch]:
             (host_entity_id(event), process_entity_id(event))
         )
 
-    return [
-        RuleMatch(
-            rule_id="HB-SYSCALL-001",
-            title=title,
-            description=(
-                f"The process invoked the high-risk system call {syscall}; "
-                "review its arguments and surrounding events."
-            ),
-            severity=severity,
-            confidence=confidence,
-            related_event_ids=[event.event_id],
-            related_entity_ids=entities,
-            evidence={
-                "syscall": syscall,
-                "pid": process_pid(event),
-                "target_pid": target_pid,
-                "operation": syscall,
-                "arguments": arguments,
-                "result": raw_value(event, "result", "return_value", "exit"),
-                "matched_conditions": ["high_risk_syscall"],
-            },
-            tags=[
-                "host_behavior",
-                "syscall",
-                "execution",
-                "high_risk",
+    return RuleMatch(
+        rule_id="HB-SYSCALL-001",
+        title=title,
+        description=(
+            f"The process invoked the high-risk system call {syscall}; "
+            "review its arguments and surrounding events."
+        ),
+        severity=severity,
+        confidence=confidence,
+        related_event_ids=[event.event_id],
+        related_entity_ids=entities,
+        evidence={
+            "syscall": syscall,
+            "pid": process_pid(event),
+            "target_pid": target_pid,
+            "operation": syscall,
+            "arguments": arguments,
+            "result": raw_value(event, "result", "return_value", "exit"),
+            "matched_conditions": ["high_risk_syscall"],
+        },
+        tags=[
+            "host_behavior",
+            "syscall",
+            "execution",
+            "high_risk",
+        ],
+    )
+
+
+def _privileged_execution_match(
+    event: NormalizedEvent,
+    syscall: str | None,
+) -> RuleMatch | None:
+    """Detect a successful exec transition from a user to root identity."""
+
+    if syscall not in {"execve", "execveat"}:
+        return None
+
+    uid = raw_value(event, "uid")
+    euid = raw_value(event, "euid")
+    auid = raw_value(event, "auid")
+    success = raw_value(event, "success", "result")
+    if not _identity_changed(uid, euid) or not _is_root_identity(euid):
+        return None
+    if not _is_success(success):
+        return None
+
+    host = host_name(event)
+    root_entity = f"user:{host}:root" if host else None
+    process = process_name(event)
+    executable = raw_value(event, "exe", "executable", "process_path")
+    return RuleMatch(
+        rule_id="HB-SYSCALL-003",
+        title="Successful privileged process execution",
+        description=(
+            "A successful exec system call changed the effective identity "
+            "from a non-root user to root."
+        ),
+        severity="high",
+        confidence=0.9,
+        related_event_ids=[event.event_id],
+        related_entity_ids=compact_entities(
+            (process_entity_id(event) or host_entity_id(event), root_entity)
+        ),
+        evidence={
+            "pid": process_pid(event),
+            "process_name": process,
+            "syscall": syscall,
+            "uid": uid,
+            "euid": euid,
+            "auid": auid,
+            "exe": executable,
+            "success": success,
+            "operation": "privileged_execution",
+            "matched_conditions": [
+                "successful_exec",
+                "real_effective_uid_changed",
+                "effective_uid_root",
             ],
-        )
-    ]
+        },
+        tags=[
+            "host_behavior",
+            "syscall",
+            "privilege_escalation",
+            "elevated_execution",
+        ],
+        detection_type="malicious_behavior",
+    )
+
+
+def _identity_changed(left: object, right: object) -> bool:
+    if left in (None, "") or right in (None, ""):
+        return False
+    return str(left).strip().casefold() != str(right).strip().casefold()
+
+
+def _is_root_identity(value: object) -> bool:
+    return str(value).strip().casefold() in {"0", "root"}
+
+
+def _is_success(value: object) -> bool:
+    return str(value).strip().casefold() in {
+        "1",
+        "success",
+        "successful",
+        "true",
+        "yes",
+    }
 
 
 def evaluate_memfd_execution_sequences(

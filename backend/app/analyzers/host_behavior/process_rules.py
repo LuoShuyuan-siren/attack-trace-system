@@ -7,6 +7,7 @@ from app.schemas.event import NormalizedEvent
 from .adapters import (
     command_line,
     compact_entities,
+    file_entity_id,
     host_entity_id,
     normalized_executable_name,
     normalized_path,
@@ -68,6 +69,27 @@ _TEMP_EXECUTABLE_SUFFIXES = (
     ".ps1",
     ".sh",
 )
+_PASSWORD_DATABASE_TARGETS = (
+    "/etc/shadow",
+    "/etc/gshadow",
+    "/etc/master.passwd",
+    "/etc/spwd.db",
+    "/opt/splunkforwarder/etc/passwd",
+    "/etc/passwd",
+)
+_CREDENTIAL_SEARCH_TARGETS = (
+    ("authorized_keys", "~/.ssh/authorized_keys"),
+    ("id_dsa", "~/.ssh/id_dsa"),
+    ("id_rsa", "~/.ssh/id_rsa"),
+    ("master\\.key", "*/master.key"),
+    ("master.key", "*/master.key"),
+    (".git-credentials", "~/.git-credentials"),
+    (".credentials.json", "~/.credentials.json"),
+    (".vault-token", "~/.vault-token"),
+    (".gnupg", "~/.gnupg"),
+    (".pem", "*.pem"),
+    (".key", "*.key"),
+)
 
 
 def evaluate_process_event(
@@ -84,11 +106,16 @@ def evaluate_process_event(
     }:
         return [_explicit_memory_behavior(event)]
 
-    if event.event_type not in {"process_create", "process_exec"} and event.action not in {
-        "create_process",
-        "execute",
-        "exec",
-    }:
+    if (
+        event.event_type not in {"process_create", "process_exec"}
+        and event.action
+        not in {
+            "create_process",
+            "execute",
+            "execute_command",
+            "exec",
+        }
+    ):
         return []
 
     matches: list[RuleMatch] = []
@@ -203,6 +230,94 @@ def evaluate_process_event(
                     "process",
                     "execution",
                     "command_line",
+                ],
+            )
+        )
+
+    password_targets = [
+        path for path in _PASSWORD_DATABASE_TARGETS if path in normalized_cmdline
+    ]
+    if password_targets:
+        sensitive_targets = [
+            path for path in password_targets if path != "/etc/passwd"
+        ]
+        primary_target = (sensitive_targets or password_targets)[0]
+        matches.append(
+            RuleMatch(
+                rule_id="HB-PROC-005",
+                title="Credential database referenced by command",
+                description=(
+                    "A process command line referenced a local password or "
+                    "credential database that can support credential theft."
+                ),
+                severity="high" if sensitive_targets else "medium",
+                confidence=0.86 if sensitive_targets else 0.72,
+                related_event_ids=[event.event_id],
+                related_entity_ids=compact_entities(
+                    (host_entity_id(event), file_entity_id(event, primary_target))
+                ),
+                evidence={
+                    **common_evidence,
+                    "file_path": primary_target,
+                    "target_paths": password_targets,
+                    "operation": "command_reference",
+                    "matched_conditions": ["credential_database_path"],
+                },
+                tags=[
+                    "host_behavior",
+                    "process",
+                    "command_line",
+                    "credential_access",
+                    "password_store",
+                ],
+            )
+        )
+
+    searched_targets = list(
+        dict.fromkeys(
+            target
+            for marker, target in _CREDENTIAL_SEARCH_TARGETS
+            if marker in normalized_cmdline
+        )
+    )
+    is_search_command = child in {"find", "grep", "locate", "rg"} or any(
+        marker in f" {normalized_cmdline} "
+        for marker in (" find ", " grep ", " locate ", " rg ")
+    )
+    if searched_targets and is_search_command:
+        primary_target = searched_targets[0]
+        matches.append(
+            RuleMatch(
+                rule_id="HB-PROC-006",
+                title="Credential material search command",
+                description=(
+                    "A search command looked for SSH keys or other credential "
+                    "material on the host."
+                ),
+                severity="high",
+                confidence=0.84,
+                related_event_ids=[event.event_id],
+                related_entity_ids=compact_entities(
+                    (host_entity_id(event), file_entity_id(event, primary_target))
+                ),
+                evidence={
+                    **common_evidence,
+                    "file_path": primary_target,
+                    "target_patterns": searched_targets,
+                    "inferred_target": True,
+                    "operation": "credential_search",
+                    "matched_conditions": [
+                        "search_utility",
+                        "credential_artifact_pattern",
+                    ],
+                },
+                tags=[
+                    "host_behavior",
+                    "process",
+                    "command_line",
+                    "credential_access",
+                    "ssh_private_keys",
+                    "file_discovery",
                 ],
             )
         )

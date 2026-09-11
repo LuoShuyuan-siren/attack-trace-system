@@ -1,0 +1,1580 @@
+{
+  "normalized_events": [
+    {
+      "event_id": "evt-af305687-f889-4329-b994-f9fde46c9ec3",
+      "timestamp": "2025-02-20T13:06:23.624000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "cat",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "proctitle": "cat",
+        "command_line": "cat /etc/passwd",
+        "parent_process_name": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd",
+        "proctitle"
+      ]
+    },
+    {
+      "event_id": "evt-a7d758fa-f253-4bd3-8961-4263a3a2f291",
+      "timestamp": "2025-02-20T13:06:23.629000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "sudo",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "proctitle": "sudo",
+        "command_line": "sudo cat /etc/passwd",
+        "parent_process_name": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd",
+        "proctitle"
+      ]
+    },
+    {
+      "event_id": "evt-b405f249-caa9-414b-83e2-375c486560cf",
+      "timestamp": "2025-02-20T13:07:04.048000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "grep",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "argc": "3",
+        "a0": "grep",
+        "a1": "-E",
+        "a2": "master\\.key$",
+        "command_line": "grep -E master\\.key$",
+        "parent_process_name": null,
+        "arch": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-5dd6621c-e275-49ba-a420-b86af17e9f0e",
+      "timestamp": "2025-02-20T13:07:05.497000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "cat",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "proctitle": "cat",
+        "command_line": "cat /opt/splunkforwarder/etc/passwd",
+        "parent_process_name": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd",
+        "proctitle"
+      ]
+    },
+    {
+      "event_id": "evt-fd773166-f464-4cad-b4d0-eedd0e5f3f25",
+      "timestamp": "2025-02-20T13:07:05.704000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "grep",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "argc": "3",
+        "a0": "grep",
+        "a1": "-E",
+        "a2": "id_dsa.*$",
+        "command_line": "grep -E id_dsa.*$",
+        "parent_process_name": null,
+        "arch": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-5a51ab3a-84fc-429b-a133-475a67eebfe1",
+      "timestamp": "2025-02-20T13:07:05.711000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "grep",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "argc": "3",
+        "a0": "grep",
+        "a1": "-E",
+        "a2": "id_rsa.*$",
+        "command_line": "grep -E id_rsa.*$",
+        "parent_process_name": null,
+        "arch": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-6b664abf-fb13-4ab6-af5a-d6d80ae40282",
+      "timestamp": "2025-02-20T13:07:05.734000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "grep",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "argc": "3",
+        "a0": "grep",
+        "a1": "-E",
+        "a2": "authorized_keys$",
+        "command_line": "grep -E authorized_keys$",
+        "parent_process_name": null,
+        "arch": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-993af398-26db-4ec4-806c-865773705ed7",
+      "timestamp": "2025-02-20T13:07:46.504000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "cat",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "proctitle": "cat",
+        "command_line": "cat /etc/shadow /etc/shadow- /etc/shadow~ /etc/gshadow /etc/gshadow- /etc/master.passwd /etc/spwd.db",
+        "parent_process_name": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd",
+        "proctitle"
+      ]
+    },
+    {
+      "event_id": "evt-926b1a6e-7fac-4f67-a4f8-994d30d4513c",
+      "timestamp": "2025-02-20T13:08:23.630000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "grep",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "argc": "3",
+        "a0": "grep",
+        "a1": "-Ev",
+        "a2": ".Xauthority|.bashrc|.bluemix|.boto|.cer|.cloudflared|.credentials.json|.crt|.csr|.db|.der|.docker|.env|.erlang.cookie|.flyrc|.ftpconfig|.git|.git-credentials|.gitconfig|.github|.gnupg|.google_authenticator|.gpg|.htpasswd|.irssi|.jks|.k5login|.kdbx|.key|.keyring|.keystore|.keytab|.kube|.ldaprc|.lesshst|.mozilla|.msmtprc|.ovpn|.p12|.password-store|.pem|.pfx|.pgp|.plan|.profile|.psk|.pub|.pypirc|.rdg|.recently-used.xbel|.rhosts|.roadtools_auth|.secrets.mkey|.service|.socket|.sqlite|.sqlite3|.sudo_as_admin_successful|.svn|.swp|.tf|.tfstate|.timer|.vault-token|.vhd|.vhdx|.viminfo|.vmdk|.vnc|.wgetrc",
+        "command_line": "grep -Ev .Xauthority|.bashrc|.bluemix|.boto|.cer|.cloudflared|.credentials.json|.crt|.csr|.db|.der|.docker|.env|.erlang.cookie|.flyrc|.ftpconfig|.git|.git-credentials|.gitconfig|.github|.gnupg|.google_authenticator|.gpg|.htpasswd|.irssi|.jks|.k5login|.kdbx|.key|.keyring|.keystore|.keytab|.kube|.ldaprc|.lesshst|.mozilla|.msmtprc|.ovpn|.p12|.password-store|.pem|.pfx|.pgp|.plan|.profile|.psk|.pub|.pypirc|.rdg|.recently-used.xbel|.rhosts|.roadtools_auth|.secrets.mkey|.service|.socket|.sqlite|.sqlite3|.sudo_as_admin_successful|.svn|.swp|.tf|.tfstate|.timer|.vault-token|.vhd|.vhdx|.viminfo|.vmdk|.vnc|.wgetrc",
+        "parent_process_name": null,
+        "arch": null
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-eb351765-5ee0-4481-9662-7480994eb354",
+      "timestamp": "2025-04-16T08:05:30.938000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "doas",
+        "pid": 1962,
+        "user": "ubuntu"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "x86_64",
+        "syscall": "execve",
+        "success": "yes",
+        "exit": "0",
+        "a0": "0x64bb8aa1ffe0",
+        "a1": "0x64bb8aa22fb0",
+        "a2": "0x64bb8aa42060",
+        "a3": "0x8",
+        "items": "2",
+        "pid": "1962",
+        "auid": "ubuntu",
+        "uid": "ubuntu",
+        "gid": "ubuntu",
+        "euid": "root",
+        "suid": "root",
+        "fsuid": "root",
+        "egid": "ubuntu",
+        "sgid": "ubuntu",
+        "fsgid": "ubuntu",
+        "tty": "pts0",
+        "ses": "3",
+        "comm": "doas",
+        "exe": "/usr/bin/doas",
+        "subj": "unconfined",
+        "key": "rootcmd",
+        "parent_pid": "1300",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "execve",
+        "arguments": [
+          "0x64bb8aa1ffe0",
+          "0x64bb8aa22fb0",
+          "0x64bb8aa42060",
+          "0x8"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-ffbb450a-3c0b-4b55-9cae-e244e5ab46a9",
+      "timestamp": "2025-04-16T08:19:51.193000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "doas",
+        "pid": 5110,
+        "user": "ubuntu"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "x86_64",
+        "syscall": "execve",
+        "success": "yes",
+        "exit": "0",
+        "a0": "0x586c89434780",
+        "a1": "0x586c8944ca20",
+        "a2": "0x586c89435eb0",
+        "a3": "0x8",
+        "items": "2",
+        "pid": "5110",
+        "auid": "ubuntu",
+        "uid": "ubuntu",
+        "gid": "ubuntu",
+        "euid": "root",
+        "suid": "root",
+        "fsuid": "root",
+        "egid": "ubuntu",
+        "sgid": "ubuntu",
+        "fsgid": "ubuntu",
+        "tty": "pts0",
+        "ses": "3",
+        "comm": "doas",
+        "exe": "/usr/bin/doas",
+        "subj": "unconfined",
+        "key": "rootcmd",
+        "parent_pid": "2476",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "execve",
+        "arguments": [
+          "0x586c89434780",
+          "0x586c8944ca20",
+          "0x586c89435eb0",
+          "0x8"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-9c680d96-43a3-4413-8592-6e1835f71183",
+      "timestamp": "2025-04-16T08:19:51.198000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "doas",
+        "pid": 5110,
+        "user": "ubuntu"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "x86_64",
+        "syscall": "rename",
+        "success": "yes",
+        "exit": "0",
+        "a0": "0x7ffcf4df0e90",
+        "a1": "0x7ffcf4df0d90",
+        "a2": "0x7ffcf4df0cc0",
+        "a3": "0x0",
+        "items": "4",
+        "pid": "5110",
+        "auid": "ubuntu",
+        "uid": "ubuntu",
+        "gid": "ubuntu",
+        "euid": "root",
+        "suid": "root",
+        "fsuid": "root",
+        "egid": "ubuntu",
+        "sgid": "ubuntu",
+        "fsgid": "ubuntu",
+        "tty": "pts0",
+        "ses": "3",
+        "comm": "doas",
+        "exe": "/usr/bin/doas",
+        "subj": "unconfined",
+        "key": "delete",
+        "parent_pid": "2476",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "rename",
+        "arguments": [
+          "0x7ffcf4df0e90",
+          "0x7ffcf4df0d90",
+          "0x7ffcf4df0cc0",
+          "0x0"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-d2f4dcd0-bea1-4a04-a852-0747f0929ea5",
+      "timestamp": "2025-04-16T08:20:03.591000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "doas",
+        "pid": 5110,
+        "user": "ubuntu"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "x86_64",
+        "syscall": "openat",
+        "success": "yes",
+        "exit": "4",
+        "a0": "AT_FDCWD",
+        "a1": "0x7fc35f7dc2c4",
+        "a2": "O_RDONLY|O_CLOEXEC",
+        "a3": "0x0",
+        "items": "1",
+        "pid": "5110",
+        "auid": "ubuntu",
+        "uid": "ubuntu",
+        "gid": "ubuntu",
+        "euid": "root",
+        "suid": "root",
+        "fsuid": "root",
+        "egid": "ubuntu",
+        "sgid": "ubuntu",
+        "fsgid": "ubuntu",
+        "tty": "pts0",
+        "ses": "3",
+        "comm": "doas",
+        "exe": "/usr/bin/doas",
+        "subj": "unconfined",
+        "key": "etcpasswd",
+        "parent_pid": "2476",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "openat",
+        "arguments": [
+          "AT_FDCWD",
+          "0x7fc35f7dc2c4",
+          "O_RDONLY|O_CLOEXEC",
+          "0x0"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-af01deef-9d5d-496e-b753-0c154c22452e",
+      "timestamp": "2026-05-04T13:28:26.989000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "python3",
+        "pid": 2673,
+        "user": "1000"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "c000003e",
+        "syscall": "41",
+        "success": "yes",
+        "exit": "4",
+        "a0": "26",
+        "a1": "80005",
+        "a2": "0",
+        "a3": "5efceb03aab1",
+        "items": "0",
+        "pid": "2673",
+        "auid": "1000",
+        "uid": "1000",
+        "gid": "1000",
+        "euid": "1000",
+        "suid": "1000",
+        "fsuid": "1000",
+        "egid": "1000",
+        "sgid": "1000",
+        "fsgid": "1000",
+        "tty": "pts2",
+        "ses": "2",
+        "comm": "python3",
+        "exe": "/usr/bin/python3.10",
+        "subj": "unconfined",
+        "key": "af_alg",
+        "parent_pid": "2415",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "socket",
+        "arguments": [
+          "26",
+          "80005",
+          "0",
+          "5efceb03aab1"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-f11b0211-51e9-41af-8c89-d30aeaf3a386",
+      "timestamp": "2026-05-04T13:28:26.989000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "python3",
+        "pid": 2673,
+        "user": "1000"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "c000003e",
+        "syscall": "275",
+        "success": "yes",
+        "exit": "160",
+        "a0": "54",
+        "a1": "0",
+        "a2": "5",
+        "a3": "0",
+        "items": "0",
+        "pid": "2673",
+        "auid": "1000",
+        "uid": "1000",
+        "gid": "1000",
+        "euid": "1000",
+        "suid": "1000",
+        "fsuid": "1000",
+        "egid": "1000",
+        "sgid": "1000",
+        "fsgid": "1000",
+        "tty": "pts2",
+        "ses": "2",
+        "comm": "python3",
+        "exe": "/usr/bin/python3.10",
+        "subj": "unconfined",
+        "key": "splice_user",
+        "parent_pid": "2415",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "275",
+        "arguments": [
+          "54",
+          "0",
+          "5",
+          "0"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-44266819-462c-4a77-82cb-69dcdef3b73a",
+      "timestamp": "2026-05-04T13:28:26.989000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "python3",
+        "pid": 2673,
+        "user": "1000"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "c000003e",
+        "syscall": "49",
+        "success": "yes",
+        "exit": "0",
+        "a0": "4",
+        "a1": "7ffef25d53b0",
+        "a2": "58",
+        "a3": "5efceb040416",
+        "items": "0",
+        "pid": "2673",
+        "auid": "1000",
+        "uid": "1000",
+        "gid": "1000",
+        "euid": "1000",
+        "suid": "1000",
+        "fsuid": "1000",
+        "egid": "1000",
+        "sgid": "1000",
+        "fsgid": "1000",
+        "tty": "pts2",
+        "ses": "2",
+        "comm": "python3",
+        "exe": "/usr/bin/python3.10",
+        "subj": "unconfined",
+        "key": "af_alg",
+        "parent_pid": "2415",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "49",
+        "arguments": [
+          "4",
+          "7ffef25d53b0",
+          "58",
+          "5efceb040416"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-0171bc13-67d0-4d9a-88b4-19ff1f1b162d",
+      "timestamp": "2026-05-04T13:28:26.989000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "python3",
+        "pid": 2673,
+        "user": "1000"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "c000003e",
+        "syscall": "54",
+        "success": "yes",
+        "exit": "0",
+        "a0": "4",
+        "a1": "117",
+        "a2": "5",
+        "a3": "0",
+        "items": "0",
+        "pid": "2673",
+        "auid": "1000",
+        "uid": "1000",
+        "gid": "1000",
+        "euid": "1000",
+        "suid": "1000",
+        "fsuid": "1000",
+        "egid": "1000",
+        "sgid": "1000",
+        "fsgid": "1000",
+        "tty": "pts2",
+        "ses": "2",
+        "comm": "python3",
+        "exe": "/usr/bin/python3.10",
+        "subj": "unconfined",
+        "key": "af_alg",
+        "parent_pid": "2415",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "54",
+        "arguments": [
+          "4",
+          "117",
+          "5",
+          "0"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-6605d1c7-ec33-4ce9-8b0d-a3a19349f8aa",
+      "timestamp": "2026-05-04T13:28:26.991000Z",
+      "source_type": "host_log",
+      "source": "linux_auditd",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "system_call",
+      "subject": {
+        "type": "process",
+        "name": "su",
+        "pid": 2675,
+        "user": "1000"
+      },
+      "object": null,
+      "network": null,
+      "action": "system_call",
+      "raw_data": {
+        "arch": "c000003e",
+        "syscall": "59",
+        "success": "yes",
+        "exit": "0",
+        "a0": "5762bc039d58",
+        "a1": "5762b4b3f6d8",
+        "a2": "5762b4b3f6e8",
+        "a3": "8",
+        "items": "1",
+        "pid": "2675",
+        "auid": "1000",
+        "uid": "1000",
+        "gid": "1000",
+        "euid": "0",
+        "suid": "0",
+        "fsuid": "0",
+        "egid": "1000",
+        "sgid": "1000",
+        "fsgid": "1000",
+        "tty": "pts2",
+        "ses": "2",
+        "comm": "su",
+        "exe": "/usr/bin/su",
+        "subj": "unconfined",
+        "key": "process_creation",
+        "parent_pid": "2674",
+        "parent_process_name": null,
+        "command_line": null,
+        "syscall_name": "execve",
+        "arguments": [
+          "5762bc039d58",
+          "5762b4b3f6d8",
+          "5762b4b3f6e8",
+          "8"
+        ],
+        "result": "yes"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "process",
+        "auditd"
+      ]
+    },
+    {
+      "event_id": "evt-5193678e-407b-4368-9ff2-9c9113958fc0",
+      "timestamp": "2026-05-06T17:24:02Z",
+      "source_type": "host_log",
+      "source": "linux_auth",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "user_login",
+      "subject": {
+        "type": "user",
+        "name": "snapattack",
+        "pid": null,
+        "user": "snapattack"
+      },
+      "object": null,
+      "network": null,
+      "action": "login_success",
+      "raw_data": {
+        "message": "pam_unix(su:session): session opened for user snapattack(uid=0) by (uid=1000)",
+        "uid": "0",
+        "auth_method": "su"
+      },
+      "severity": "medium",
+      "attack": null,
+      "tags": [
+        "su",
+        "login",
+        "privilege_escalation"
+      ]
+    },
+    {
+      "event_id": "evt-ccd9f4e9-fc60-46bc-a796-872220b34099",
+      "timestamp": "2026-05-06T17:24:02Z",
+      "source_type": "host_log",
+      "source": "linux_syslog",
+      "host": {
+        "hostname": "TC-LINUX",
+        "ip": "10.10.20.15",
+        "os": "linux"
+      },
+      "event_type": "process_create",
+      "subject": {
+        "type": "process",
+        "name": "su",
+        "pid": null,
+        "user": null
+      },
+      "object": null,
+      "network": null,
+      "action": "execute_command",
+      "raw_data": {
+        "message": "(to snapattack) snapattack on pts/2",
+        "command_line": "(to snapattack) snapattack on pts/2"
+      },
+      "severity": "info",
+      "attack": null,
+      "tags": [
+        "syslog",
+        "process"
+      ]
+    }
+  ],
+  "detection_results": [
+    {
+      "detection_id": "det-dc4e405e-f152-5e2a-9882-f00ba85bb775",
+      "timestamp": "2025-02-20T13:06:23.624000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential database referenced by command",
+      "description": "A process command line referenced a local password or credential database that can support credential theft.",
+      "severity": "medium",
+      "confidence": 0.72,
+      "related_event_ids": [
+        "evt-af305687-f889-4329-b994-f9fde46c9ec3"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:/etc/passwd"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-005",
+        "pid": null,
+        "ppid": null,
+        "process_name": "cat",
+        "process_image": "cat",
+        "parent_process": null,
+        "command_line": "cat /etc/passwd",
+        "file_path": "/etc/passwd",
+        "target_paths": [
+          "/etc/passwd"
+        ],
+        "operation": "command_reference",
+        "matched_conditions": [
+          "credential_database_path"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-005",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "password_store"
+      ]
+    },
+    {
+      "detection_id": "det-dd4149df-f86d-5381-ad7a-36e2c2ac2abe",
+      "timestamp": "2025-02-20T13:06:23.629000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential database referenced by command",
+      "description": "A process command line referenced a local password or credential database that can support credential theft.",
+      "severity": "medium",
+      "confidence": 0.72,
+      "related_event_ids": [
+        "evt-a7d758fa-f253-4bd3-8961-4263a3a2f291"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:/etc/passwd"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-005",
+        "pid": null,
+        "ppid": null,
+        "process_name": "sudo",
+        "process_image": "sudo",
+        "parent_process": null,
+        "command_line": "sudo cat /etc/passwd",
+        "file_path": "/etc/passwd",
+        "target_paths": [
+          "/etc/passwd"
+        ],
+        "operation": "command_reference",
+        "matched_conditions": [
+          "credential_database_path"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-005",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "password_store"
+      ]
+    },
+    {
+      "detection_id": "det-c571d083-391a-5e43-a6cf-3ddc99a897b3",
+      "timestamp": "2025-02-20T13:07:04.048000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential material search command",
+      "description": "A search command looked for SSH keys or other credential material on the host.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-b405f249-caa9-414b-83e2-375c486560cf"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:*/master.key"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-006",
+        "pid": null,
+        "ppid": null,
+        "process_name": "grep",
+        "process_image": "grep",
+        "parent_process": null,
+        "command_line": "grep -E master\\.key$",
+        "file_path": "*/master.key",
+        "target_patterns": [
+          "*/master.key",
+          "*.key"
+        ],
+        "inferred_target": true,
+        "operation": "credential_search",
+        "matched_conditions": [
+          "search_utility",
+          "credential_artifact_pattern"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-006",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "ssh_private_keys",
+        "file_discovery"
+      ]
+    },
+    {
+      "detection_id": "det-2b8e9df4-02b5-5277-931c-93efb0046502",
+      "timestamp": "2025-02-20T13:07:05.497000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential database referenced by command",
+      "description": "A process command line referenced a local password or credential database that can support credential theft.",
+      "severity": "high",
+      "confidence": 0.86,
+      "related_event_ids": [
+        "evt-5dd6621c-e275-49ba-a420-b86af17e9f0e"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:/opt/splunkforwarder/etc/passwd"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-005",
+        "pid": null,
+        "ppid": null,
+        "process_name": "cat",
+        "process_image": "cat",
+        "parent_process": null,
+        "command_line": "cat /opt/splunkforwarder/etc/passwd",
+        "file_path": "/opt/splunkforwarder/etc/passwd",
+        "target_paths": [
+          "/opt/splunkforwarder/etc/passwd",
+          "/etc/passwd"
+        ],
+        "operation": "command_reference",
+        "matched_conditions": [
+          "credential_database_path"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-005",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "password_store"
+      ]
+    },
+    {
+      "detection_id": "det-df16411c-48f4-5bf1-a328-6d4604b57dce",
+      "timestamp": "2025-02-20T13:07:05.704000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential material search command",
+      "description": "A search command looked for SSH keys or other credential material on the host.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-fd773166-f464-4cad-b4d0-eedd0e5f3f25"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:~/.ssh/id_dsa"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-006",
+        "pid": null,
+        "ppid": null,
+        "process_name": "grep",
+        "process_image": "grep",
+        "parent_process": null,
+        "command_line": "grep -E id_dsa.*$",
+        "file_path": "~/.ssh/id_dsa",
+        "target_patterns": [
+          "~/.ssh/id_dsa"
+        ],
+        "inferred_target": true,
+        "operation": "credential_search",
+        "matched_conditions": [
+          "search_utility",
+          "credential_artifact_pattern"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-006",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "ssh_private_keys",
+        "file_discovery"
+      ]
+    },
+    {
+      "detection_id": "det-e7f122a2-a525-5ccf-bdf8-32e5b6f897a5",
+      "timestamp": "2025-02-20T13:07:05.711000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential material search command",
+      "description": "A search command looked for SSH keys or other credential material on the host.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-5a51ab3a-84fc-429b-a133-475a67eebfe1"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:~/.ssh/id_rsa"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-006",
+        "pid": null,
+        "ppid": null,
+        "process_name": "grep",
+        "process_image": "grep",
+        "parent_process": null,
+        "command_line": "grep -E id_rsa.*$",
+        "file_path": "~/.ssh/id_rsa",
+        "target_patterns": [
+          "~/.ssh/id_rsa"
+        ],
+        "inferred_target": true,
+        "operation": "credential_search",
+        "matched_conditions": [
+          "search_utility",
+          "credential_artifact_pattern"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-006",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "ssh_private_keys",
+        "file_discovery"
+      ]
+    },
+    {
+      "detection_id": "det-556300d3-e4a8-5419-ac42-2db01b7e4e2c",
+      "timestamp": "2025-02-20T13:07:05.734000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential material search command",
+      "description": "A search command looked for SSH keys or other credential material on the host.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-6b664abf-fb13-4ab6-af5a-d6d80ae40282"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:~/.ssh/authorized_keys"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-006",
+        "pid": null,
+        "ppid": null,
+        "process_name": "grep",
+        "process_image": "grep",
+        "parent_process": null,
+        "command_line": "grep -E authorized_keys$",
+        "file_path": "~/.ssh/authorized_keys",
+        "target_patterns": [
+          "~/.ssh/authorized_keys"
+        ],
+        "inferred_target": true,
+        "operation": "credential_search",
+        "matched_conditions": [
+          "search_utility",
+          "credential_artifact_pattern"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-006",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "ssh_private_keys",
+        "file_discovery"
+      ]
+    },
+    {
+      "detection_id": "det-8efec72c-8d40-52d8-84ee-6ea1e558db48",
+      "timestamp": "2025-02-20T13:07:46.504000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential database referenced by command",
+      "description": "A process command line referenced a local password or credential database that can support credential theft.",
+      "severity": "high",
+      "confidence": 0.86,
+      "related_event_ids": [
+        "evt-993af398-26db-4ec4-806c-865773705ed7"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:/etc/shadow"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-005",
+        "pid": null,
+        "ppid": null,
+        "process_name": "cat",
+        "process_image": "cat",
+        "parent_process": null,
+        "command_line": "cat /etc/shadow /etc/shadow- /etc/shadow~ /etc/gshadow /etc/gshadow- /etc/master.passwd /etc/spwd.db",
+        "file_path": "/etc/shadow",
+        "target_paths": [
+          "/etc/shadow",
+          "/etc/gshadow",
+          "/etc/master.passwd",
+          "/etc/spwd.db"
+        ],
+        "operation": "command_reference",
+        "matched_conditions": [
+          "credential_database_path"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-005",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "password_store"
+      ]
+    },
+    {
+      "detection_id": "det-c0d046cd-0787-5612-95eb-119cd1706294",
+      "timestamp": "2025-02-20T13:08:23.630000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "suspicious_behavior",
+      "title": "Credential material search command",
+      "description": "A search command looked for SSH keys or other credential material on the host.",
+      "severity": "high",
+      "confidence": 0.84,
+      "related_event_ids": [
+        "evt-926b1a6e-7fac-4f67-a4f8-994d30d4513c"
+      ],
+      "related_entity_ids": [
+        "host:TC-LINUX",
+        "file:TC-LINUX:~/.git-credentials"
+      ],
+      "evidence": {
+        "rule_id": "HB-PROC-006",
+        "pid": null,
+        "ppid": null,
+        "process_name": "grep",
+        "process_image": "grep",
+        "parent_process": null,
+        "command_line": "grep -Ev .Xauthority|.bashrc|.bluemix|.boto|.cer|.cloudflared|.credentials.json|.crt|.csr|.db|.der|.docker|.env|.erlang.cookie|.flyrc|.ftpconfig|.git|.git-credentials|.gitconfig|.github|.gnupg|.google_authenticator|.gpg|.htpasswd|.irssi|.jks|.k5login|.kdbx|.key|.keyring|.keystore|.keytab|.kube|.ldaprc|.lesshst|.mozilla|.msmtprc|.ovpn|.p12|.password-store|.pem|.pfx|.pgp|.plan|.profile|.psk|.pub|.pypirc|.rdg|.recently-used.xbel|.rhosts|.roadtools_auth|.secrets.mkey|.service|.socket|.sqlite|.sqlite3|.sudo_as_admin_successful|.svn|.swp|.tf|.tfstate|.timer|.vault-token|.vhd|.vhdx|.viminfo|.vmdk|.vnc|.wgetrc",
+        "file_path": "~/.git-credentials",
+        "target_patterns": [
+          "~/.git-credentials",
+          "~/.credentials.json",
+          "~/.vault-token",
+          "~/.gnupg",
+          "*.pem",
+          "*.key"
+        ],
+        "inferred_target": true,
+        "operation": "credential_search",
+        "matched_conditions": [
+          "search_utility",
+          "credential_artifact_pattern"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-PROC-006",
+        "host_behavior",
+        "process",
+        "command_line",
+        "credential_access",
+        "ssh_private_keys",
+        "file_discovery"
+      ]
+    },
+    {
+      "detection_id": "det-38755e07-8327-5be5-ae99-1b6f39404743",
+      "timestamp": "2025-04-16T08:05:30.938000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Successful privileged process execution",
+      "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-eb351765-5ee0-4481-9662-7480994eb354"
+      ],
+      "related_entity_ids": [
+        "process:TC-LINUX:1962",
+        "user:TC-LINUX:root"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-003",
+        "pid": 1962,
+        "process_name": "doas",
+        "syscall": "execve",
+        "uid": "ubuntu",
+        "euid": "root",
+        "auid": "ubuntu",
+        "exe": "/usr/bin/doas",
+        "success": "yes",
+        "operation": "privileged_execution",
+        "matched_conditions": [
+          "successful_exec",
+          "real_effective_uid_changed",
+          "effective_uid_root"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-SYSCALL-003",
+        "host_behavior",
+        "syscall",
+        "privilege_escalation",
+        "elevated_execution"
+      ]
+    },
+    {
+      "detection_id": "det-aae1fa77-85cf-5d29-b713-7897f201d51d",
+      "timestamp": "2025-04-16T08:19:51.193000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Successful privileged process execution",
+      "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-ffbb450a-3c0b-4b55-9cae-e244e5ab46a9"
+      ],
+      "related_entity_ids": [
+        "process:TC-LINUX:5110",
+        "user:TC-LINUX:root"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-003",
+        "pid": 5110,
+        "process_name": "doas",
+        "syscall": "execve",
+        "uid": "ubuntu",
+        "euid": "root",
+        "auid": "ubuntu",
+        "exe": "/usr/bin/doas",
+        "success": "yes",
+        "operation": "privileged_execution",
+        "matched_conditions": [
+          "successful_exec",
+          "real_effective_uid_changed",
+          "effective_uid_root"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-SYSCALL-003",
+        "host_behavior",
+        "syscall",
+        "privilege_escalation",
+        "elevated_execution"
+      ]
+    },
+    {
+      "detection_id": "det-df459b57-a34a-50fc-bd7a-45a0825eea7a",
+      "timestamp": "2026-05-04T13:28:26.991000Z",
+      "analyzer": "host_behavior_analyzer",
+      "detection_type": "malicious_behavior",
+      "title": "Successful privileged process execution",
+      "description": "A successful exec system call changed the effective identity from a non-root user to root.",
+      "severity": "high",
+      "confidence": 0.9,
+      "related_event_ids": [
+        "evt-6605d1c7-ec33-4ce9-8b0d-a3a19349f8aa"
+      ],
+      "related_entity_ids": [
+        "process:TC-LINUX:2675",
+        "user:TC-LINUX:root"
+      ],
+      "evidence": {
+        "rule_id": "HB-SYSCALL-003",
+        "pid": 2675,
+        "process_name": "su",
+        "syscall": "execve",
+        "uid": "1000",
+        "euid": "0",
+        "auid": "1000",
+        "exe": "/usr/bin/su",
+        "success": "yes",
+        "operation": "privileged_execution",
+        "matched_conditions": [
+          "successful_exec",
+          "real_effective_uid_changed",
+          "effective_uid_root"
+        ]
+      },
+      "attack_technique_id": null,
+      "tags": [
+        "HB-SYSCALL-003",
+        "host_behavior",
+        "syscall",
+        "privilege_escalation",
+        "elevated_execution"
+      ]
+    }
+  ],
+  "summary": {
+    "dataset_kind": "real_parser_output_subset",
+    "schema_validation": "passed",
+    "source_event_count": 41,
+    "selected_event_count": 20,
+    "detection_count": 12,
+    "selected_counts_by_source_technique": {
+      "T1003.008": 4,
+      "T1068": 7,
+      "T1548.003": 4,
+      "T1552.004": 5
+    },
+    "detection_counts_by_rule": {
+      "HB-PROC-005": 4,
+      "HB-PROC-006": 5,
+      "HB-SYSCALL-003": 3
+    },
+    "source_files": {
+      "T1003.008": "T1003.008(1).json",
+      "T1068": "T1068(1).json",
+      "T1548.003": "T1548.003(1).json",
+      "T1552.004": "T1552.004(1).json"
+    },
+    "integrity": {
+      "unique_event_ids": true,
+      "all_related_event_ids_resolved": true,
+      "entity_direction_convention": "source_then_target"
+    },
+    "attack_mapping": {
+      "status": "pending_member6",
+      "source_labels": [
+        "T1003.008",
+        "T1068",
+        "T1548.003",
+        "T1552.004"
+      ],
+      "source_technique_by_event_id": {
+        "evt-993af398-26db-4ec4-806c-865773705ed7": "T1003.008",
+        "evt-5dd6621c-e275-49ba-a420-b86af17e9f0e": "T1003.008",
+        "evt-a7d758fa-f253-4bd3-8961-4263a3a2f291": "T1003.008",
+        "evt-af305687-f889-4329-b994-f9fde46c9ec3": "T1003.008",
+        "evt-6605d1c7-ec33-4ce9-8b0d-a3a19349f8aa": "T1068",
+        "evt-5193678e-407b-4368-9ff2-9c9113958fc0": "T1068",
+        "evt-ccd9f4e9-fc60-46bc-a796-872220b34099": "T1068",
+        "evt-af01deef-9d5d-496e-b753-0c154c22452e": "T1068",
+        "evt-f11b0211-51e9-41af-8c89-d30aeaf3a386": "T1068",
+        "evt-44266819-462c-4a77-82cb-69dcdef3b73a": "T1068",
+        "evt-0171bc13-67d0-4d9a-88b4-19ff1f1b162d": "T1068",
+        "evt-ffbb450a-3c0b-4b55-9cae-e244e5ab46a9": "T1548.003",
+        "evt-eb351765-5ee0-4481-9662-7480994eb354": "T1548.003",
+        "evt-d2f4dcd0-bea1-4a04-a852-0747f0929ea5": "T1548.003",
+        "evt-9c680d96-43a3-4413-8592-6e1835f71183": "T1548.003",
+        "evt-926b1a6e-7fac-4f67-a4f8-994d30d4513c": "T1552.004",
+        "evt-6b664abf-fb13-4ab6-af5a-d6d80ae40282": "T1552.004",
+        "evt-5a51ab3a-84fc-429b-a133-475a67eebfe1": "T1552.004",
+        "evt-fd773166-f464-4cad-b4d0-eedd0e5f3f25": "T1552.004",
+        "evt-b405f249-caa9-414b-83e2-375c486560cf": "T1552.004"
+      },
+      "expected_technique_by_detection_id": {
+        "det-dc4e405e-f152-5e2a-9882-f00ba85bb775": "T1003.008",
+        "det-dd4149df-f86d-5381-ad7a-36e2c2ac2abe": "T1003.008",
+        "det-c571d083-391a-5e43-a6cf-3ddc99a897b3": "T1552.004",
+        "det-2b8e9df4-02b5-5277-931c-93efb0046502": "T1003.008",
+        "det-df16411c-48f4-5bf1-a328-6d4604b57dce": "T1552.004",
+        "det-e7f122a2-a525-5ccf-bdf8-32e5b6f897a5": "T1552.004",
+        "det-556300d3-e4a8-5419-ac42-2db01b7e4e2c": "T1552.004",
+        "det-8efec72c-8d40-52d8-84ee-6ea1e558db48": "T1003.008",
+        "det-c0d046cd-0787-5612-95eb-119cd1706294": "T1552.004",
+        "det-38755e07-8327-5be5-ae99-1b6f39404743": "T1548.003",
+        "det-aae1fa77-85cf-5d29-b713-7897f201d51d": "T1548.003",
+        "det-df459b57-a34a-50fc-bd7a-45a0825eea7a": "T1068"
+      },
+      "note": "attack_technique_id remains null in member-4 output; member 6 performs the unified ATT&CK mapping."
+    }
+  }
+}

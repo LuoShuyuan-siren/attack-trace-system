@@ -158,6 +158,54 @@ class HostBehaviorAnalyzerTests(unittest.TestCase):
 
         self.assertEqual(HostBehaviorAnalyzer().analyze([event]), [])
 
+    def test_password_database_command_without_pid_is_detected(self) -> None:
+        event = make_event(
+            event_id="evt-shadow-command",
+            event_type="process_create",
+            action="execute_command",
+            source="linux_auditd",
+            hostname="LINUX-SRV01",
+            process_name="cat",
+            pid=None,
+            raw_data={"command_line": "cat /etc/passwd /etc/shadow"},
+        )
+
+        result = next(
+            item
+            for item in HostBehaviorAnalyzer().analyze([event])
+            if item.evidence["rule_id"] == "HB-PROC-005"
+        )
+
+        self.assertEqual(
+            result.related_entity_ids,
+            ["host:LINUX-SRV01", "file:LINUX-SRV01:/etc/shadow"],
+        )
+        self.assertIn("credential_access", result.tags)
+
+    def test_private_key_search_without_pid_is_detected(self) -> None:
+        event = make_event(
+            event_id="evt-private-key-search",
+            event_type="process_create",
+            action="execute_command",
+            source="linux_auditd",
+            hostname="LINUX-SRV01",
+            process_name="grep",
+            pid=None,
+            raw_data={"command_line": "grep -E 'id_rsa.*$' input.txt"},
+        )
+
+        result = next(
+            item
+            for item in HostBehaviorAnalyzer().analyze([event])
+            if item.evidence["rule_id"] == "HB-PROC-006"
+        )
+
+        self.assertEqual(
+            result.related_entity_ids,
+            ["host:LINUX-SRV01", "file:LINUX-SRV01:~/.ssh/id_rsa"],
+        )
+        self.assertTrue(result.evidence["inferred_target"])
+
     def test_parent_name_is_resolved_from_earlier_process_event(self) -> None:
         parent_event = make_event(
             event_id="evt-parent",
@@ -307,6 +355,56 @@ class HostBehaviorAnalyzerTests(unittest.TestCase):
 
         self.assertIn("HB-SYSCALL-001", rule_ids(results))
         self.assertEqual(results[0].evidence["syscall"], "ptrace")
+
+    def test_successful_exec_to_root_is_detected(self) -> None:
+        event = make_event(
+            event_id="evt-doas-root",
+            event_type="system_call",
+            action="system_call",
+            source="linux_auditd",
+            hostname="LINUX-SRV01",
+            process_name="doas",
+            pid=5110,
+            raw_data={
+                "syscall_name": "execve",
+                "uid": "ubuntu",
+                "euid": "root",
+                "auid": "ubuntu",
+                "success": "yes",
+                "exe": "/usr/bin/doas",
+            },
+        )
+
+        result = next(
+            item
+            for item in HostBehaviorAnalyzer().analyze([event])
+            if item.evidence["rule_id"] == "HB-SYSCALL-003"
+        )
+
+        self.assertEqual(
+            result.related_entity_ids,
+            ["process:LINUX-SRV01:5110", "user:LINUX-SRV01:root"],
+        )
+        self.assertIn("privilege_escalation", result.tags)
+
+    def test_exec_without_identity_change_is_not_flagged(self) -> None:
+        event = make_event(
+            event_id="evt-normal-exec",
+            event_type="system_call",
+            action="system_call",
+            source="linux_auditd",
+            hostname="LINUX-SRV01",
+            process_name="bash",
+            pid=5510,
+            raw_data={
+                "syscall_name": "execve",
+                "uid": "1000",
+                "euid": "1000",
+                "success": "yes",
+            },
+        )
+
+        self.assertEqual(HostBehaviorAnalyzer().analyze([event]), [])
 
     def test_cross_process_syscall_preserves_source_target_direction(self) -> None:
         event = make_event(
