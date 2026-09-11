@@ -37,7 +37,10 @@ class ConnectionAnalyzer(TrafficAnalyzerBase):
 
     def analyze(self, events: list[NormalizedEvent]) -> list[DetectionResult]:
         """分析网络连接事件，输出检测结果。"""
-        traffic_events = self._filter_traffic_events(events)
+        traffic_events = [
+            e for e in self._filter_traffic_events(events)
+            if e.event_type in {"network_flow", "network_connection"}
+        ]
 
         if not traffic_events:
             return []

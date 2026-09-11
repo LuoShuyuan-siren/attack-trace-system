@@ -152,15 +152,19 @@ class SuricataParser(BaseParser):
         }
         dns_raw = {k: v for k, v in dns_raw.items() if v is not None}
 
+        dns_type = safe_str(dns_data.get("type")).lower()
+
+        is_response = dns_type in {"answer", "response"}
+
         return NormalizedEvent(
             timestamp=timestamp,
             source_type="network_traffic",
             source="suricata",
-            event_type="dns_query",
+            event_type="dns_response" if is_response else "dns_query",
             network=net,
-            action="dns_query",
+            action="dns_response" if is_response else "dns_query",
             raw_data={"dns": dns_raw},
-            tags=["suricata", "dns"],
+            tags=["suricata", "dns", dns_type] if dns_type else ["suricata", "dns"],
         )
 
     def _convert_http(self, record: dict, timestamp: datetime) -> NormalizedEvent:
